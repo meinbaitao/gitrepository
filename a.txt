@@ -2,4 +2,5 @@ git is a version control system.
 git is a distributed version control system.
 git is free software distributed under thd GPL.
 git is a software.
+git tracks of one.
 
