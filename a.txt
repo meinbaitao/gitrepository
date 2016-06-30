@@ -6,4 +6,5 @@ git tracks of one of two of three.
 分支。
 Create a branch is simple and quick.
 Updated by branch dev1.
+Updated by branch dev2.
 
