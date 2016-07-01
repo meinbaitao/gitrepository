@@ -1,0 +1,589 @@
+@charset "utf-8";
+html{width: 100%;height: 100%;}
+body{font-size: 16px;background: #f0eff4;min-width:320px;max-width:540px;width: 100%;height: 100%;}
+body {
+    font-size: 16px;
+    background: #f0eff4;
+    min-width: 320px;
+    max-width: 540px;
+    width: 100%;
+    height: 100%;
+}
+/**********header************/
+.header {
+    height: 42px;
+    width: 100%;
+    background: #fff;
+    text-align: center;
+    line-height: 42px;
+    font-size: 16px;
+    border-bottom: 1px solid #DFDFDF;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+}
+.header>div {
+    position: absolute;
+    top: 0;
+}
+.header img {
+    margin: 0;
+    max-width: 20px;
+    padding-top: 0.7rem;
+}
+.back {
+    left: 12px;
+    position: absolute;
+}
+.cloce {right: 53px;}
+.search{right:12px;}
+/********container *********/
+.container {
+    background-color: #fff;
+    overflow-y: scroll;
+    height: 100%;
+    -webkit-overflow-scrolling: touch;
+}
+.container>a {
+    display: block;
+    color: #666;
+}
+.container>div {
+    width: 93%;
+    margin: 0 auto;
+    border-bottom: 1px solid #DFDFDF;
+}
+.container div:last-child {
+    border-bottom: 0;
+}
+.strip {
+    height: 53px;
+    position:relative;
+}
+.strip>span {
+    position: absolute;
+    cursor: pointer;
+}
+.circle {
+    display: inline-block;
+    height: 27px;
+    width: 25px;
+    border-radius: 50%;
+    top: 12px;
+    left: 0;
+    z-index: 999;
+}
+.text,.text2,.text3,.text4 {
+    position: relative !important;
+    width: 90%;
+    text-align: left;
+    height: 100%;
+    display: inline-block;
+    color: #333;
+    position: absolute;
+    padding: 0 0 0 36px;
+}
+.text_s,.text {
+    word-wrap: break-word;
+}
+.strip.auto {
+    height: auto;
+    min-height: 43px;
+}
+.strip .text_s{
+	position: relative;
+}
+.strip.auto.items .circle {
+    top: 9px;
+}
+.strip.auto.items .text,
+.strip.auto.items .text2,
+.strip.auto.items .text3,
+.strip.auto.items .text4 {
+    line-height: 41px;
+}
+.strip.auto._p{
+	    padding: 8px 0;
+}
+.items.tags span {
+    float: left;
+    display: inline-block;
+    position: relative;
+    margin: 8px 4px;
+}
+.items.tags{
+	overflow: hidden;
+}
+.img_s {
+    height: 26px;
+    width: 26px;
+    margin-left: 0 !important;
+}
+.tags_s {
+    width: 73px;
+    height: 27px;
+    background: #DFDFDF;
+    border-radius: 20px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: center;
+    line-height: 27px;
+    font-size: 14px;
+}
+.container .without{
+	height: 12px;
+	width: 100%;
+	background:#f0eff4;
+	border-bottom: 1px solid #DFDFDF;
+    border-top: 1px solid #DFDFDF;
+}
+.strip.contents {
+    height: 36px;
+    line-height: 36px;
+    width: 100%;
+    font-size: 14px;
+}
+.none_b {
+    border-bottom: 0 !important;
+}
+.strip.auto.items.tags {
+    border-top: 1px solid #DFDFDF;
+}
+.contents ul,.contents ul li{float:left;}
+.contents ul {
+    width: 93%;
+    height: 100%;
+    margin-left: 1rem;
+}
+.contents ul li {
+    width: 17%;
+    height: 35px;
+    color: #989898;
+}
+.contents ul li i {
+    height: 100%;
+    display: inline-block;
+    width: 37px;
+    text-align: center;
+}
+.border_b {
+    border-bottom: 2px solid #EC843D;
+    color: #333;
+}
+.c_test>div{display:none;}
+.c_test_div {
+    position: relative;
+    display: block !important;
+}
+.comment.c_test_div>div>div{display:inline-block;}
+.comment.c_test_div>div {
+    border-bottom: 1px solid #DFDFDF;
+    padding: 6px 0;
+}
+.comment .head {
+    border-radius: 4px;
+    position: absolute;
+}
+.comment .head img {
+    border-radius: 4px;
+    width: 40px;
+    height: 40px;
+}
+.covers {
+    width: 80%;
+    padding-left: 49px;
+}
+.c_date {
+    position: absolute;
+    right: 0;
+    font-size: 14px;
+}
+.c_name {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 70%;
+    color: #EC843D;
+    font-size: 14px;
+}
+.c_comment {
+    position: relative;
+}
+.c_text {
+    min-height: 20px;
+    display: inline-block;
+    padding: 0 0 4px 0;
+    width: 97%;
+    word-break: break-word;
+}
+.c_comment>img {
+    margin: 0;
+    border-radius: 6px;
+    width: 80px;
+    height: 80px;
+    float: left;
+    margin: 6px 6px 0 0;
+}
+.c_vioce {
+    min-height: 28px;
+    display: inline-block;
+    border: 1px solid #ccc;
+    width: 50px;
+    border-radius: 4px;
+}
+span.c_spike {
+    position: absolute;
+    top: 4px;
+    margin-left: 6px;
+}
+.c_vioce>img {
+    width: 14px;
+    position: absolute;
+    top: 5px;
+    left: 10px;
+}
+.d_files>div>div{
+	display: inline-block;
+}
+.files>img {
+    margin: 0;
+    height: 100%;
+    border-radius: 5px;
+}
+.files {
+    width: 3.4rem;
+    height: 4.2rem;
+    border-radius: 5px;
+}
+.files_details {
+    position: absolute;
+    width: 80%;
+    padding: 11px 0 0 5px;
+}
+.files_details>span {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 100%;
+    display: inline-block;
+}
+.files_details_t {
+    font-size: 14px;
+    color: #ccc;
+}
+.d_files>.files{
+	border-bottom: 1px solid #DFDFDF;
+    padding: 6px 0;
+}
+.d_files {
+    border-bottom: 1px solid #DFDFDF;
+    position: relative;
+    overflow: hidden;
+}
+.files_content {
+    width: 100%;
+    position: relative;
+    padding: 0.35rem 0 0.1rem 0;
+}
+.record {
+    border-bottom: 1px solid #DFDFDF;
+    padding: 0.5rem 0;
+    font-size: 14px;
+    word-wrap: break-word;
+}
+.record_t{
+	color:#ccc;
+}
+.thing>div>div {
+    display: inline-block;
+    padding: 0;
+}
+.thing .head img {
+    border-radius: 4px;
+    width: 40px;
+    height: 40px;
+    margin: 0;
+}
+.thing .covers {
+    margin-left: 6px;
+    position: absolute;
+    line-height: 40px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.thing .comment_text {
+    height: 40px;
+    padding: 5px 0;
+    border-bottom: 1px solid #DFDFDF;
+}
+.d_date.font12 {
+    float: right;
+    padding-bottom: -3px;
+    margin-top: -14px;
+}
+.d_user.font12 {
+    width: 50%;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.d_name {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 100%;
+    overflow: hidden;
+}
+.c_describe {
+    padding: 4px 0;
+    border-bottom: 1px solid #DFDFDF;
+}
+.non_comment {
+    text-align: center;
+    color: #999;
+    padding: 0 !important;
+}
+.non_comment img {
+    width: 56px;
+    padding: 21px 0 4px 0;
+}
+/**********footer***********/
+.footer {
+    font-size: 12px;
+    background: #fff;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    min-width: 320px;
+    max-width: 540px;
+    z-index: 999;
+    border-top: 1px solid #DFDFDF;
+}
+.footer>div>span {
+    display: inline-block;
+    width: 32px;
+    margin-top: 8px;
+    position: absolute;
+}
+.footer .input_s {
+    width: auto;
+}
+.footer .input_s {
+    margin-top: 5.5px;
+    width: 62%;
+    overflow-x: hidden;
+    padding: 7px 0 7px 3px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    position: relative;
+    margin-bottom: 5px;
+}
+span.voice {
+    top: 0;
+    left: 8px;
+}
+span.face {
+    top: 0;
+    right: 42px;
+}
+span.add {
+    top: 0;
+    right: 6px;
+    overflow: hidden;
+}
+span.add input {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+}
+span.input_s {
+    top: 0;
+    left: 46px;
+}
+.input_s input {
+    width: 100%;
+    height: 78%;
+    outline: none;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding-left: 8px;
+    margin: 5px 0;
+}
+.f_add div {
+    display: inline-block;
+    width: 13%;
+    position: relative;
+    margin-left: 16px;
+    text-align: center;
+    font-size: 16px;
+}
+.f_add {
+    padding: 14px 0 0 0;
+    color:#666;
+}
+.f_add input{
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    opacity: 0;
+}
+.f_add img {
+    margin: 0;
+    margin-bottom: 2px;
+}
+/* .input_s *{
+	display: inline-block;
+} */
+.input_s img {
+    margin-top: -6px;
+}
+.add_send {
+    right: 6px;
+    top: -2px;
+    width: 58px !important;
+    height: 36px;
+    background: #3cb3e0;
+    border-radius: 4px;
+    text-align: center;
+    line-height: 36px;
+}
+.add_send input {
+    color: #fff;
+    background: transparent;
+}
+.comment.c_test_div div:last-child{
+	border-bottom:0;
+}
+/***********qq表情**********/
+.emotion{
+	position: absolute;
+    top: 8px;
+    right: 42px;
+    width: 32px;
+    height: 32px;
+}
+#facebox {
+    left: 0 ;
+    top: 50px;
+    width: 300%;
+    padding: 3px 3px 3px 4px;
+}
+#facebox table{width: 100%;}
+#facebox tr {
+    display: inline-block;
+    height: 97px;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: 33.3%;
+}
+#facebox td {
+    display: inline-block;
+    width: 13%;
+    height: 32px;
+    float: left;
+    overflow-y: hidden;
+    margin: 0 2px;
+}
+#facebox td img {
+    width: 53%;
+}
+.delete_img {
+    display: inline-block;
+    text-align: center;
+    font-size: 1.3rem;
+    z-index: 9999;
+    width: 4%;
+    height: 33px;
+    float: left;
+}
+@media screen and (max-width:399px) {
+    .files_details {
+    	padding: 10px 0 0 5px;
+	}
+	.h_bg {
+    font-size: 14px;
+}
+	
+ }
+ @media (min-width: 400px) and (max-width: 480px) {
+    .footer .input_s {
+    width: 70%;
+}
+ }
+ @media screen and (min-width: 481px) {
+    
+ }
+.ban_scroll{ overflow: hidden;}
+.quick_mask{
+	position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+    background: #333;
+    opacity: 0.9;
+    display:none;
+    text-align: center;
+    color:#fff;
+}
+.quick_mask ul {
+    width: 210px;
+    height: 24%;
+    margin: 0 auto;
+    margin-top: 156px;
+}
+.quick_mask ul li {
+    width: 46px;
+    float: left;
+    padding: 5px 12px;
+    margin-top: 1200px;
+}
+.m_close{
+	font-size: 2rem;
+    position: absolute;
+    left: 48%;
+    bottom: 11px;
+}
+
+
+.demo{
+	width: 100%;
+    height: auto;
+    position: absolute;
+    top: 0;
+}
+#f_gallery{ display:none;position: absolute;    
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #333;
+    z-index: 999;
+    background-size:100% !important;
+}
+.f_size{
+	background-size:100% auto !important;
+}
+#f_gallery2 {
+    display: none;
+    background: black;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0.9;
+}

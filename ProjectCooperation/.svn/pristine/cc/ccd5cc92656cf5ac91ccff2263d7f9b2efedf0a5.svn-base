@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    	<meta charset="utf-8">
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <meta name="apple-mobile-web-app-capable" content="yes" /><!-- 删除苹果默认的工具栏和菜单栏 -->
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" /><!-- 设置苹果工具栏颜色 -->
+        <meta name="format-detection" content="telphone=no, email=no" /><!-- 忽略页面中的数字识别为电话，忽略email识别 -->
+        <!-- 启用360浏览器的极速模式(webkit) -->
+        <meta name="renderer" content="webkit">
+        <!-- 避免IE使用兼容模式 -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
+        <meta name="HandheldFriendly" content="true">
+        <!-- 微软的老式浏览器 -->
+        <meta name="MobileOptimized" content="320">
+        <!-- uc强制竖屏 -->
+        <meta name="screen-orientation" content="portrait">
+        <!-- QQ强制竖屏 -->
+        <meta name="x5-fullscreen" content="true">
+        <!-- UC应用模式 -->
+        <meta name="browsermode" content="application">
+        <!-- QQ应用模式 -->
+        <meta name="x5-page-mode" content="app">
+        <!-- windows phone 点击无高光 -->
+        <meta name="msapplication-tap-highlight" content="no">
+        <!-- 适应移动端end -->
+        <title>Surfond | 我的</title>
+        <link rel="shortcut icon" href="../common/images/favicon.ico">
+        
+        <!-- css -->
+		<link rel="stylesheet" href="../common/css/common.css">
+		<link rel="stylesheet" href="css/profile.css">
+    </head>
+<body>
+<!-- start header -->
+<div class="header">
+		<div class="h_bg font16">
+			<div class="h_img">
+				<img alt="" src="../common/images/test/8.png">
+			</div>
+			<div class="i_name" style="font-weight:bold"></div>
+			<div class="i_email"></div>
+		</div>
+</div>
+<!-- end header -->
+
+<div style="height:15px"></div>
+
+
+ <div class="container">
+	<!-- <div class="p_data">
+		<div class="data_h">
+			<img alt="" src="../common/images/test/8.png">
+		</div>
+		<div class="data_m">个人资料</div>
+		<div class="data_more">></div> -->
+	</div>
+	
+
+<!-- end container -->
+
+
+
+<!-- start footer -->
+<div class="footer">
+	<div class="c_back font18">
+		退出账号
+	</div>
+</div>
+<!-- end footer -->
+
+
+<!-- JSSDK -->
+<script src="../common/js/jquery.min.js"></script>
+<script src="../common/js/jquery.cookie.js"></script>
+<script type="text/javascript" src="../../../static/common/common_service.js"></script>
+<script type="text/javascript" src="../../../static/modules/surfond/common/js/constants.js"></script>
+<script type="text/javascript">
+$(function(){
+	var user_id;
+	var user_idd = 'user_id';
+	if ($.cookie(user_idd)) {
+		user_id= $.cookie(user_idd);
+		$(".container").attr("id",user_id);
+	}
+    var data_user = '{"id":"'+user_id+'"}';
+	var url_user = "/a/queryuserinfo";
+		startUp.ajaxPost(url_user, data_user, false, function(resultMap){
+			$(".i_name").html(resultMap.result.name);
+			$(".i_email").html(resultMap.result.email);
+			if(resultMap.result.photo){
+				$(".h_img img").attr("src",startUp.getRootPath()+resultMap.result.photo);
+			}else{
+				return;
+			}
+		})
+	//退出登录
+	$(document).on("touchstart",".footer",function(){
+		$.cookie('user_id', "", { expires: 1, path: '/' });
+		var data = '{}';
+		var url = "/a/sys/logout";
+		startUp.ajaxForm2(url, data, false, function(resultMap){
+			window.location.href = startUp.getRootPath() + "/a/login";	
+		});
+	})
+	
+	
+	
+	window.onload = function(){
+	        /*页面强转开始*/
+	        var tmpTag = 'https:' == document.location.protocol ? false : true;
+	        if(tmpTag){
+	        	if(!$(".container").attr("id")==""){
+	        		return
+	        	}else{
+	        		window.location.href = startUp.getRootPath() + "/a/login";
+	        	}
+	        }
+	        /*页面强转结束*/
+	}
+})
+</script>
+<!-- JSSDK -->
+</body>
+</html>

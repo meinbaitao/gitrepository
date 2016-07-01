@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    	<meta charset="utf-8">
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <meta name="apple-mobile-web-app-capable" content="yes" /><!-- 删除苹果默认的工具栏和菜单栏 -->
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" /><!-- 设置苹果工具栏颜色 -->
+        <meta name="format-detection" content="telphone=no, email=no" /><!-- 忽略页面中的数字识别为电话，忽略email识别 -->
+        <!-- 启用360浏览器的极速模式(webkit) -->
+        <meta name="renderer" content="webkit">
+        <!-- 避免IE使用兼容模式 -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
+        <meta name="HandheldFriendly" content="true">
+        <!-- 微软的老式浏览器 -->
+        <meta name="MobileOptimized" content="320">
+        <!-- uc强制竖屏 -->
+        <meta name="screen-orientation" content="portrait">
+        <!-- QQ强制竖屏 -->
+        <meta name="x5-fullscreen" content="true">
+        <!-- UC应用模式 -->
+        <meta name="browsermode" content="application">
+        <!-- QQ应用模式 -->
+        <meta name="x5-page-mode" content="app">
+        <!-- windows phone 点击无高光 -->
+        <meta name="msapplication-tap-highlight" content="no">
+        <!-- 适应移动端end -->
+        <title>Surfond | 话题</title>
+        <link rel="shortcut icon" href="images/favicon.ico">
+        
+        <!-- 微信css -->
+		<link rel="stylesheet" href="../../css/common.css">
+		<link rel="stylesheet" href="css/principal.css">
+    </head>
+<body>
+<!-- start header -->
+<div class="header">选择负责人
+	<a class="back" href="viewtask.html">
+		<img src="images/back.png">
+	</a>
+</div>
+<!-- end header -->
+
+
+
+<!-- start container -->
+<div class="container">
+	<div class="container_i">
+		<input type="text" id="" name="" placeholder="搜索">
+	</div>
+	<!-- 0 -->
+	<div class="cd_dropdown">
+			<div class="d_container">
+				<img class="li_head" src="images/test/av.png"/>
+				<span class="li_name">张三</span>
+			</div>
+			<div class="d_container">
+				<img class="li_head" src="images/test/av.png"/>
+				<span class="li_name">张三</span>
+			</div>
+		</div>
+	<!-- 1 -->
+	
+	<div class="c_dropdown">
+	    <div class="c_border">
+			<div class="dropdown_d">
+				<span class="triangle_b triangle_r"></span>
+				<span>设计部</span>
+				<span class="fr">3</span>
+				
+			</div>
+		</div>
+		<div class="cd_dropdown" style="display:none;">
+			<div class="d_container">
+				<img class="li_head" src="images/test/av.png"/>
+				<span class="li_name">张三</span>
+			</div>
+			<div class="d_container">
+				<img class="li_head" src="images/test/av.png"/>
+				<span class="li_name">张三</span>
+			</div>
+		</div>
+	</div>
+	
+	<!-- 2 -->
+	
+	<div class="c_dropdown">
+	    <div class="c_border">
+			<div class="dropdown_d">
+				<span class="triangle_b triangle_r"></span>
+				<span>设计部</span>
+				<span class="fr">4</span>
+				
+			</div>
+		</div>
+		<div class="cd_dropdown" style="display:none;">
+			<div class="d_container">
+				<img class="li_head" src="images/test/av.png"/>
+				<span class="li_name">张三</span>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- end container -->
+
+
+
+<!-- JSSDK -->
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<script type="text/javascript">if(typeof jQuery=="undefined"){document.write(unescape("%3Cscript src='js/jquery-1.9.1.min.js' type='text/javascript'%3E%3C/script%3E"))};</script>
+<script type="text/javascript">
+	$(function(){
+		$(document).on('touchstart','.c_border',function(){
+			$(this).parent().find(".triangle_b").toggleClass("triangle_r");
+			$(this).parent().find(".cd_dropdown").slideToggle();
+		})
+	})
+</script>
+<!-- JSSDK -->
+</body>
+</html>

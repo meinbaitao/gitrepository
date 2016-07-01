@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bt.surfond.attachment.dao.AttachmentDao">
+    
+	<sql id="attachmentColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.attachment_type AS "attachmentType",
+		a.absolute_path AS "absolutePath",
+		a.access_path AS "accessPath",
+		a.task_id AS "taskId",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.status AS "status",
+		a.type AS "type",
+		a.size AS "size",
+		a.time_length AS "timeLength"
+	</sql>
+	
+	<sql id="attachmentJoins">
+	</sql>
+    
+	<select id="get" resultType="Attachment">
+		SELECT 
+			<include refid="attachmentColumns"/>
+		FROM poj_attachment a
+		<include refid="attachmentJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Attachment">
+		SELECT 
+			<include refid="attachmentColumns"/>
+		FROM poj_attachment a
+		<include refid="attachmentJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="taskId != null and taskId != ''">
+				AND a.task_id = #{taskId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Attachment">
+		SELECT 
+			<include refid="attachmentColumns"/>
+		FROM poj_attachment a
+		<include refid="attachmentJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!-- 插入一条附件记录 -->
+	<insert id="insert">
+		INSERT INTO poj_attachment(
+			id,
+			name,
+			attachment_type,
+			absolute_path,
+			access_path,
+			task_id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			status,
+			type,
+			size,
+			time_length
+		) VALUES (
+			#{id},
+			#{name},
+			#{attachmentType},
+			#{absolutePath},
+			#{accessPath},
+			#{taskId},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{status},
+			#{type},
+			#{size},
+			#{timeLength}
+		)
+	</insert>
+	
+	<!-- 修改一条附件记录 -->
+	<update id="update">
+		UPDATE poj_attachment SET 	
+			name = #{name},
+			attachment_type = #{attachmentType},
+			absolute_path = #{absolutePath},
+			access_path = #{accessPath},
+			task_id = #{taskId},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			status = #{status},
+			type = #{type}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 软删除一条附件记录 -->
+	<update id="delete">
+		UPDATE poj_attachment SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 批量软删除附件记录 -->
+	<update id="deleteMore">
+		UPDATE poj_attachment SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE task_id = #{taskId}
+	</update>
+	
+	<!-- 根据附件所属上级ID查找附件记录 -->
+	<select id="findAttachmentByTaskId" resultType="Attachment">
+		SELECT 
+			u.name AS "userName",
+			u.id AS "userId",
+			<include refid="attachmentColumns"/>
+		FROM poj_attachment a
+		LEFT JOIN sys_user u ON a.create_by=u.id
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+		AND a.task_id = #{taskId}
+		ORDER BY a.update_date DESC
+	</select>
+	
+	<!-- 根据附件所属上级ID统计附件记录数 -->
+	<select id="findAttachmentByTaskIdToCount" resultType="int">
+		SELECT 
+			count(a.id)
+		FROM poj_attachment a
+		LEFT JOIN sys_user u ON a.create_by=u.id
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+		AND a.task_id = #{taskId}
+	</select>
+	
+	<!-- 软删除附件记录 -->
+	<update id="deleteAttachment">
+		UPDATE poj_attachment p SET 
+			p.del_flag = '1'
+		WHERE p.id = #{id}
+	</update>
+	
+</mapper>

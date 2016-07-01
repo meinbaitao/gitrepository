@@ -1,0 +1,1224 @@
+/* CSS Document */
+/*reset CSS*/
+html{
+	-webkit-text-size-adjust:none 
+}
+html, body{width:100%;height:100%;}
+html, body, div, span, object, iframe,h1, h2, h3, h4, h5, h6, p, blockquote, pre,abbr, address, cite, code,del, dfn, em, img, ins,kbd, q, samp,small, strong, sub, sup, var,b, i,dl, dt, dd, ol, ul, li,fieldset, form, label, legend,table, caption, tbody, tfoot,thead,tr, th, td,article, aside, canvas, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary,time, mark, audio, video {
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+    font-size:100%;
+    vertical-align:middle;
+    background:transparent;
+	outline-style:none;
+	word-wrap: break-word;
+}
+.display-select{
+	-moz-user-select: none; 
+	-khtml-user-select: none; 
+	user-select: none;
+	-webkit-user-select:none; 
+	-webkit-text-size-adjust:none;
+	cursor:move !important;
+	}
+body.display-select *{
+	cursor:move !important;
+}
+body.display-select ::-moz-selection{background:transparent; } 
+body.display-select ::selection {background:transparent; } 
+body.display-select .drag-container{
+	box-shadow:0px 0px 10px #ff0 inset;
+}
+body.display-select #task_details.drag-container{
+	box-shadow:0px 0px 10px #ff0;
+}
+body {
+    line-height:1;
+}
+ul{
+	list-style:none;
+}
+a{
+    margin:0;
+    padding:0;
+    border:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+	
+}
+a:hover,a:focus{
+	text-decoration:none;
+	bblr:expression(this.onFocus=this.blur());/*IE使用*/
+    outline-style:none;/*FF使用*/ 
+	}
+table {
+    border-collapse:collapse;
+    border-spacing:0;
+}
+
+input, select {
+    vertical-align:middle;
+}
+input,textarea{
+	outline: none; 
+}
+/*文字溢出自动省略*/
+.space .space-name,
+.members,
+.project-title,
+.tags,
+.c-project-lists>li,
+.member-groups-title .groups-name,
+.member-groups li,
+.add_members .email,
+.space_lists>li>span,
+.member-details >.members-info>.email,
+.comment-info .comment-info-tags .comment-title,
+.row>div,
+.foot>span,
+.one-claendar,
+.spaces-nav-list span.title,
+.space-nav>.spance-name,
+.user-opreate .user-info .user-name,
+.head .info .info-foot .sicon-localization,
+.text-line-title .project-name > span,
+.imgs-div.files a span.fiel-info span,
+.text-line-tags .sicon-notification ,
+.operate_tag.project-belong>.dropdown .project-eidt,
+.info-list .belong-project,
+.info-list .belong-space,
+.text-line-grid .text-line-title textarea{
+    text-overflow: ellipsis;
+    word-wrap: normal;
+    white-space: nowrap;
+    overflow:hidden;
+}
+/*文字多行溢出自动省略*/
+.spaces-container-nav .content{
+  display:-webkit-box!important;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  work-break:break-all;
+  -webkit-box-orient:vertical; /*方向*/
+  -webkit-line-clamp:3; /*显示多少行文本*/
+}
+/*清除浮动*/
+.task-operate:after,
+.top-nav:after,
+.panles-switc:after,
+.comment-lists:after,
+.comment-info:after,
+.logtags:after,
+.task-comment-input-submit:after,
+.panels.conversations:after,
+.c-project-list-head:after,
+.start-comment-post:after,
+.comment-list:after,
+.comment-list .comment-info:after,
+.comment-info .comment-info-tags:after,
+.comment-input-div:after,
+.panels.project-chart>div:after,
+ul.space_lists li:after,
+.member-details:after,
+.task-group-div:after,
+.space-container-head:after,
+.spaces-container-nav:after,
+.file-images:after,
+.imgshowDiv:after,
+.comment-input-content.spreaded.col:after,
+.task-file-list:after,
+.list-subject-operat:after,
+.converdation-files-upload-progress:after{
+	content:"";
+	display:block;
+	height:0;
+	clear:both;
+	visibility:hidden
+	}
+.task-operate,
+.top-nav,
+.panles-switc,
+.comment-lists,
+.comment-info,
+.logtags,
+.task-comment-input-submit,
+.panels.conversations,
+.c-project-list-head,
+.start-comment-post,
+.comment-list,
+.comment-list .comment-info,
+.comment-info .comment-info-tags,
+.comment-input-div,
+.panels.project-chart>div,
+ul.space_lists li,
+.member-details,
+.task-group-div,
+.space-container-head,
+.spaces-container-nav,
+.file-images,
+.imgshowDiv,
+.comment-input-content.spreaded.col,
+.task-file-list,
+.list-subject-operat,
+.converdation-files-upload-progress{
+	*+height:1%;
+}
+
+
+/*一些复用的样式*/
+.drag-hander{
+	cursor:move !impartant;
+}
+.portrait{ /*头像*/
+	display:block;
+	width:36px;
+	height:36px;
+	border-radius:50%;
+}
+.members{
+	display: inline-block;
+	width:36px;
+	height:36px;
+	font-size:16px;
+	line-height:36px;
+	color:#f4f2e5;
+	text-align:center;
+	text-indent:0px;
+	border-radius:50%;
+	cursor:pointer;
+	text-overflow:clip;
+	background-repeat: no-repeat;
+	background-position: centet center;
+	background-size:cover;
+}
+.members img{
+	display: block;
+	width:36px;
+	height:36px;
+}
+
+ul.dropdown-menu{
+	padding:0px;
+}
+ul.dropdown-menu>li{
+     padding: 13px 14px;
+    cursor:pointer;
+}
+
+#add_project-charts .modal-body{
+	overflow:visible;
+}
+.modal-dialog{
+	position:absolute;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+	margin:auto;
+	width:500px;	
+	height:290px;
+}
+.modal-content{
+	 position:absolute;
+	 top:0;
+	 bottom:0;
+	 left:0;
+	 right:0;
+	 margin:auto;
+	 height:290px;
+	 width:500px;
+}
+.modal-header{
+	padding:0 0 0 16px;
+	height:51px;
+	line-height:50px;
+	font-size:16px;
+	color:#666;
+	border-bottom: 1px solid #ccc;
+}
+
+.mymodal .modal-title {
+    color: #596573;
+    font-size: 17px;
+}
+.modal-body .form-group .control-label, .input-name {
+    color: #999999;
+    cursor: pointer;
+}
+
+.modal div.modal-dialog .modal-title span.sicon-setting{
+	position:absolute;
+	display:block;	
+	left:0px;
+	top:2px;
+	margin-top:2px;
+}
+.modal .nav-tabs{
+	display:inline-block;	
+	margin: 1px 0  0 -10px;
+	width:auto;
+	border:0px;
+	
+}
+.modal .nav-tabs li{
+	margin-left:0px;
+	margin-right:0px;
+}
+.modal .nav-tabs li>a,
+.modal .nav-tabs:hover li.active>a{
+	font:14px/21px "\5FAE\8F6F\96C5\9ED1";
+	padding:2px 14px;
+	cursor:pointer;
+	color:#999999;
+	border-width:0px 0px 2px 0px;
+	border-color:transparent;
+}
+.modal .nav-tabs li.active>a,
+.modal .nav-tabs li.active>a:hover,
+.modal .nav-tabs li:hover>a:hover{	
+    border-bottom: 2px solid #ff6000;
+    color: #ff6000;
+}
+.modal .nav-tabs li>a:hover{
+	background:transparent;
+	border:0px;
+}
+.nav > li > a:focus, .nav > li > a:hover{
+	background:transparent;
+}
+
+.modal .form-presentation{
+	padding:0;
+	font-size:14px;
+	color:#58666e;
+	font-family: "\5FAE\8F6F\96C5\9ED1";
+}
+.modal .form-group.portrait-line>label{
+	padding-top:0px;
+	
+}
+.modal .form-group.portrait-line img.portrait{
+	width:60px;
+	height:60px;
+}
+
+.modal .form-group.portrait-line input[type=button]{
+	margin-top:12px;
+	background-color:#fff;
+	border:1px solid #ff6000;
+	box-shadow:unset;
+	color:#58666e;
+	font-size: 14px;
+}
+.modal .form-presentation button.submit{
+	width:100%;
+	background-color:#23b7e5;
+	border-width:0px;
+}
+.rows{
+	width:100%;
+	padding:5px 0px;
+	 overflow: hidden;
+}
+.drag_div{
+	position:fixed;
+	top:100px;
+	left:0px;
+	min-width:120px;
+	height:24px;
+	line-height:24px;
+	text-indent:5px;
+	border:1px solid #999;
+	border-radius:3px;
+	background-color:#fff;
+	opacity:0.7;
+	overflow:hidden;	
+	display:none;
+	z-index:1009;
+}
+.drag_div.members{
+	min-width:36px;
+	width:36px;
+	height:36px;
+	line-height:36px;
+	opacity:0.9;
+	border-radius:50%;
+	text-indent:0px;
+}
+label.control-label {
+    margin-bottom: 0;
+    padding-right: 0;
+    text-align: left;
+}
+.toolbar{
+	position: relative;
+	width: 100%;
+	height: 33px;
+	padding:0px 0px;
+	margin-top:-33px;
+	color: #6d7981;
+    font-size: 16px;
+    font-weight: 400;
+    border-radius: 0px 4px 0 0;  
+}
+
+.file-list{
+	width:100%;
+	height:auto;
+	overflow:hidden;
+}
+.file-list.sicon-file20{
+	width:100%;
+	padding:0 0 0 28px;
+	height:auto;
+	overflow:hidden;
+}
+a.file-style{
+	position:relative;
+	display:inline-block;	
+    padding: 0 13px;
+    margin:0px 56px 8px 0;
+	height:26px;
+	width:auto;
+	color:#333;
+	line-height: 26px;
+	border-radius:13px;
+	background-color:#e3e3e3;	
+	transition:all 0.2s ease 0s;
+	overflow:hidden;
+}
+
+a.file-style:hover{
+	padding-right:20px;
+	background-color:#ccc 
+}
+a.file-style.haspreview:hover{
+	padding-right:70px;
+	margin-right:10px;
+} 
+a.file-style .preview{
+	position:absolute;
+	display:none;
+	right:-100px;
+	top:3px;
+	width:46px;
+	height:20px;
+	color:#fff;
+	line-height: 20px;
+    text-align: center;
+    border-radius: 10px;
+	background-color:#fcb593;
+	cursor:pointer;
+}
+a.file-style.haspreview:hover .preview{
+	right:20px;
+	display:inline-block;
+}
+a.file-style .sicon-remove{
+	display:none;
+}
+a.file-style:hover .sicon-remove{
+	position:absolute;
+	top:8px;
+	right:3px;
+	display:inline-block;
+}
+/*自定义icon样式*/
+
+.space-icon{
+	display:inline-block;
+	width:18px;
+	height:18px;
+	background:url('../images/sprite/space-icon.png') no-repeat;
+}
+.downward-double{
+	display:inline-block;
+	width:14px;
+	height:16px;
+	background:url('../images/sprite/downward-double.png') no-repeat;
+}
+.topward-double{
+	display:inline-block;
+	width:14px;
+	height:16px;
+	background:url('../images/sprite/topward-double.png') no-repeat;
+}
+.downward-white{
+	display:inline-block;
+	width:12px;
+	height:6px;
+	background:url('../images/sprite/downward-white.png') no-repeat;
+}
+.downward-gray{
+	display:inline-block;
+	width:12px;
+	height:6px;
+	background:url('../images/sprite/downward-gray.png') no-repeat;
+	cursor:pointer;
+}
+input[type=text].downward-gray{
+	background-position:98%;
+	background-color:#fff;
+}
+.leftward-double{
+	display:inline-block;
+	width:36px;
+	height:22px;
+	background:url('../images/sprite/leftward-double.png') no-repeat;
+	cursor:pointer;
+}
+.rightward-double{
+	display:inline-block;
+	width:26px;
+	height:22px;
+	background:url('../images/sprite/rightward-double.png') no-repeat;
+	cursor:pointer;
+}
+.rightward{
+	display:inline-block;
+	width:7px;
+	height:12px;
+	background:url('../images/sprite/rightward.png') no-repeat;
+	cursor:pointer;
+}
+.topward{
+	display:inline-block;
+	width:12px;
+	height:8px;
+	background:url('../images/sprite/topward.png') no-repeat;
+	cursor:pointer;
+}
+.sicon-star{
+	display:inline-block;
+	width:22px;
+	height:22px;
+	background:url('../images/sprite/icon-star.png') no-repeat;
+}
+.sicon-star.size16{
+	width:16px;
+	height:16px;
+	background:url('../images/sprite/sicon-star16.png') no-repeat;
+}
+
+.sicon-star-empty{
+	display:inline-block;
+	width:22px;
+	height:22px;
+	background:url('../images/sprite/icon-star-empty.png') no-repeat;
+}
+.sicon-star-empty.size16{
+	width:16px;
+	height:16px;
+	background:url('../images/sprite/sicon-star-empty16.png') no-repeat;
+}
+.spaces-nav-list>.foot .sicon-star{
+	display:inline-block;
+	width:16px;
+	height:16px;
+	background:url('../images/sprite/icon-star-choose.png') no-repeat;
+}
+.spaces-nav-list>.foot .sicon-star-empty{
+	display:inline-block;
+	width:16px;
+	height:16px;
+	background:url('../images/sprite/icon-star-empty-choose.png') no-repeat;
+}
+.sicon-archives{
+	display:inline-block;
+	width:16px;
+	height:13px;
+	background:url('../images/sprite/icon-archives.png') no-repeat;
+}
+.sicon-hideMenu{
+	display:inline-block;
+	width:18px;
+	height:125px;
+	background:url('../images/sprite/icon-hideMenuNew.png') no-repeat;
+}
+.task_details .sicon-hideMenu{
+	background:url('../images/sprite/icon-hideMenu-left.png') no-repeat;
+}
+.sicon-addMembers{
+	display:inline-block;
+	width:36px;
+	height:36px;
+	background:url('../images/sprite/icon-addMembers.png') no-repeat;
+	cursor:pointer;
+}
+
+.sicon-file{
+	display:inline-block;
+	width:20px;
+	height:20px;
+	background:url('../images/sprite/icon-file.png') no-repeat;
+	cursor:pointer;
+}
+.sicon_details_file{
+	display:inline-block;
+	width:14px;
+	height:14px;
+	background:url('../images/sprite/sicon_details_file.png') no-repeat;
+	cursor:pointer;
+}
+.sicon-fullScreen{
+	display:inline-block;
+	width:18px;
+	height:18px;
+	background:url('../images/sprite/icon-fullScreen.png') no-repeat;
+	cursor:pointer;
+}
+.sicon-fullScreen.fullScreened{
+	background:url('../images/sprite/icon-unFullScreen.png') no-repeat;
+}
+.sicon-refresh{
+	display:inline-block;
+	width:20px;
+	height:20px;
+	background:url('../images/sprite/icon-refresh.png') no-repeat;
+	cursor:pointer;
+}
+.sicon-task{
+	display:inline-block;
+	width:20px;
+	height:20px;
+	background:url('../images/sprite/icon-task.png') no-repeat;
+	cursor:pointer;
+}
+.sicon-calendar{
+	display:inline-block;
+	width:20px;
+	height:20px;
+	background:url('../images/sprite/icon-calendar.png') no-repeat;
+	cursor:pointer;
+}
+.sicon-calendar16{
+	display:inline-block;
+	width:16px;
+	height:16px;
+	background:url('../images/sprite/sicon-calendar16.png') no-repeat;
+	cursor:pointer;
+}
+input[type=text].sicon-calendar16{
+	background-position:98%;
+}
+.sicon-thumbs{
+	display:inline-block;
+	width:20px;
+	height:20px;
+	background:url('../images/sprite/icon-thumbs.png') no-repeat;
+	cursor:pointer;
+}
+.sicon-user{
+	display:inline-block;
+	width:14px;
+	height:16px;
+	background:url('../images/sprite/sicon-user.png') no-repeat;
+	cursor:pointer;
+}
+.sicon-thumbs-empty{
+	display:inline-block;
+	width:16px;
+	height:16px;
+	background:url('../images/sprite/sicon-thumbs-empty.png') no-repeat;
+	cursor:pointer;
+}
+.sicon-thumbs-empty.green{
+	background:url('../images/sprite/sicon-thumbs-emptyGreen.png') no-repeat;
+
+}
+.sicon-thumbs-empty-gray{
+	display:inline-block;
+	width:16px;
+	height:16px;
+	background:url('../images/sprite/sicon-thumbs-empty-gray.png') no-repeat;
+	cursor:pointer;
+}
+.sicon-thumbs-yellow{
+	display:inline-block;
+	width:14px;
+	height:14px;
+	background:url('../images/sprite/sicon-thumbs-yellow.png') no-repeat;
+	cursor:pointer;
+}
+.sicon-closeDetail{
+	display:inline-block;
+	width:16px;
+	height:16px;
+	background:url('../images/sprite/sicon-closeDetail.png') no-repeat;
+	cursor:pointer;
+}
+.sicon-subTask{
+	display:inline-block;
+	width:16px;
+	height:16px;
+	background:url('../images/sprite/sicon-subTask.png') no-repeat;
+	cursor:pointer;
+}
+.sicon-tags{
+	display:inline-block;
+	width:16px;
+	height:16px;
+	background:url('../images/sprite/sicon-tags.png') no-repeat;
+	cursor:pointer;
+}
+.sicon-delete{
+	display:inline-block;
+	width:16px;
+	height:16px;
+	background:url('../images/sprite/sicon-delete.png') no-repeat;
+	cursor:pointer;
+}
+
+.comment-input-spread{
+	display:inline-block;
+	width:123px;
+	height:17px;
+	background:url('../images/sprite/comment-input-spread.png') no-repeat;
+	cursor:pointer;
+}
+.sicon-addfliecycil{
+	display:inline-block;
+	width:30px;
+	height:30px;
+	line-height:25px;
+	font-size:30px;
+	color:#cdcfd2;
+	text-align:center;
+	border:1px solid #e1e2e4;
+	border-radius:50%;
+	cursor:pointer;
+}
+.sicon-setting{
+	display:inline-block;
+	width:22px;	
+	height:20px;
+	background:url('../images/sprite/personage-setting.png') no-repeat;
+}
+.sicon-face{
+    display:inline-block;
+	width:30px;
+	height:30px;
+	background:url('../images/sprite/sicon_face.png')  no-repeat;
+	cursor:pointer;
+}
+.sicon-CRM{
+    display:inline-block;
+	width:20px;
+	height:21px;
+	background:url('../images/sprite/sicon-CRM.png') no-repeat;
+	cursor:pointer;
+}
+.sicon-trash{
+	display:inline-block;
+	width:16px;
+	height:15px;
+	background:url('../images/sprite/sicon-trash.png') no-repeat;
+	cursor:pointer;
+}
+.sicon-trashDisable{
+	display:inline-block;
+	width:16px;
+	height:15px;
+	background:url('../images/sprite/sicon-trashDisable.png') no-repeat;
+	cursor:pointer;
+}
+.sicon-myspace{
+    display:inline-block;
+	width:22px;
+	height:22px;
+	background:url('../images/sprite/sicon-myspace.png')  no-repeat;
+	cursor:pointer;
+}
+.down-triangle{
+	 display:inline-block;
+	 width:9px;
+	 height:9px;
+	 border:5px solid #000;
+	 border-color:#000 transparent transparent;
+	 cursor:pointer;
+}
+.left-triangle{
+	 display:inline-block;
+	 width:9px;
+	 height:9px;
+	 border:5px solid #000;
+	 border-color:transparent  transparent transparent #000;
+	 cursor:pointer;
+} 
+
+.sicon-manager{
+    display:inline-block;
+	width:15px;
+	height:16px;
+	background:url('../images/sprite/sicon-manager.png')  no-repeat;
+	cursor:pointer;
+}
+.sicon-Notmanager{
+    display:inline-block;
+	width:15px;
+	height:16px;
+	background:url('../images/sprite/sicon-Notmanager.png')  no-repeat;
+	cursor:pointer;
+}
+.sicon-Notmanager:hover{
+	background:url('../images/sprite/sicon-manager.png')  no-repeat;
+}
+.sicon-manager:hover{
+	background:url('../images/sprite/sicon-Notmanager.png')  no-repeat;
+}
+.sicon-managerDisable{
+	display:inline-block;
+	width:15px;
+	height:16px;
+	background:url('../images/sprite/sicon-managerDisable.png')  no-repeat;
+	cursor:pointer;
+}
+.sicon-checked{
+    display:inline-block;
+	width:12px;
+	height:13px;
+	background:url('../images/sprite/sicon-checked.png')  no-repeat;
+	cursor:pointer;
+}
+.sicon-check{
+    display:inline-block;
+	width:12px;
+	height:13px;
+	background:url('../images/sprite/sicon-check.png')  no-repeat;
+	cursor:pointer;
+}
+
+.sicon-checkedDisable{
+	display:inline-block;
+	width:15px;
+	height:16px;
+	background:url('../images/sprite/sicon-managerDisable.png')  no-repeat;
+	cursor:pointer;
+}
+.sicon-projectDetails{
+    display:inline-block;
+	width:18px;
+	height:20px;
+	background:url('../images/sprite/sicon-projectDetails.png')  no-repeat;
+	cursor:pointer;
+}
+.sicon-localization{
+	display:inline-block;
+	width:8px;
+	height:9px;
+	background:url('../images/sprite/sicon-localization.png')  no-repeat;
+	cursor:pointer;
+}
+.sicon-localization.gray{
+	background:url('../images/sprite/sicon-localizationGray.png')  no-repeat;
+}
+.sicon-spaceCoversation{
+	display:inline-block;
+	width:15px;
+	height:16px;
+	background:url('../images/sprite/sicon-spaceCoversation.png')  no-repeat;
+	cursor:pointer;
+}
+
+.taskManager{
+	display:inline-block;
+	width:19px;
+	height:19px;
+	background:url('../images/sprite/taskManager.png')  no-repeat;
+	cursor:pointer;
+}
+.sicon-memberRemove{
+	display:inline-block;
+	width:11px;
+	height:11px;
+	background:url('../images/sprite/sicon-memberRemove.png')  no-repeat;
+	cursor:pointer;
+}
+.sicon-memberRemove:hover{
+	background:url('../images/sprite/sicon-memberRemoveH.png')  no-repeat;
+}
+.sicon-memberRemoveH{
+	display:inline-block;
+	width:11px;
+	height:11px;
+	background:url('../images/sprite/sicon-memberRemoveH.png')  no-repeat;
+	cursor:pointer;
+}
+.sicon-myBulidTask{
+	display:inline-block;
+	width:18px;
+	height:18px;
+	background:url('../images/sprite/sicon-myBulidTask.png')  no-repeat;
+}
+.sicon-myOwn{
+	display:inline-block;
+	width:16px;
+	height:18px;
+	background:url('../images/sprite/sicon-myOwn.png')  no-repeat;
+}
+.sicon-readOnly{
+	display:inline-block;
+	width:18px;
+	height:12px;
+	background:url('../images/sprite/sicon-readOnly.png')  no-repeat;
+}
+/*新的项目列表样式*/
+
+.sicon-changeSpace,
+.sicon-buildSpace{
+	display:inline-block;
+	width:183px;
+	height:30px;
+	background:url('../images/sprite/sicon-changeSpace.png')  no-repeat;
+	cursor:pointer;
+}
+.sicon-spaceSettting{
+	display:inline-block;
+	width:22px;
+	height:20px;
+	background:url('../images/sprite/sicon-spaceSettting.png')  no-repeat;
+	cursor:pointer;
+}
+.sicon-spaceConversation{
+	display:inline-block;
+	width:30px;
+	height:26px;
+	background:url('../images/sprite/sicon-spaceConversation.png')  no-repeat;
+	cursor:pointer;
+}
+.sicon-spaceMember30{
+	display:inline-block;
+	width:30px;
+	height:30px;
+	background:url('../images/sprite/sicon-spaceMember30.png')  no-repeat;
+	cursor:pointer;
+}
+.sicon-spaceMember20{
+	display:inline-block;
+	width:30px;
+	height:30px;
+	background:url('../images/sprite/sicon-spaceMember20.png')  no-repeat;
+	cursor:pointer;
+}
+.sicon-spaceMemberGray20{
+	display:inline-block;
+	width:20px;
+	height:18px;
+	background:url('../images/sprite/sicon-spaceMemberGray20.png')  no-repeat;
+	cursor:pointer;
+}
+.sicon-spaceMember20.black{
+	background:url('../images/sprite/sicon-spaceMemberBlack20.png')  no-repeat;
+}
+.sicon-spaceMember16{
+	display:inline-block;
+	width:16px;
+	height:16px;
+	background:url('../images/sprite/sicon-spaceMember16.png')  no-repeat;
+	cursor:pointer;
+}
+.sicon-project30{
+	display:inline-block;
+	width:30px;
+	height:30px;
+	background:url('../images/sprite/sicon-project30.png')  no-repeat;
+	cursor:pointer;
+}
+.sicon-project30 .gray{
+	background:url('../images/sprite/sicon-projectGray30.png')  no-repeat;
+}
+.sicon-project20{
+	display:inline-block;
+	width:20px;
+	height:20px;
+	background:url('../images/sprite/sicon-project20.png')  no-repeat;
+	cursor:pointer;
+}
+.sicon-project18{
+	display:inline-block;
+	width:18px;
+	height:18px;
+	background:url('../images/sprite/sicon-project18.png')  no-repeat;
+	cursor:pointer;
+}
+.sicon-project16{
+	display:inline-block;
+	width:16px;
+	height:16px;
+	background:url('../images/sprite/sicon-project16.png')  no-repeat;
+	cursor:pointer;
+}
+.sicon-project18.gray{
+	background:url('../images/sprite/sicon-project18gray.png')  no-repeat;
+}
+.sicon-project20.black{
+	background:url('../images/sprite/sicon-project20Black.png')  no-repeat;
+}
+.sicon-spaceTaskLarge{
+	display:inline-block;
+	width:30px;
+	height:30px;
+	background:url('../images/sprite/sicon-spaceTaskLarge.png')  no-repeat;
+	cursor:pointer;
+}
+.sicon-spaceTaskGray20{
+	display:inline-block;
+	width:14px;
+	height:18px;
+	background:url('../images/sprite/sicon-spaceTaskGray20.png')  no-repeat;
+	cursor:pointer;
+}
+.sicon-emotion{
+	display:inline-block;
+	width:30px;
+	height:30px;
+	background:url('../images/sprite/face.png')  no-repeat;
+	cursor:pointer;
+}
+.sicon-face25{
+	display:inline-block;
+	width:20px;
+	height:20px;
+	background:url('../images/sprite/sicon-face25.png')  no-repeat;
+	background-size:contain;
+	cursor:pointer;
+}
+.sicon-related{
+	display:inline-block;
+	width:20px;
+	height:20px;
+	background:url('../images/sprite/sicon-related.png')  no-repeat;
+	background-size:contain;
+	cursor:pointer;
+}
+.sicon-file20{
+	display:inline-block;
+	width:20px;
+	height:20px;
+	background:url('../images/sprite/sicon-file20.png')  no-repeat;
+	cursor:pointer;
+}
+.sicon-file25{
+	display:inline-block;
+	width:20px;
+	height:20px;
+	background:url('../images/sprite/sicon_file25.png')  no-repeat;
+	background-size:contain;
+	cursor:pointer;
+}
+
+.sicon-notification{
+	width:21px;
+	height:18px;
+	background: url("../images/sprite/sicon-notification.png") no-repeat left center;
+}
+.sicon-backArrows{
+	display:inline-block;
+	width:22px;
+	height:18px;
+	background:url('../images/sprite/sicon-backArrows.png')  no-repeat;
+	cursor:pointer;
+}
+.add-letter-btn{
+	display:inline-block;
+	width:36px;
+	height:24px;
+	font-size:16px;
+	color:#ff6000;
+	line-height:24px;
+	cursor:pointer;
+}
+.tags{
+	display:inline-block;
+	width:78px;
+	height:22px;
+	padding:5px 10px;
+	line-height:22px;
+	background:url('../images/sprite/sicon-Tasktags.png')  no-repeat;
+	cursor:pointer;
+}
+.sicon-remove{
+	display:inline-block;
+	width:12px;
+	height:12px;
+	line-height:12px;
+	font-size:12px;
+	color:#999;
+}
+.sicon-remove:hover{
+	color:#666;
+}
+.sicon-remove:before{
+	content:"X";
+}
+.add-subtask-btn{
+	display:inline-block;
+	width:42px;
+	height:40px;
+    background:url('../images/sprite/add-subtask-big-btn.png')  no-repeat;
+	cursor:pointer;
+}	
+div.botton.col-sm-8{
+	padding-right:0px;
+}
+div.botton>button{
+	float:right;
+	margin:0 0 0 8px;
+}
+.btn-orange,.btn-gray{
+	float:right;
+    display: inline-block;
+	width:86px;
+	height:40px;
+	line-height:40px;
+	font-size:14px;
+	text-align:center;
+	border-radius:5px;
+	border:0px;
+	background:#fff;
+	outline:0px;
+	cursor:pointer;
+}
+.btn-orange{
+	color:#fff;
+	background-color: #ff6000;
+}
+.btn-orange.disable{
+	color:#ccc;
+	background-color: #e7e7e7;
+	cursor:not-allowed;
+}
+.btn-gray{
+	border-radius:0;
+	color:#999;
+}	
+.modal-content .backtrack{
+	margin-top: -17px;
+	background:url('../images/sprite/backtrack.png') no-repeat;
+	width: 28px;
+    height: 22px;
+    display: inline-block;
+    cursor:pointer;
+}
+
+.sicon-show-comment{
+	width: 27px;
+    height: 8px;
+	background:url('../images/sprite/comment-show.png') no-repeat;
+}
+.sicon-conversation-comment{
+	width: 16px;
+    height: 16px;
+	background:url('../images/sprite/conversation-comment.png') no-repeat;
+}
+
+.projectLogo{
+	width:40px;
+	height:40px;
+	background:url('../images/sprite/projectLogo52.png') no-repeat;
+	background-size:contain;
+}
+.tabsLogo{
+	width:50px;
+	height:50px;
+	background:url('../images/sprite/tabsLogo.png') no-repeat;
+	background-size:contain;
+}
+.conversationLogo{
+	width:50px;
+	height:50px;
+	background:url('../images/sprite/conversationLogo.png') no-repeat;
+	background-size:contain;
+}
+
+.spacenull{
+	display:none;
+	position:absolute;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+	margin:auto;
+	width:446px;
+	height:374px;
+	background:url('../images/sprite/spacenull-bg.png') no-repeat;
+}
+
+.null-space-nav .spacenull{
+	display:block;
+}
+
+.input-div input.remembersomeone{
+	display:inline;
+    color:#8cc6ff;	
+    border:0 none;
+    width:auto;
+    height:auto;
+    margin:0;
+    padding:0;
+    font-size:12px;
+    line-height:20px;
+    
+}
+
+.sicon-belong-space{
+	display:inline-block;
+	height:16px;
+	width:14px;
+	background:url('../images/sprite/info-belong-space.png') no-repeat;
+	
+}
+.sicon-belong-project{
+	display:inline-block;
+	height:15px;
+	width:8px;
+	background:url('../images/sprite/info-belong-project.png') no-repeat;
+}
+.operat-result-alert{
+   z-index:8;
+   position:absolute;
+   top:200px;
+   left:0;
+   right:0;
+   margin:auto;
+   padding:13px 22px 10px 40px;
+   width:240px;
+   min-height:48px;
+   line-height:20px;
+   font-size:16px;
+   color:#3edaa1;
+   border:1px solid #c0ccd7;
+   border-radius:8px;
+   box-shadow:0 0 3px #d9d9d9;	
+   background-color:#fff;
+}
+.operat-result-alert.failure{
+	color:#f43737;
+}
+.icon-result-alert{
+	display:block;
+	position:absolute;
+	top:50%;
+	left:12px;
+	margin-top:-10px;
+	width:20px;
+	height:20px;
+	background:url('../images/sprite/operat-succse.png') no-repeat;
+}
+.operat-result-alert.failure .icon-result-alert{
+	background:url('../images/sprite/operat-failure.png') no-repeat;
+}
+.close-operat-alert{
+	display:block;
+	position:absolute;
+	top:50%;
+	right:12px;
+	margin-top:-5px;
+	width:10px;
+	height:10px;
+	background:url('../images/sprite/close-operat-alert.png') no-repeat;
+	cursor:pointer;
+}

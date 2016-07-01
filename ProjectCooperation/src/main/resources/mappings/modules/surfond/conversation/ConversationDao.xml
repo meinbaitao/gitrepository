@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bt.surfond.conversation.dao.ConversationDao">
+    
+	<sql id="conversationColumns">
+		a.id AS "id",
+		IFNULL(a.title,'') AS "title",
+		IFNULL(a.description,'') AS "description",
+		a.praise_amount AS "praiseAmount",
+		a.type AS "type",
+		a.status AS "status",
+		a.sort AS "sort",
+		a.user_id AS "user.id",
+		a.resource_id AS "resourceId",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		IFNULL(a.address,'') AS "address",
+		IFNULL(a.source,'') AS "source"
+	</sql>
+	
+	<!--根据会话ID查找会话-->
+	<select id="get" resultType="Conversation">
+		SELECT 
+			<include refid="conversationColumns"/>
+		FROM poj_conversation a
+		WHERE a.id = #{id}
+	</select>
+	
+	<!--查找所有会话列表-->
+	<select id="findList" resultType="Conversation">
+		SELECT 
+			<include refid="conversationColumns"/>
+		FROM poj_conversation a
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="title != null and title != ''">
+				AND a.title LIKE 
+					<if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{title},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	<!--添加一个会话信息-->
+	<insert id="insert">
+		INSERT INTO poj_conversation(
+			id,
+			title,
+			description,
+			praise_amount,
+			type,
+			status,
+			sort,
+			user_id,
+			resource_id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			address,
+			source
+		) VALUES (
+			#{id},
+			#{title},
+			#{description},
+			#{praiseAmount},
+			#{type},
+			#{status},
+			#{sort},
+			#{createBy.id},
+			#{resourceId},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{address},
+			#{source}
+		)
+	</insert>
+	<!--修改一个会话信息-->
+	<update id="update">
+		UPDATE poj_conversation SET 	
+			title = #{title},
+			description = #{description},
+			praise_amount = #{praiseAmount},
+			type = #{type},
+			status = #{status},
+			sort = #{sort},
+			resource_id = #{resourceId},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	<!--软删除一个会话信息-->
+	<update id="delete">
+		UPDATE poj_conversation SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!--根据(空间或者项目)ID查找会话列表-->
+	<select id="findByResourceId" resultType="Conversation">
+		SELECT 
+		(SELECT COUNT(com.id) FROM poj_comment com WHERE com.resource_id = a.id AND com.del_flag = #{DEL_FLAG_NORMAL}) AS 'commentCount',
+		a.create_by AS "userId",
+		EXISTS(SELECT mp.id FROM poj_member_praise mp WHERE mp.record_id=a.id AND mp.type='1' AND mp.user_id=#{currentUser.id}) AS "isPraise",
+		(SELECT IF(COUNT(b.id)>0,'1','0') FROM poj_bookmark b WHERE b.resource_id = a.id AND b.del_flag = #{DEL_FLAG_NORMAL} and b.create_by=#{currentUser.id}) AS "favoriteFlag",
+		u.`name` AS "userName",
+		u.email AS "email",
+		u.photo AS "photo",
+		<include refid="conversationColumns"/>
+		FROM poj_conversation a
+		LEFT JOIN sys_user u ON u.id = a.create_by
+		LEFT JOIN poj_space s ON s.id = a.resource_id
+		WHERE a.resource_id = #{resourceId} AND a.del_flag = #{DEL_FLAG_NORMAL}
+		ORDER BY a.sort DESC
+	</select>
+	
+	<!--根据ID查找单个会话-->
+	<select id="findOneConversation" resultType="Conversation">
+		SELECT 
+		(SELECT COUNT(com.id) FROM poj_comment com WHERE com.resource_id = a.id AND com.del_flag = #{DEL_FLAG_NORMAL}) AS 'commentCount',
+		EXISTS(SELECT mp.id FROM poj_member_praise mp WHERE mp.record_id=a.id AND mp.type='1' AND mp.user_id=#{currentUser.id}) AS "isPraise",
+		(SELECT IF(COUNT(b.id)>0,'1','0') FROM poj_bookmark b WHERE b.resource_id = a.id AND b.del_flag = #{DEL_FLAG_NORMAL} and b.create_by=#{currentUser.id}) AS "favoriteFlag",
+		u.`name` AS "userName",
+		u.email AS "email",
+		u.photo AS "photo",
+		a.create_by AS "userId",
+		<include refid="conversationColumns"/>
+		FROM poj_conversation a
+		LEFT JOIN sys_user u ON u.id = a.create_by
+		WHERE a.id = #{id} AND a.del_flag = #{DEL_FLAG_NORMAL}
+	</select>
+	
+	<!-- 查询会话最大排序值 -->
+	<select id="findConversationMaxSort" resultType="Conversation">
+		select 
+			IFNULL(MAX(a.sort),"0") as "sort"
+		from  poj_conversation a 
+		where a.del_flag = #{DEL_FLAG_NORMAL}
+	</select>
+	
+	<!--对会话点赞,对会话点赞数量变化-->
+	<update id="conversationPraise">
+		UPDATE poj_conversation SET 
+			praise_amount = #{praiseAmount}
+		WHERE id = #{id}
+	</update>
+	
+	<!--根据ID查找点赞记录用户信息-->
+	<select id="findPraiseRecodeMembers" resultType="map">
+		SELECT
+			u.id,u.name,u.email,u.photo
+		 	FROM sys_user u
+			LEFT JOIN poj_member_praise mp ON u.id = mp.user_id
+			WHERE mp.record_id = #{id}
+	</select>
+	
+	<!--根据ID查找点赞记录-->
+	<select id="findPraiseRecode" resultType="map">
+		SELECT 
+			a.id AS id, 
+			a.user_id AS userId, 
+			a.record_id AS recordId, 
+			a.type AS type
+		FROM poj_member_praise a
+		WHERE a.record_id = #{recordId} AND a.user_id = #{userId}
+	</select>
+	
+	<!--查找热点话题-->
+	<select id="findHotConversation" resultType="Conversation">
+		SELECT
+			(SELECT COUNT(com.id) FROM poj_comment com WHERE com.resource_id = a.id AND com.del_flag = #{DEL_FLAG_NORMAL}) AS 'commentCount',
+			(SELECT IF(COUNT(b.id)>0,'1','0') FROM poj_bookmark b WHERE b.resource_id = a.id AND b.del_flag = #{DEL_FLAG_NORMAL} and b.create_by=#{currentUser.id}) AS "favoriteFlag",
+			<include refid="conversationColumns"/>
+			FROM poj_conversation a 
+			WHERE a.resource_id = #{resourceId} AND a.del_flag = #{DEL_FLAG_NORMAL}
+			ORDER BY commentCount DESC LIMIT #{commentCount}
+	</select>
+	
+	<!--根据用户ID查找所有空间下我能看到的话题-->
+	<select id="findMyAllConversation" resultType="Conversation">
+		SELECT 
+			sp.title AS "spaceName",
+			u.`name` AS "userName",
+			u.email AS "email",
+			u.photo AS "photo",
+			a.create_by AS "userId",
+			EXISTS(SELECT mp.id FROM poj_member_praise mp WHERE mp.record_id=a.id AND mp.type='1' AND mp.user_id=#{id}) AS "isPraise",
+			(SELECT IF(COUNT(b.id)>0,'1','0') FROM poj_bookmark b WHERE b.resource_id = a.id AND b.del_flag = #{DEL_FLAG_NORMAL} and b.create_by=#{currentUser.id}) AS "favoriteFlag",
+			<include refid="conversationColumns"/>
+		FROM poj_conversation a
+		LEFT JOIN poj_space sp ON sp.id = a.resource_id
+		LEFT JOIN sys_user u ON a.create_by = u.id
+		WHERE a.resource_id IN
+		(SELECT sm.space_id FROM poj_space_member sm WHERE sm.user_id = #{id})
+		AND a.del_flag = #{DEL_FLAG_NORMAL} ORDER BY a.create_date DESC
+	</select>
+	
+</mapper>

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    	<meta charset="utf-8">
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <meta name="apple-mobile-web-app-capable" content="yes" /><!-- 删除苹果默认的工具栏和菜单栏 -->
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" /><!-- 设置苹果工具栏颜色 -->
+        <meta name="format-detection" content="telphone=no, email=no" /><!-- 忽略页面中的数字识别为电话，忽略email识别 -->
+        <!-- 启用360浏览器的极速模式(webkit) -->
+        <meta name="renderer" content="webkit">
+        <!-- 避免IE使用兼容模式 -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
+        <meta name="HandheldFriendly" content="true">
+        <!-- 微软的老式浏览器 -->
+        <meta name="MobileOptimized" content="320">
+        <!-- uc强制竖屏 -->
+        <meta name="screen-orientation" content="portrait">
+        <!-- QQ强制竖屏 -->
+        <meta name="x5-fullscreen" content="true">
+        <!-- UC应用模式 -->
+        <meta name="browsermode" content="application">
+        <!-- QQ应用模式 -->
+        <meta name="x5-page-mode" content="app">
+        <!-- windows phone 点击无高光 -->
+        <meta name="msapplication-tap-highlight" content="no">
+        <!-- 适应移动端end -->
+        <title>Surfond | 任务详情</title>
+        <link rel="shortcut icon" href="../common/images/favicon.ico">
+        
+        <!-- css -->
+		<link rel="stylesheet" href="../common/css/common.css">
+		<link rel="stylesheet" href="css/viewtask.css">
+		<link rel="stylesheet" href="css/fsgallery.css">
+    </head>
+<body>
+	<!-- start header -->
+	<!-- <div class="header">
+		 <a class="back" href="#">
+			<img src="images/back.png">
+		</a> 
+		<div class="cloce">
+			<img src="images/praised.png">
+		</div>
+		
+		<div class="search">
+			<img src="images/more.png">
+		</div>
+	</div> -->
+	<!-- end header -->
+	<div style="height: 14px;position: fixed;top: 0;"></div>
+	
+	<!-- start container -->
+	<div class="container">
+		
+		<div class="strip" style="min-height: 53px;height: auto;">
+			<span class="circle s_circle">
+				<img class="cs_img" alt="" src="../common/images/yes.png"> 
+				<!-- -->
+				<img style="display:none" alt="" src="../common/images/yes.png">
+				<img style="display:none" alt="" src="../common/images/yesed.png">
+			</span>
+			<span class="text" style="font-weight: bold;padding: 9px 0 9px 36px;font-size: 22px;"></span>
+		</div>
+		
+		<div class="strip auto _p">
+			<span class="text_s"></span>
+		</div>
+		<!-- items -->
+		<div class="strip auto items">
+			<span class="circle">
+				<img alt="" src="../common/images/items.png">
+			</span>
+			<span class="text2"></span>
+		</div>
+		<!-- user -->
+		<div class="strip auto items">
+			<span class="circle">
+				<img alt="" src="../common/images/user.png">
+			</span>
+			<!-- principal.html -->
+			<a class="text3" href="#"></a>
+		</div>
+		<!-- date -->
+		<div class="strip auto items none_b">
+			<span class="circle">
+				<img alt="" src="../common/images/date.png">
+			</span>
+			<a class="text4" href="#"></a>
+		</div>
+		<!-- tags -->
+		<div class="strip auto items tags none_b">
+			<span class="img_s">
+				<img alt="" src="../common/images/tags.png">
+			</span>
+			<!-- <span class="tags_s">未完成</span>
+			<span class="tags_s">未完成</span> -->
+		</div>
+		
+		<div class="without"></div>
+		<!--  -->
+		<div class="strip contents">
+			<ul>
+				<li id="li_1"><i class="border_b">评论</i></li>
+				<li id="li_2"><i>附件</i></li>
+				<li id="li_3"><i>记录</i></li>
+				<li id="li_4"><i>赞</i></li>
+				<li id="li_5"><i>日志</i></li>
+			</ul>
+		</div>
+		<div class="c_test">
+			<div id="1" class="comment c_test_div">
+		<!-- comment_text -->
+			  <!-- <div class="comment_text">
+					<div class="head">
+						<img alt="" src="../common/images/test/8.png">
+					</div>
+					<div class="covers">
+						<div class="c_name">王小明</div>
+						<div class="c_comment">
+							<div class="c_img">
+								<img alt="" src="../common/images/tip.png">
+							</div>
+							<div class="c_text">
+								请尽快调整
+							</div>
+						</div>
+					</div>
+					<div class="c_date">
+						<div>12:16</div>
+					</div>
+				</div> -->
+			<!-- comment_img -->
+				<!-- <div class="comment_img">
+					<div class="head">
+						<img alt="" src="../common/images/test/8.png">
+					</div>
+					<div class="covers">
+						<div class="c_name">王小明</div>
+						<div class="thumbnails c_comment" id="gallery">
+							<img alt="" src="../common/images/test/1.JPG">
+							<img alt="" src="../common/images/test/2.JPG">
+							<img alt="" src="../common/images/test/3.JPG">
+							<img alt="" src="../common/images/test/4.JPG">
+						</div>
+					</div>
+					<div class="c_date">
+						<div>14:28</div>
+					</div>
+				</div> -->
+			<!-- comment_voive -->
+				<!-- <div class="comment_voive" style="border-bottom:0;">
+					<div class="head">
+						<img alt="" src="../common/images/test/8.png">
+					</div>
+					<div class="covers">
+						<div class="c_name">王小明</div>
+						<div class=" c_comment">
+							<div class="c_vioce">
+								解决网络异常切换不了图片
+								<div style="display:none;">
+									<img alt="" src="../common/images/one.png"><img alt="" src="../common/images/two.png">
+								</div>
+								<img alt="" src="../common/images/three.png">
+							</div>
+							<span class="c_spike"><i>15</i>&nbsp;"</span>
+						</div>
+					</div>
+					<div class="c_date">
+						<div>18:30</div>
+					</div>
+				</div> -->
+			</div>
+			<!-- 附件    -->
+			<div id="2" >
+			  <div class="d_files">
+			  <!-- 图片  -->			
+			    <div class="thumbnails files_content gallery" id="gallery">
+					<div class="files">
+						<img alt="" src="http://localhost:8080/surfond/a/attachment/download?id=739c8532bb30499d8cd39860f89f7b8c">
+					</div>
+					<div class="files_details">
+						<span>工程图片.png</span><br>
+						<span class="files_details_t">123.00KB</span>
+					</div>
+				 </div>
+			 </div>
+			  <!-- 文件    -->
+			    <div class="d_files">
+				  <div class="files_content">			
+					<div class="files">
+						<img alt="" src="../common/images/files.png">
+					</div>
+					<div class="files_details">
+						<span>设计图纸.psd</span><br>
+						<span class="files_details_t">123.00KB</span>
+					</div>
+				  </div>
+			   </div>
+			</div>
+			<div id="3">
+			
+				<!-- <div class="record">
+					<span>王小明</span>
+					<span>将截止时间修改为&nbsp;</span>
+					<span>2016-12-12</span>
+					<span class="record_t"> 昨天&nbsp;&nbsp;17:00</span>
+				</div>
+				
+				<div class="record">
+					<span>王小明</span>
+					<span>将标题修改为&nbsp;</span>
+					<span>施工进度严重滞后（顺德龙江碧桂园）</span>
+					<span class="record_t"> 昨天&nbsp;&nbsp;17:00</span>
+				</div>
+				
+				<div class="record">
+					<span>王小明</span>
+					<span>创建了任务并将复制人指定为&nbsp;</span>
+					<span>自己</span>
+					<span class="record_t"> 昨天&nbsp;&nbsp;17:00</span>
+				</div> -->
+			</div>
+			<div id="4" class="thing">
+				<!-- <div class="comment_text">
+					<div class="head">
+						<img alt="" src="../common/images/test/8.png">
+					</div>
+					<div class="covers">
+						王小明
+					</div>
+				</div>
+				
+				<div class="comment_text">
+					<div class="head">
+						<img alt="" src="../common/images/test/8.png">
+					</div>
+					<div class="covers">
+						王小明
+					</div>
+				</div> -->
+			</div>
+			<div id="5" class="record_ct">
+				<div class="c_describe">
+					<div class="d_name">柏涛</div>
+					<div class="d_user font12" style="color:#999">张三</div>
+					<div class="d_date font12" style="color:#999">2016-05-23&nbsp;15:30</div>
+				</div>
+			</div>
+		</div>
+		<div style="height:150px;background-color:#FFF;width: 100%;border: 0;"></div>
+	</div>
+	<!-- end container -->
+	
+	<!-- start footer -->
+	<div class="footer">
+		<div style="min-height: 48px;border-bottom: 1px solid #DFDFDF;">
+			<!-- <span class="voice">
+				<img alt="" src="../common/images/cameras.png">
+			</span> -->
+			<span class="input_s" contenteditable="true"></span>
+			<!-- <span class="face">
+				<img alt="" src="../common/images/face.png">
+			</span>
+			<span class="add">
+				<img alt="" src="../common/images/add.png">
+			</span> -->
+			<span class="add" style="left:5px">
+				<img alt="" src="../common/images/cameras.png">
+				<input id="fileToUpload" class="xb_image_file" type="file" name="file" value="" accept="" capture="" style="z-index: 1;"> 
+			</span>
+			<span class="add_send">
+				<input type="button" value="发送" class="font14">
+			</span>
+		</div>
+		<div class="f_content" style="display:none;height:100px;">
+			<div class="f_face " style="display:none;height:100px;">
+				<span class="emotion" style="opacity: 0;width: 32px;height: 32px;display: inline-block;">表情</span>
+			</div>
+			<div class="f_add" style="display:none;height:100px;">
+				<div class="d_album">
+					<img src="../common/images/album.png">
+					<input class="xb_image_file" type="file" name="" value="" accept="" capture="" style="z-index: 1;">相册
+				</div class="d_camera">
+				<div>
+					<img src="../common/images/camera.png">拍照
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- end footer -->
+	
+	<!-- quick_mask -->
+	
+	<div class="quick_mask">
+			<ul>
+				<li>
+					<img alt="" src="../common/images/principal.png">
+					<i class="i-text">负责人</i>
+				</li>
+				<li>
+					<img alt="" src="../common/images/cut-off.png">
+					<i class="i-text">日期</i>
+				</li>
+				<li>
+					<img alt="" src="../common/images/project1.png">
+					<i class="i-text">项目</i>
+				</li>
+				<li>
+					<img alt="" src="../common/images/describe.png">
+					<i class="i-text">描述</i>
+				</li>
+				<li>
+					<img alt="" src="../common/images/principal.png">
+					<i class="i-text">标签</i>
+				</li>
+				<li>
+					<img alt="" src="../common/images/principal.png">
+					<i class="i-text">附件</i>
+				</li>
+				<li>
+					<i class="i-text">赞</i>
+				</li>
+				<li>
+					<img alt="" src="../common/images/principal.png">
+					<i class="i-text">删除</i>
+				</li>
+			</ul>
+			<div class="m_close">x</div>
+	</div>
+	<div id="f_gallery"></div>
+    <div id="f_gallery2"></div>
+<!-- JSSDK -->
+<script type="text/javascript" src="../common/js/jquery.min.js"></script>
+<script type="text/javascript" src="../common/js/jquery.cookie.js"></script>
+<script type="text/javascript" src="../../../static/common/common_service.js"></script>
+<script type="text/javascript" src="../../../static/modules/surfond/common/js/constants.js"></script>
+<script type="text/javascript" src="../common/js/fs_forse.js"></script>
+<script type="text/javascript" src="js/viewtask.js"></script>
+<!-- JSSDK -->
+</body>
+
+</html>

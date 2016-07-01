@@ -1,0 +1,133 @@
+.fc.fc-ltr {
+    background: #fff;
+    border-radius: 6px;
+}
+.one-claendar{
+    text-overflow: ellipsis;
+    word-wrap: normal;
+    white-space: nowrap;
+    overflow:hidden;
+}
+.main-container-scroll.roll {
+    padding: 0 10px 10px;
+}
+.main-container-scroll{	
+	padding: 0 0 10px;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+}
+#Add_Task .modal-dialog,
+#Add_Task .modal-content{
+	width: 802px;
+    height: 624px;
+}
+#Add_Task .modal-body {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+}
+#Add_Task .task-details.has-remind{
+	display: block;
+    right: 0px;
+    width: 100%;
+    border: none;
+}
+#Add_Task .task-responsible-section,
+#Add_Task .task-details.has-remind{
+	border-radius: 8px;
+}
+#Add_Task .hideMenu-btn{
+	display: none;
+}
+.modal-open .add-task-tags-menu {
+	 z-index: 9999;
+}
+#Add_Task .operate-tags{
+	
+}
+.calender .fc-toolbar .fc-center h2{
+	font-size: 18px;
+    margin-top: 6px;
+    color: #333;
+}
+.calender .fc.fc-ltr.fc-unthemed .fc-toolbar {
+    background-color: #f2f2f2;
+    padding-bottom: 0.8em;
+    margin-bottom: initial;
+    position: fixed;
+    top: 53px;
+    left: 0;
+    width: 100%;
+    padding: 10px 10px;
+    padding-top: 5px;
+    z-index: 999;
+}
+.calender .fc-view-container{
+	padding: 61px 0 0 0;
+}
+/* .fc-row.fc-widget-header thead tr th{
+	padding: 3px 0 3px;
+} */
+.fc-event-container .one-claendar{
+    color: #666;
+    border-radius: 3px;
+}
+.fc-day-grid-event{
+   
+    margin: 1px 2px !important;
+    padding: 0 !important;
+    border: none;
+}
+.fc-more-cell>div{
+	text-align: center;
+}
+.fc-more-cell>div>a{
+    color: #666;
+    margin: 0;
+    padding: 2px 0;
+}
+.fc-day-grid .fc-close.fc-icon.fc-icon-x{
+	margin-top: 7px;
+}
+.fc-popover .fc-header .fc-title{
+    padding: 2px 0;
+}
+.fc-popover .fc-event-container .fc-day-grid-event{
+	margin: 2px 2px !important;
+}
+.calender .fc-head {
+    position: fixed;
+    padding: 0 9px 0 10px;
+    top: 97px;
+    left: 0;
+    z-index: 999;
+    -moz-padding-start: 9px;
+	-moz-padding-end: 10px;
+}
+.calender .fc-head:before{
+	content:"";
+}
+.calender .fc-head:after{
+	content:"";
+}
+.calender .fc-head tr{
+	background: #fff;
+}
+.calender .fc-basic-view .fc-body .fc-row{
+	height: 160px !important;
+}
+.fc-scroller{
+	overflow-y: initial;
+	overflow-x: inherit;
+}
+
+
+
+
+
+
+
+
+
+

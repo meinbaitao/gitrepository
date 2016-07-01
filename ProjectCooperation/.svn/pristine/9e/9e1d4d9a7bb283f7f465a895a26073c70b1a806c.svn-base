@@ -1,0 +1,111 @@
+.main-container-scroll {
+    padding: 0 0 10px;
+    width: 100%;
+    height: 100%;
+}
+.container {
+    margin: 0 auto;
+    width: 1000px;
+    height: 100%;
+    overflow: hidden;
+}
+.container-search input {
+    width: 500px;
+    margin: 0 auto;
+    border-radius: 21px;
+    background: url('../new-images/search1.png') no-repeat 8px center;
+    background-color: #fff;
+    padding-left: 26px;
+}
+.search-result ul li a {
+    color: #666;
+    border: none;
+}
+.search-switch {
+    background-color: #fff;
+    height: 100%;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+        height: 100%;
+    width: 100%;
+    overflow: hidden;
+    overflow-y: auto;
+}
+.search-result .nav-tabs {
+    border: none;
+}
+.text-line-grid .mark-complete span.circles{
+	display: inline-block;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    background: url("../new-images/garden.png") no-repeat center center;
+    cursor: pointer;
+}
+.list-container .text-line-title{
+	padding: 12px 0 0 0px;
+}
+.list-container .grid-cell-string{
+	border: none;
+}
+.list-container .text-line-grid{
+	border-bottom: 1px solid #ccc;
+    width: 941px;
+    margin: 0 auto;
+}
+.list-container .grid-cell-string,
+.list-container .text-line-grid,
+.list-container .mark-complete{
+	height: 51px;
+}
+.list-container .mark-complete{
+	position: relative;
+    float: left;
+    padding: 5px;
+    margin: 0 0 0 -65px;
+    height: 51px;
+    width: 51px;
+}
+.baitao-space {
+    background: url("../new-images/baitao-space.png") no-repeat;
+    width: 82px;
+    height: 24px;
+    display: block;
+    position: absolute;
+    top: 13px;
+    right: 168px;
+}
+.right-p {
+    position: absolute;
+    top: 13px;
+    right: 0px;
+    background: url("../new-images/right-p.png") no-repeat 4px center;
+    width: 142px;
+    height: 24px;
+    display: block;
+    background-color: #FCB593;
+    margin-right: 15px;
+    border-radius: 5px;
+    padding-left: 25px;
+}
+.space-well{
+	background: url("../new-images/well.png") no-repeat center center;
+	display: inline-block;
+    width: 40px;
+    height: 40px;
+}
+.search-result .nav>li>a:focus,
+.search-result .nav>li>a:hover{
+	background-color: initial;
+    border-color: initial;
+}
+
+
+
+
+
+
+
+
+
+

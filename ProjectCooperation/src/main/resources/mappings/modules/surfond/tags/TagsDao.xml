@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bt.surfond.tags.dao.TagsDao">
+    
+	<sql id="tagsColumns">
+		a.id AS "id",
+		a.space_id AS "spaceId",
+		IFNULL(a.title, '') AS "title",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<!-- 主键查询记录 -->
+	<select id="get" resultType="Tags">
+		SELECT 
+			<include refid="tagsColumns"/>
+		FROM poj_tags a
+		WHERE a.id = #{id}
+	</select>
+	
+	<!-- 插入记录 -->
+	<insert id="insert">
+		INSERT INTO poj_tags(
+			id,
+			space_id,
+			title,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag
+		) VALUES (
+			#{id},
+			#{spaceId},
+			#{title},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag}
+		)
+	</insert>
+	
+	<!-- 逻辑删除记录 -->
+	<update id="delete">
+		UPDATE poj_tags SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 查询指定空间下标签列表 -->
+	<select id="findTagsListBySpaceId" resultType="Tags">
+		SELECT 
+			<include refid="tagsColumns"/>,
+			EXISTS(SELECT c.id FROM poj_bookmark c WHERE c.resource_id = a.id AND c.create_by = #{currentUser.id} AND c.del_flag = #{DEL_FLAG_NORMAL}) AS favoriteFlag
+		FROM poj_tags a
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} AND a.space_id = #{spaceId}
+			<if test="title != null and title != ''">
+				AND title LIKE CONCAT('%', #{title}, '%')
+			</if>
+		ORDER BY a.update_date DESC
+	</select>
+	
+	<!-- 添加任务标签 -->
+	<insert id="saveTagsTask">
+		INSERT INTO poj_tags_task(
+			id,
+			task_id,
+			tags_id
+		) VALUES (
+			#{id},
+			#{taskId},
+			#{tagsId}
+		)
+	</insert>
+	
+	<!-- 删除任务标签 -->
+	<delete id="deleteTagsTask">
+		DELETE FROM poj_tags_task
+		WHERE tags_id = #{id} and task_id =#{taskId}
+	</delete>
+	
+	<!-- 删除指定任务下所有标签 -->
+	<delete id="deleteAllTagsTask">
+		DELETE FROM poj_tags_task
+		WHERE task_id = #{taskId}
+	</delete>
+	
+	<!-- 查询任务下的标签 -->
+	<select id="findTaskTags" resultType="Tags">
+		SELECT 
+			<include refid="tagsColumns"/>
+		FROM poj_tags a
+			LEFT JOIN poj_tags_task t ON t.tags_id = a.id
+		WHERE t.task_id = #{taskId} AND a.del_flag = #{DEL_FLAG_NORMAL}
+	</select>
+	
+</mapper>

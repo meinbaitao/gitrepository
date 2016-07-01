@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bt.surfond.comment.dao.CommentDao">
+    
+	<sql id="commentColumns">
+		a.id AS "id",
+		IFNULL(a.description,'') AS "description",
+		a.praise_amount AS "praiseAmount",
+		a.type AS "type",
+		a.status AS "status",
+		a.sort AS "sort",
+		a.resource_id AS "resourceId",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		IFNULL(a.address,'') AS "address",
+		IFNULL(a.source,'') AS "source",
+		a.comment_type AS "commentType"
+	</sql>
+	
+	<sql id="commentJoins">
+	</sql>
+    <!--根据ID查询评论-->
+	<select id="get" resultType="Comment">
+		SELECT 
+			<include refid="commentColumns"/>
+		FROM poj_comment a
+		WHERE a.id = #{id}
+	</select>
+	<!--查询评论列表-->
+	<select id="findList" resultType="Comment">
+		SELECT 
+			<include refid="commentColumns"/>
+		FROM poj_comment a
+		<include refid="commentJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="title != null and title != ''">
+				AND a.title LIKE 
+					<if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{title},'%')</if>
+			</if>
+			<if test="resourceId != null and resourceId != ''">
+				AND a.resource_id = #{resourceId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	<!--查询评论列表-->
+	<select id="findAllList" resultType="Comment">
+		SELECT 
+			<include refid="commentColumns"/>
+		FROM poj_comment a
+		<include refid="commentJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	<!-- 添加评论信息 -->
+	<insert id="insert">
+		INSERT INTO poj_comment(
+			id,
+			description,
+			praise_amount,
+			type,
+			status,
+			sort,
+			resource_id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			address,
+			source,
+			comment_type
+		) VALUES (
+			#{id},
+			#{description},
+			#{praiseAmount},
+			#{type},
+			#{status},
+			#{sort},
+			#{resourceId},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{address},
+			#{source},
+			#{commentType}
+		)
+	</insert>
+	<!--修改评论信息-->
+	<update id="update">
+		UPDATE poj_comment SET 	
+			description = #{description},
+			praise_amount = #{praiseAmount},
+			type = #{type},
+			status = #{status},
+			sort = #{sort},
+			resource_id = #{resourceId},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	<!-- 根据编号删除评论（更新删除标志） -->
+	<update id="delete">
+		UPDATE poj_comment SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!--根据会话/任务ID查找会话/任务的所有评论-->
+	<select id="findByCoversationId" resultType="Comment">
+		SELECT 
+			a.create_by AS "createById",
+			u.`name` AS "createByName",
+			u.email AS "createByEmail",
+			u.photo AS "createByPhoto",
+			EXISTS(SELECT 1 FROM poj_member_praise mp WHERE mp.record_id=a.id AND mp.type='2' AND mp.user_id=#{currentUser.id}) AS "praiseFlag",
+			<include refid="commentColumns"/>
+		FROM poj_comment a
+		LEFT JOIN sys_user u ON a.create_by=u.id
+		WHERE a.resource_id = #{resourceId} AND a.del_flag = #{DEL_FLAG_NORMAL}
+		ORDER BY a.update_date ASC
+	</select>
+	
+	<!--对会话点赞插入中间表-->
+	<insert id="savePraise">
+		INSERT INTO poj_member_praise(
+			id,
+			user_id,
+			record_id,
+			type
+		) VALUES (
+			#{id},
+			#{userId},
+			#{recordId},
+			#{type}
+		)
+	</insert>
+	
+	<!-- 根据评论编号查询评论 -->
+	<select id="findCommentByCommentId" resultType="Comment">
+		SELECT 
+		a.id AS "id",
+		IFNULL(a.description,'') AS "description",
+		a.praise_amount AS "praiseAmount",
+		a.type AS "type",
+		a.status AS "status",
+		a.sort AS "sort",
+		a.resource_id AS "resourceId",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		IFNULL(a.address,'') AS "address",
+		IFNULL(a.source,'') AS "source",
+		a.comment_type AS "commentType",
+		u.id AS "createById",
+		u.name AS "createByName",
+		u.email AS "createByEmail",
+		u.photo AS "createByPhoto"
+		FROM poj_comment a
+		LEFT JOIN sys_user u ON u.id = a.create_by
+		WHERE a.id = #{id} AND a.del_flag = #{DEL_FLAG_NORMAL}
+	</select>
+	
+	<!-- 根据评论编号修改点赞数（加一） -->
+	<update id="updatePraiseAmountUpById">
+		UPDATE poj_comment SET praise_amount = #{praiseAmount} WHERE id = #{id}
+	</update>
+	
+	<!-- 删除任务评论成员点赞映射记录 -->
+	<update id="deleteMemberPraise">
+		DELETE FROM poj_member_praise
+		WHERE user_id = #{userId} AND record_id = #{recordId}
+	</update>
+	
+	<!-- 查询任务评论成员点赞映射记录 -->
+	<select id="findMemberPraiseList" resultType="map">
+		SELECT 
+			a.id, 
+			a.user_id AS userId, 
+			a.record_id AS recordId, 
+			a.type
+		FROM poj_member_praise a
+		WHERE a.type = #{type} AND a.user_id = #{userId}
+	</select>
+	
+	<!-- 根据任务编号查询评论 -->
+	<select id="findCommentListByTaskId" resultType="Comment">
+		SELECT 
+		a.id AS "id",
+		IFNULL(a.description,'') AS "description",
+		a.praise_amount AS "praiseAmount",
+		a.type AS "type",
+		a.status AS "status",
+		a.sort AS "sort",
+		a.resource_id AS "resourceId",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.del_flag AS "delFlag",
+		IFNULL(a.address,'') AS "address",
+		IFNULL(a.source,'') AS "source",
+		a.comment_type AS "commentType",
+		u.id AS "createById",
+		u.name AS "createByName",
+		u.email AS "createByEmail",
+		u.photo AS "createByPhoto",
+		<if test="type != null and type != ''">
+		IF((SELECT a1.id FROM poj_member_praise a1 WHERE a1.type =#{type} AND a1.user_id = #{currentUser.id} and a1.record_id=a.id ),"1","0") as "praiseFlag",
+		</if>
+		a.remarks AS "remarks"
+		FROM poj_comment a
+		LEFT JOIN sys_user u ON u.id = a.create_by
+		WHERE a.resource_id = #{resourceId} AND a.del_flag = #{DEL_FLAG_NORMAL}
+		ORDER BY a.update_date ASC
+	</select>
+	
+	<!--根据ID查找点赞记录-->
+	<select id="findPraiseRecode" resultType="map">
+		SELECT 
+			a.id AS id, 
+			a.user_id AS userId, 
+			a.record_id AS recordId, 
+			a.type AS type
+		FROM poj_member_praise a
+		WHERE a.record_id = #{recordId} AND a.user_id = #{userId}
+	</select>
+	
+	<!--根据ID查找被评论数-->
+	<select id="findCommentMember" resultType="int">
+		SELECT count(1) FROM poj_comment a
+		WHERE a.resource_id = #{resourceId} AND a.del_flag = #{DEL_FLAG_NORMAL}
+	</select>
+	
+</mapper>

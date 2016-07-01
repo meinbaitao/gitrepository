@@ -1,0 +1,510 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bt.surfond.organize.dao.OrganizeDao">
+    
+	<sql id="organizeColumns">
+		a.id AS "id",
+		a.name AS "name",
+		
+		a.space_id AS "spaceId",
+		a.grade AS "grade",
+		a.parent_id AS "parentId",
+		a.type AS "type",
+		
+		a.user_id AS "user.id",
+		
+		a.status AS "status",
+		
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		
+		a.del_flag AS "delFlag"
+		
+	</sql>
+	
+	<sql id="organizeJoins">
+	</sql>
+    
+	<select id="get1" resultType="Organize">
+		SELECT 
+			<include refid="organizeColumns"/>
+		FROM poj_organize a
+		<include refid="organizeJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Organize">
+		SELECT 
+			<include refid="organizeColumns"/>
+		FROM poj_organize a
+		<include refid="organizeJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="title != null and title != ''">
+				AND a.title LIKE 
+					<if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{title},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Organize">
+		SELECT 
+			<include refid="organizeColumns"/>
+		FROM poj_organize a
+		<include refid="organizeJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert1">
+		INSERT INTO poj_organize(
+			id,
+			name,
+			
+			space_id,
+			grade,
+			parent_id,
+			type,
+			
+			user_id,
+			status, 
+			
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag
+		) VALUES (
+			#{id},
+			#{name},
+			
+			#{spaceId},
+			#{grade},
+			#{parentId},
+			#{type},
+			
+			#{user.id},
+			#{status},
+			
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update1">
+		UPDATE poj_organize SET 	
+			name = #{name},
+			
+			space_id = #{spaceId},
+			grade = #{grade},
+			parent_id = #{parentId},
+			type = #{type},
+			
+			user_id = #{user.id},
+			status = #{status},
+			
+			update_by = #{updateBy.id},
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete1">
+		UPDATE poj_organize SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 添加组织成员 -->
+	<insert id="addOrganizeMember">
+		INSERT INTO poj_organize_member(
+			id,
+			organize_id,
+  			user_id,
+  			type
+		) VALUES (
+			#{id},
+			#{organizeId},
+			#{userId},
+			#{type}
+		)
+	</insert>
+	
+	<!-- 删除空间成员 -->
+	<delete id="deleteOrganizeMember1">
+		DELETE FROM poj_organize_member
+		WHERE organize_id = #{organizeId} AND user_id = #{userId}
+	</delete>
+	
+	<!-- 调整组织成员 -->
+	<update id="updateOrganizeMember1">
+		UPDATE poj_organize_member SET 
+			organize_id = #{organizeId}
+		WHERE id = #{id} 
+	</update>
+	
+	<!-- 查找组织成员是否存在 -->
+	<select id="findOrganizeMemberMapping" resultType="map">
+		SELECT 
+			a.*
+		FROM poj_organize_member a
+		WHERE a.organize_id = #{organizeId} AND a.user_id = #{userId}
+	</select>
+	
+	<!-- 查找空间成员是否存在 -->
+	<select id="findSpaceMemberMapping" resultType="map">
+		SELECT 
+			o.id,
+			om.id,
+			om.organize_id,
+			om.user_id,
+			om.type
+		FROM poj_organize o
+		LEFT JOIN poj_organize_member om ON o.id = om.organize_id
+		WHERE o.space_id = #{organizeId} AND om.user_id = #{userId}
+	</select>
+	
+	<!-- 查找空间下的未分配分组 -->
+	<select id="findSpaceDefaultOrganize" resultType="Organize">
+		SELECT 
+			<include refid="organizeColumns"/>
+		FROM poj_organize a
+		WHERE a.space_id = #{spaceId} AND a.type = #{type}
+	</select>
+	
+	
+	<!-- 查找空间下的组织分组 -->
+	<select id="findOneSapceOrganizes" resultType="Organize">
+		SELECT 
+			(SELECT count(1) FROM sys_user u  LEFT JOIN poj_organize_member om ON u.id = om.user_id WHERE om.organize_id = a.id) AS "memberCount",
+			<include refid="organizeColumns"/>
+		FROM poj_organize a
+		WHERE a.space_id = #{spaceId} AND a.del_flag = #{DEL_FLAG_NORMAL}
+	</select>
+	
+	<!-- 查找组织分组的成员 -->
+	<select id="findMembersMapByOrganize" resultType="map">
+		SELECT 
+			u.id AS "userId",
+			u.`name` AS "userName",
+			u.login_name AS "loginName",
+			u.email AS "email",
+			u.photo AS "photo",
+			u.login_flag AS "loginFlag",
+			o.id AS "organizeId",
+			o.user_id AS "organizeUserId",
+			o.`name` AS "organizeName"
+		FROM sys_user u 
+		LEFT JOIN poj_organize_member om ON om.user_id = u.id
+		LEFT JOIN poj_organize o ON o.id = om.organize_id
+		WHERE o.id = #{id} AND o.del_flag = #{DEL_FLAG_NORMAL} ORDER BY u.`name`
+	</select>
+	
+	<select id="findMembersByOrganize" resultType="User">
+		SELECT 
+			u.id,
+			u.`name`,
+			u.login_name,
+			u.email,
+			u.photo,
+			u.login_flag
+		FROM sys_user u
+		LEFT JOIN poj_organize_member om ON om.user_id = u.id
+		WHERE om.organize_id = #{id}
+	</select>
+	
+	<!-- 查找空间下所有组织的成员 -->
+	<select id="findMembersBySpace" resultType="map">
+		SELECT 
+			u.id AS "userId",
+			u.`name` AS "userName",
+			u.login_name AS "loginName",
+			u.email AS "email",
+			u.photo AS "photo",
+			u.login_flag AS "loginFlag",
+			o.id AS "organizeId",
+			o.`name` AS "organizeName"
+		FROM sys_user u 
+		LEFT JOIN poj_organize_member om ON om.user_id = u.id
+		LEFT JOIN poj_organize o ON o.id = om.organize_id
+		WHERE o.space_id = #{spaceId} AND o.del_flag = #{DEL_FLAG_NORMAL} ORDER BY u.`name`
+	</select>
+	
+	<!-- 查找空间下是否同名的组织 -->
+	<select id="findOrganizeNameBySpace" resultType="Organize">
+		SELECT * FROM poj_organize o 
+			WHERE o.space_id = #{spaceId} AND o.`name` = #{name} AND o.del_flag = #{DEL_FLAG_NORMAL} 
+	</select>
+	
+	<!-- 根据ID查找组织信息 -->
+	<select id="findOneOrganizeBaseInfo" resultType="Organize">
+		SELECT 
+			IFNULL(a.user_id,'') AS "userId",
+			IFNULL(u.name,'') AS "userName",
+			IFNULL(u.photo,'') "userPhoto",
+			IFNULL(u.email,'') "userEmail",
+			
+			a.create_by AS"createById",
+			IFNULL(u2.name,'') AS"createByName",
+			<include refid="organizeColumns"/>
+		FROM poj_organize a
+		LEFT JOIN sys_user u ON u.id = a.user_id
+		LEFT JOIN sys_user u2 ON u2.id = a.create_by
+		WHERE a.id = #{id}
+	</select>
+	
+	<!-- 查询组织下的成员数量 -->
+	<select id="findOneOrganizeMemberCount" resultType="int">
+		SELECT count(om.id) FROM poj_organize_member om WHERE om.organize_id = #{id}
+	</select>
+	
+	
+	<!-- write at the last ： what i do is what i want. -->
+	
+	<!-- 组织机构信息映射 -->
+	<resultMap type="Organize" id="organizeRM">
+		<id property="id" column="ID"/>
+		<result property="name" column="NAME"/>
+		<result property="spaceId" column="SPACE_ID"/>
+		<result property="parentId" column="PARENT_ID"/>
+		<result property="grade" column="GRADE"/>
+		<result property="type" column="TYPE"/>
+		<result property="ownerId" column="OWNER_ID"/>
+		<result property="status" column="STATUS"/>
+		<result property="createDate" column="CREATE_DATE"/>
+		<result property="updateDate" column="UPDATE_DATE"/>
+		<result property="delFlag" column="DEL_FLAG"/>
+		<association property="createBy" javaType="User">
+			<id property="id" column="CREATE_BY"/>
+		</association>
+		<association property="updateBy" javaType="User">
+			<id property="id" column="UPDATE_BY"/>
+		</association>
+		<association property="owner" javaType="com.bt.surfond.front.core.entity.ActiveUser">
+			<id property="id" column="OWNER_ID"/>
+			<result property="name" column="OWNER_NAME"/>
+			<result property="email" column="OWNER_EMAIL"/>
+			<result property="photo" column="OWNER_PHOTO"/>
+		</association>
+		<association property="activeCreateBy" javaType="com.bt.surfond.front.core.entity.ActiveUser">
+			<id property="id" column="ACTIVECREATEBY_ID"/>
+			<result property="name" column="ACTIVECREATEBY_NAME"/>
+			<result property="email" column="ACTIVECREATEBY_EMAIL"/>
+			<result property="photo" column="ACTIVECREATEBY_PHOTO"/>
+		</association>
+	</resultMap>
+	
+	<!-- 根据ID查询组织机构 -->
+	<select id="get" resultMap="organizeRM">
+		select 
+			a.id,
+			a.name,
+			a.space_id,
+			a.parent_id,
+			a.grade,
+			a.type,
+			a.user_id as owner_id,
+			a.status,
+			a.create_by,
+			a.create_date,
+			a.update_by,
+			a.update_date,
+			a.del_flag,
+			uo.id as owner_id,
+			uo.name as owner_name,
+			uo.email as owner_email,
+			uo.photo as owner_photo,
+			uc.id as activeCreateBy_id,
+			uc.name as activeCreateBy_name,
+			uc.email as activeCreateBy_email,
+			uc.photo as activeCreateBy_photo
+		from poj_organize a
+			left join sys_user uo on uo.id = a.user_id
+			left join sys_user uc on uc.id = a.create_by
+		where a.id = #{id}
+	</select>
+	
+	<!-- 插入组织机构 -->
+		<insert id="insert">
+		insert into poj_organize(
+			id,
+			name,
+			space_id,
+			grade,
+			parent_id,
+			type,
+			user_id,
+			status, 
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag
+		) values (
+			#{id},
+			#{name},
+			#{spaceId},
+			#{grade},
+			#{parentId},
+			#{type},
+			#{ownerId},
+			#{status},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag}
+		)
+	</insert>
+	
+	<!-- 根据ID更新组织机构 -->
+	<update id="update">
+		update poj_organize 
+		<set>
+			<if test="name != null and name != ''">
+				name = #{name},
+			</if>
+			<if test="ownerId != null and ownerId != ''">
+				user_id = #{ownerId},
+			</if>
+			<if test="updateBy != null and updateBy.id != null and updateBy.id != ''">
+				update_by = #{updateBy.id},
+			</if>
+			<if test="updateDate != null">
+				update_date = #{updateDate},
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<!-- 根据ID删除组织机构 -->
+	<update id="delete">
+		update poj_organize set 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 保存组织机构-成员的关联关系 -->
+	<insert id="insertOrganizeMember">
+		insert into poj_organize_member (
+			id,
+			organize_id,
+			user_id
+		) values (
+			#{id},
+			#{organizeId},
+			#{memberId}
+		)
+	</insert>
+	
+	<!-- 查询组织机构-成员的关联关系 -->
+	<select id="findOrganizeMember" resultType="map">
+		select 
+			om.id as id,
+			om.organize_id as organizeId,
+			om.user_id as memberId
+		from poj_organize_member om where om.organize_id = #{organizeId} and user_id = #{memberId}
+	</select>
+	
+	<!-- 删除组织机构-成员的关联关系 -->
+	<delete id="deleteOrganizeMember">
+		delete from poj_organize_member
+		where organize_id = #{organizeId} and user_id = #{memberId}
+	</delete>
+	
+	<!-- 修改组织机构-成员的关联关系 -->
+	<update id="updateOrganizeMember">
+		update poj_organize_member
+			set organize_id = #{organizeId}
+		where id = #{id}
+	</update>
+	
+	<!-- 查询指定用户是否在指定组织机构所在的空间中 -->
+	<select id="isExistsInSpace" resultType="int">
+		select count(1) from (
+		
+		select ot.id from poj_organize ot where ot.del_flag = #{DEL_FLAG_NORMAL} and ot.space_id in (
+		select o.space_id from poj_organize o where o.id = #{id}) ) a
+		
+		where a.id in (
+		
+		select om.organize_id from poj_organize_member om where om.user_id = #{memberId})
+	</select>
+	
+	<!-- 查询指定机构所属空间下的默认机构“未分配” -->
+	<select id="findNoAllocationOrganize" resultMap="organizeRM">
+		select 
+			a.id,
+			a.name,
+			a.space_id,
+			a.parent_id,
+			a.grade,
+			a.type,
+			a.user_id as owner_id,
+			a.status,
+			a.create_by,
+			a.create_date,
+			a.update_by,
+			a.update_date,
+			a.del_flag,
+			uo.id as owner_id,
+			uo.name as owner_name,
+			uo.email as owner_email,
+			uo.photo as owner_photo,
+			uc.id as activeCreateBy_id,
+			uc.name as activeCreateBy_name,
+			uc.email as activeCreateBy_email,
+			uc.photo as activeCreateBy_photo
+		from (
+		
+		select ot.* from poj_organize ot where ot.space_id in (
+		select o.space_id from poj_organize o where o.id = #{id}) and ot.type = #{type}) a
+		
+		left join sys_user uo on uo.id = a.user_id
+		left join sys_user uc on uc.id = a.create_by
+	</select>
+	
+	<!-- 查询指定机构的成员列表 -->
+	<select id="findOrganizeMemberList" resultType="map">
+		select 
+			om.id as id,
+			om.organize_id as organizeId,
+			om.user_id as memberId
+		from poj_organize_member om where om.organize_id = #{id}
+	</select>
+	
+	<!-- 查询指定组织机构中的成员列表 -->
+	<select id="findOrganizeMemberListInUser" resultType="com.bt.surfond.front.core.entity.ActiveUser">
+		select um.id, um.name, um.email, um.photo from sys_user um 
+		
+		inner join (
+		
+		select om.user_id from poj_organize_member om where om.organize_id = #{id}) omt
+		
+		on omt.user_id = um.id
+	</select>
+	
+</mapper>

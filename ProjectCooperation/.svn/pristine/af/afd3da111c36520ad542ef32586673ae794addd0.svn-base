@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    	<meta charset="utf-8">
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <meta name="apple-mobile-web-app-capable" content="yes" /><!-- 删除苹果默认的工具栏和菜单栏 -->
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" /><!-- 设置苹果工具栏颜色 -->
+        <meta name="format-detection" content="telphone=no, email=no" /><!-- 忽略页面中的数字识别为电话，忽略email识别 -->
+        <!-- 启用360浏览器的极速模式(webkit) -->
+        <meta name="renderer" content="webkit">
+        <!-- 避免IE使用兼容模式 -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
+        <meta name="HandheldFriendly" content="true">
+        <!-- 微软的老式浏览器 -->
+        <meta name="MobileOptimized" content="320">
+        <!-- uc强制竖屏 -->
+        <meta name="screen-orientation" content="portrait">
+        <!-- QQ强制竖屏 -->
+        <meta name="x5-fullscreen" content="true">
+        <!-- UC应用模式 -->
+        <meta name="browsermode" content="application">
+        <!-- QQ应用模式 -->
+        <meta name="x5-page-mode" content="app">
+        <!-- windows phone 点击无高光 -->
+        <meta name="msapplication-tap-highlight" content="no">
+        <!-- 适应移动端end -->
+        <title id="html_title">日志详情</title>
+        <link rel="shortcut icon" href="../common/images/favicon.ico">
+        
+        <!-- css -->
+		<link rel="stylesheet" href="../common/css/common.css">
+		<link rel="stylesheet" href="css/diary.css">
+    </head>
+<body>
+<!-- start header -->
+<!-- <div class="header">
+	<a href="../project.html" class="back">
+		<img src="../view/images/back.png">
+	</a>
+</div> -->
+<!-- end header -->
+
+
+
+<!-- start container -->
+<div class="container">
+	<div class="d_content">
+		<div class="d_title"></div>
+		<div class="d_date"></div>
+		<div class="d_cont"></div>
+	</div>
+</div>
+<!-- end container -->
+
+<div style="height: 50px;"></div>
+
+<!-- start footer -->
+
+<!-- end footer -->
+
+
+<!-- JSSDK -->
+<script src="../common/js/jquery.min.js"></script>
+<script type="text/javascript" src="../../../static/common/common_service.js"></script>
+<script type="text/javascript" src="../../../static/modules/surfond/common/js/constants.js"></script>
+<script type="text/javascript">
+$(function(){
+	var s = window.location.search;
+    var mytaskId = s.substring(9, s.indexOf("&"));
+	var data_query = '{"id":"' + mytaskId + '"}';
+	var url_query = "/a/mobile/diary/query";
+	startUp.ajaxPost(url_query, data_query, false,
+	function(resultMap) {
+		$(".d_title").text(resultMap.data.title);
+		$(".d_date").text(resultMap.data.activeCreateBy.name + "  " + resultMap.data.createDate);
+		$(".d_cont").text(resultMap.data.content);
+	});
+})
+</script> 
+<!-- JSSDK -->
+</body>
+</html>

@@ -1,0 +1,122 @@
+@charset "utf-8";
+html, body { font-family:"微软雅黑"}
+
+div.slideBox{ 
+	position:relative;
+    overflow:hidden;
+}
+
+div.slideBox ul.items{ 
+	position:absolute;
+    padding:0px;
+	margin:0px;
+	width:100%;
+	height:100%; 
+	float:left; 
+	background:none; 
+	list-style:none; 
+}
+div.slideBox ul.items li{	
+	position:relative;
+	padding:0px;
+	margin:0px;
+	width:100%;
+	height:100%; 
+	float:left;  
+	list-style:none;
+	}
+div.slideBox ul.items li.img1{
+	background:url(../images/slide4.jpg) no-repeat center center/cover;
+}
+div.slideBox ul.items li.img2{
+	background:url(../images/slide7.jpg) no-repeat center center/cover;
+}
+div.slideBox ul.items li.img3{
+	background:url(../images/slide3.jpg) no-repeat center center/cover;
+}
+.login-icon1,
+.login-icon2,
+.login-icon3{
+	animation: skyset 4.5s linear;
+	-moz-animation:skyset 4.5s linear;
+	-webkit-animation:skyset 4.5s linear;
+	-o-animation:skyset 4.5s linear;
+	width:16%;
+	height:13%;
+	  background-size:contain;
+}
+.login-icon1{
+	position:absolute;
+	top:64%;
+	left:25%;
+	display:block;
+	width:16%;
+	height:13%;
+	background:url('../images/register(1).png') no-repeat;
+	 animation-iteration-count: 1;
+    -moz-animation-iteration-count: 1;
+    -webkit-animation-iteration-count: 1;
+    -o-animation-iteration-count: 1; 
+      background-size:contain;
+}
+
+.login-icon2{
+	position:absolute;
+    top:63%;
+	left:49%;
+	display:block;
+	width:16%;
+	height:13%;
+
+	background:url('../images/register(2).png') no-repeat;
+	animation-iteration-count: 2;
+    -moz-animation-iteration-count: 2;
+    -webkit-animation-iteration-count: 2;
+    -o-animation-iteration-count: 2; 
+    background-size:contain;
+}
+.login-icon3{
+	position:absolute;
+	display:block;
+	top:64%;
+	left:42%;
+	width:16%;
+	height:13%;
+
+	background:url('../images/register(3).png') no-repeat;
+	
+    animation-iteration-count: 3;
+    -moz-animation-iteration-count: 3;
+    -webkit-animation-iteration-count: 3;
+    -o-animation-iteration-count: 3; 
+    background-size:contain;
+}
+
+@keyframes skyset {
+    0% {opacity : 0;}
+    35%{ opacity: .5;}
+    100% {opacity: 1;}
+}
+@-moz-keyframes skyset {
+    0% {opacity : 0;}
+    50%{ opacity: .5;}
+    100% {opacity: 1;}
+}
+@-webkit-keyframes skyset {
+    0% {opacity : 0;}
+    50%{ opacity: .5;}
+    100% {opacity: 1;}
+}
+@-o-keyframes skyset {
+    0% {opacity : 0;}
+    50%{ opacity: .5;}
+    100% {opacity: 1;}
+}
+div.slideBox div.tips{ position:absolute; bottom:0px; width:100%; height:50px; background-color:#000; overflow:hidden;}
+div.slideBox div.tips div.title{ position:absolute; left:0px; top:0px; height:100%;}
+div.slideBox div.tips div.title a{ color:#FFF; font-size:18px; line-height:50px; margin-left:10px; text-decoration:none;}
+div.slideBox div.tips div.title a:hover{ text-decoration:underline !important;}
+div.slideBox div.tips div.nums{ position:absolute; right:45%; top:0px; height:100%;}
+div.slideBox div.tips div.nums a{ border-radius:50%;display:inline-block; >float:left/*For IE.ADD.JENA.201206300844*/; width:20px; height:20px; background-color:#FFF; text-indent:-99999px; margin:15px 10px 0px 0px;}
+div.slideBox div.tips div.nums a.active{ background-color:#093;}
+

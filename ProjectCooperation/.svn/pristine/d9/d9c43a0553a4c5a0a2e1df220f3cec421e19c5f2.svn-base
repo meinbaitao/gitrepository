@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bt.mobile.rest.version.dao.AppVersionDao">
+    
+	<sql id="appVersionColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.version AS "version",
+		a.url AS "url",
+		a.type AS "type",
+		a.status AS "status",
+		a.desc AS "desc",
+		a.size AS "size"
+	</sql>
+	
+	<sql id="appVersionJoins">
+		
+	</sql>
+	
+	<select id="get" resultType="AppVersion">
+		SELECT 
+			<include refid="appVersionColumns"/>
+		FROM poj_version a
+		<include refid="appVersionJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="AppVersion">
+		SELECT 
+			<include refid="appVersionColumns"/>
+		FROM poj_version a
+		<include refid="appVersionJoins"/>
+	</select>
+	
+	<select id="findAllList" resultType="AppVersion">
+		SELECT 
+			<include refid="appVersionColumns"/>
+		FROM poj_version a
+		<include refid="appVersionJoins"/>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO poj_version(
+			id,
+			name,
+			version,
+			url,
+			type,
+			status,
+			desc,
+			size
+		) VALUES (
+			#{id},
+			#{name},
+			#{version},
+			#{url},
+			#{type},
+			#{status},
+			#{desc},
+			#{size}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE poj_version SET 	
+			a.name=#{name},
+			a.version=#{version},
+			a.url=#{url},
+			a.type=#{type},
+			a.status=#{status},
+			a.desc=#{desc},
+			a.size=#{size}
+		WHERE id = #{id}
+	</update>
+	
+	<select id="findVersion" resultType="AppVersion">
+		SELECT 
+			<include refid="appVersionColumns"/>
+		FROM poj_version a
+		<include refid="appVersionJoins"/>
+		<where>
+			a.status=#{status}
+			and
+			a.type=#{type}
+		</where>
+	</select>
+	
+</mapper>

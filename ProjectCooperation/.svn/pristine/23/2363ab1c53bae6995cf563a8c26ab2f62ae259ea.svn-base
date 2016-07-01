@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    	<meta charset="utf-8">
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <meta name="apple-mobile-web-app-capable" content="yes" /><!-- 删除苹果默认的工具栏和菜单栏 -->
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" /><!-- 设置苹果工具栏颜色 -->
+        <meta name="format-detection" content="telphone=no, email=no" /><!-- 忽略页面中的数字识别为电话，忽略email识别 -->
+        <!-- 启用360浏览器的极速模式(webkit) -->
+        <meta name="renderer" content="webkit">
+        <!-- 避免IE使用兼容模式 -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
+        <meta name="HandheldFriendly" content="true">
+        <!-- 微软的老式浏览器 -->
+        <meta name="MobileOptimized" content="320">
+        <!-- uc强制竖屏 -->
+        <meta name="screen-orientation" content="portrait">
+        <!-- QQ强制竖屏 -->
+        <meta name="x5-fullscreen" content="true">
+        <!-- UC应用模式 -->
+        <meta name="browsermode" content="application">
+        <!-- QQ应用模式 -->
+        <meta name="x5-page-mode" content="app">
+        <!-- windows phone 点击无高光 -->
+        <meta name="msapplication-tap-highlight" content="no">
+        <!-- 适应移动端end -->
+        <title id="html_title">顺德龙江碧桂园</title>
+        <link rel="shortcut icon" href="../common/images/favicon.ico">
+        
+        <!-- css -->
+		<link rel="stylesheet" href="../common/css/common.css">
+		<link rel="stylesheet" href="css/task.css">
+    </head>
+<body>
+<!-- start header -->
+<!-- <div class="header">
+	<a href="../project.html" class="back">
+		<img src="../view/images/back.png">
+	</a>
+</div> -->
+<!-- end header -->
+
+
+
+<!-- start container -->
+<div class="container">
+	<!-- 1 -->
+	<div class="strip">
+		<span class="circle">
+			<img alt="" src="../common/images/yes.png">
+			<img style="display:none;" alt="" src="../common/images/yesed.png">
+		</span>
+		<a class="text" href="../view/viewtask.html">
+			<span>施工进度严重滞后（顺德龙江碧桂园）</span>
+		</a>
+		
+		<span class="span_img">
+			<img alt="" src="../common/images/test/8.png">
+		</span>
+		<span class="date">06-18</span>
+	</div>
+	<!-- 2 -->
+	<div class="strip">
+		<span class="circle">
+			<img alt="" src="../common/images/yes.png">
+		</span>
+		<a class="text" href="../view/viewtask.html">
+			<span>施工班组态度差，不服从安排（顺德龙江碧桂园）</span>
+		</a>
+		
+		<span class="date">05-25</span>
+	</div>
+</div>
+<!-- end container -->
+
+<div style="height: 50px;"></div>
+
+<!-- start footer -->
+<!-- <div class="footer">
+	<a href="../view/viewtask.html" style="width:100%;height:100%;display: inline-block;color: #3DB1E2;">+添加任务</a>
+</div>  -->
+<!-- end footer -->
+
+
+<!-- JSSDK -->
+<script src="../common/js/jquery.min.js"></script>
+<script src="../common/js/jquery.cookie.js"></script>
+<script type="text/javascript" src="../../../static/common/common_service.js"></script>
+<script type="text/javascript" src="../../../static/modules/surfond/common/js/constants.js"></script>
+<script type="text/javascript" src="js/task.js"></script>
+<!-- JSSDK -->
+</body>
+</html>

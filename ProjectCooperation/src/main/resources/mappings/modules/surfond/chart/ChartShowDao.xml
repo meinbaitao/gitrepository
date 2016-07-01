@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bt.surfond.chart.dao.ChartShowDao">
+    
+	<sql id="chartShowColumns">
+		a.id AS "id",
+		a.source_id as "sourceId",
+		a.label AS "label",
+		a.type AS "type",
+		a.chart_type AS "charttype",
+		a.description AS "description",
+		a.create_date AS "createDate",
+		a.create_by AS "createBy.id"
+	</sql>
+	
+	<sql id="chartShowJoins">
+	</sql>
+    
+	<select id="get" resultType="ChartShow">
+		SELECT 
+			<include refid="chartShowColumns"/>
+		FROM poj_chart_show a
+		<include refid="chartShowJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ChartShow">
+		SELECT 
+			<include refid="chartShowColumns"/>
+		FROM poj_chart_show a
+			<include refid="chartShowJoins"/>
+		where 1=1
+			<if test="currentUser != null and currentUser.id != null and currentUser.id != ''">
+				and a.create_by = #{currentUser.id}
+			</if>
+			<if test="type != null and type != ''">
+				and a.type = #{type}
+			</if>
+			
+	</select>
+	
+	<select id="findAllList" resultType="ChartShow">
+		SELECT 
+			<include refid="chartShowColumns"/>
+		FROM poj_chart_show a
+		<include refid="chartShowJoins"/>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO poj_chart_show(
+			id,
+			source_id,
+			label,
+			type,
+			chart_type,
+			description,
+			create_date,
+			create_by
+		) VALUES (
+			#{id},
+			#{sourceId},
+			#{label},
+			#{type},
+			#{charttype},
+			#{description},
+			#{createDate},
+			#{createBy.id}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE poj_chart_show SET 	
+			description = #{description}
+			<if test="type!=null and type!=''">
+				,type=#{type}
+			</if>
+			<if test="label!=null and label!=''">
+				,label=#{label}
+			</if>
+		WHERE id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from poj_chart_show 
+		WHERE id = #{id}
+	</delete>
+	
+	<select id="getOne" resultType="ChartShow">
+		SELECT 
+			<include refid="chartShowColumns"/>
+		FROM poj_chart_show a
+			<include refid="chartShowJoins"/>
+		WHERE a.source_id = #{sourceId}
+			<if test="type!=null and type!=''">
+				and a.type=#{type}
+			</if>
+			<if test="charttype!=null and charttype!=''">
+				and a.chart_type=#{charttype}
+			</if>
+			<if test="currentUser != null and currentUser.id != null and currentUser.id != ''">
+				and a.create_by = #{currentUser.id}
+			</if>
+		limit 0,1
+	</select>
+	<delete id="deleteChartByCondition">
+		delete from poj_chart_show 
+		WHERE source_id = #{sourceId} 
+			and type=#{type}
+			and chart_type=#{charttype}
+			and create_by = #{currentUser.id}
+	</delete>
+</mapper>

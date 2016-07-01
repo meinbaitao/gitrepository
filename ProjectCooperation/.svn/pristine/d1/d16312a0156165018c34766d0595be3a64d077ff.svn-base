@@ -1,0 +1,548 @@
+/*********进度表**********/
+
+.htmleaf-container.consummator {
+    width: 460px;
+    text-align: center;
+    border: solid 1px #ECECEC;
+    border-radius: 5px;
+    margin-left: 9px;
+    height: 303px;
+    margin-bottom: 9px;
+}
+.Complete-tasks {
+    height: 41px;
+    text-align: initial;
+    background: #EAEFF3;
+    line-height: 41px;
+    padding-left: 19px;
+    font-size: 15px;
+}
+.percent-sign{
+    margin: 12px 0;
+}
+.percent-sign.total {
+    margin-top: 0;
+}
+.support{
+	height: 24px;
+}
+.htmleaf-container.consummator.float {
+    float: left;
+    background: #fff;
+}
+.htmleaf-container.consummator.float.journal{
+	text-align: initial;
+}
+.pmgressbar{
+	margin-left: 24px;
+}
+.pmgressbar>li{
+    margin-top: 2px;
+}
+.pmgressbar>li:last-child{
+    margin-bottom: 25px;
+}
+.pmgressbar>li>div{
+    margin-bottom: 5px;
+    float:left;
+}
+.pmgressbar>li>span{
+	float:right;
+	margin-right: 30px;
+}
+.countenance0{color:#3ABC50;}
+.countenance1{color:#26B6E8;}
+.countenance2{color:#FCC55E;}
+.countenance3{color:#FE9965;}
+.countenance4{color:#E25252;}
+.delivery{
+	margin-left:auto;
+	margin-right:auto;
+	position:relative;
+}
+.receptacle11{
+    width: 100% !important;
+  
+}
+.flutter,.flutter11{
+    text-align: center;
+}
+.flutter>div,.flutter11>div{
+    display: inline-block;
+}
+.flutter>div>div{
+	font-size: 48px;
+    color: #6D747A;
+}
+.flutter>div>span{
+	font-size: 15px;
+    color: #6D747A;
+}
+.punctuality{
+	margin-left: auto;
+    margin-right: auto;
+    position: relative;
+}
+.punctuality>ul, .punctuality>ul>li {
+    float: left;
+    margin-left: 25px;
+    margin-bottom: 17px;
+    width: auto;
+    height: 68px;
+}
+.punctuality>ul {
+    width: 46%;
+    position: absolute;
+    top: 0;
+}
+.punctuality>ul:first-child{
+	left:5px
+}
+.punctuality>ul:last-child{
+	right:9px;
+}
+.punctuality>ul:last-child li{
+	float: right;
+	margin-right: 27px;
+}
+.punctuality>ul>li:first-child{
+    margin-left: 0;
+}
+.flutter_div.left1 {
+    margin-left: 0;
+}
+.flutter_div.right2 {
+    margin-right: 0;
+}
+.flutter_div>span{
+	line-height: 78px;
+}
+.punctuality>ul>li>span,
+.punctuality>ul>div>span{
+	font-size: 40px;
+    color: #6D747A;
+    margin-left: 4px;
+}
+.punctuality>ul>li>span{
+	line-height: 45px;
+}
+.punctuality>ul>li>div{
+	font-size: 1px;
+    color: #6D747A;
+}
+.punctuality>ul>li>img{
+	margin-left: 25px;
+}
+.self-motion1{
+	width:48% !important;
+}
+.self-motion2{
+	width:48% !important;
+	margin-right: initial !important;
+}
+.tertiary,.tertiary>li{
+	float:left;
+}
+.tertiary>li>span{
+	line-height: 52px;
+}
+.tertiary{width:100%;margin: 87px 0 97px 0px;}
+ul.tertiary>li>div {
+    margin-top: 15px;
+}
+.tertiary>li{
+	width:33%
+}
+.tertiary>li>div{
+	color: #6D747A;
+}
+span.percentum{
+	font-size: 50px;
+    color: #6D747A;
+}
+.tertiary>li>img{
+	margin: 0 2px 0 13px;
+}
+.receptacle11.measure.htmleaf-container.consummator,
+.receptacle11.reunion.htmleaf-container.consummator {
+    height: auto;
+    width:48% !important;
+    background-color: #fff;
+}
+.stewing{
+	float: right;
+    text-align: initial;
+    margin: 9px 12px 0 0;
+}
+.nav.nav-tabs.special {
+    border: none;
+}
+.return-home{
+	width: 100% !important;
+    height: 100% !important;
+}
+.receptacle11 {
+    width: 100% !important;
+    float: left;
+}
+
+a.cable-stayed:hover{
+	color:#FF6100 !important;
+	border-bottom: 1px solid red;
+
+}
+a.cable-stayed.active{
+	color:#FF6100 !important;
+	border-bottom: 1px solid red;
+
+}
+a.cable-stayed {
+    color: black;
+    font-size: 20px;
+    padding: 0px 8px !important;
+    border: none !important;
+}
+.cable:hover >{
+	border-bottom: 1px solid red;
+	padding-bottom: 4px;
+}
+.cable.active,.cable.active>a{
+	border-bottom: 1px solid red;
+	padding-bottom: 4px;
+	color: #FF6100;
+}
+.special{float:left;}
+.lengthy, .lengthy>li {
+    float: right;
+    margin-right: 16px;
+}
+.floated .lengthy{
+	/* display:none; */
+}
+.lengthy>li {
+    background: #F2F2F2;
+    font-size: 16px;
+    color: #6D747A;
+    margin-left: 19px;
+    padding: 7px 7px;
+    /* border-right: 1px solid #DBDBDB; */
+    cursor: pointer;
+    margin:0;
+}
+.lengthy>li:first-child{
+	border:none;
+}
+/* .lengthy>li:hover {
+    background: #B2C3CA;
+    color: #fff;
+} */
+.quarterClick {
+    background: #B2C3CA !important;
+    color: #fff;
+}
+.pmgressbar>li>svg{
+	width:98%;
+	border-radius: 5px;
+}
+.pmgressbar>li>svg>rect:first-child{
+	width:98%;
+	fill: #E0E9EE;
+}
+section.htmleaf-container.consummator.float.self-motion1.plus {
+    width: 48% !important;
+    margin: 0 0 9px 9px;
+}
+section.htmleaf-container.consummator.float.self-motion1.plus img{
+    margin-top: 64px;
+}
+.attention {
+    margin:60px 0;
+}
+.designation.pron{
+    margin-top: 9px;
+}
+.pron .col-xs-9>input{
+    width: 324px;
+    height: 33px !important;
+    border-radius: 6px;	
+}
+.projecttype,.projecttype>li{
+	float:left;
+
+}
+.projecttype>li{
+    width: 120px;
+    height: 129px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin: 8px 6px 0px 0px;
+    position: relative;
+    cursor: pointer;
+}
+.projecttype>li>div{
+    position: absolute;
+    bottom: 14px;
+    font-size: small;
+    height: 20px;
+	width: 100%;
+    text-align: center;
+}
+.add-project .modal-dialog .maintain{
+    width: 480px;
+    height: 290px;
+}
+.projecttype_wedfsf{
+	background: url('../images/chart/wedfsf.png') no-repeat center 18px;
+}
+.projecttype_rise{
+	background: url('../images/chart/rise.png') no-repeat center 18px;
+}
+.projecttype_combine{
+	background: url('../images/chart/combine.png') no-repeat center 18px;
+}
+.projecttype_praise{
+	background: url('../images/chart/praise.png') no-repeat center 18px;
+}
+.projecttype_statistics{
+	background: url('../images/chart/statistics.png') no-repeat center 18px;
+}
+.projecttype_schedule{
+	background: url('../images/chart/schedule.png') no-repeat center 18px;
+}
+.idiot,.idiot1{
+    padding: 9px 22px 9px 22px;
+	border: none;
+}
+.idiot{
+    margin-left: 18px;
+    line-height: initial;
+    height: 38px;
+    width: 7px;
+    padding-right: 49px;
+    margin-right: 22px;
+}
+.schedule>button{
+    margin-right: 10px;
+    margin-top: 8px;
+}
+.projecttype>li>p{
+	display:none;
+    background: url('../images/gutter.png') no-repeat;
+    width: 30px;
+    height: 30px;
+    margin: 49px 0 0 49px;
+    display: none;
+}
+.projecttype>li:hover{
+	background-color:#F2F2F2;
+	
+}
+.floated{
+    width: 100% !important;
+    height: 32px !important;
+}
+.receptacle11.measure.htmleaf-container.consummator,
+.receptacle11.reunion.htmleaf-container.consummator.in {
+    width: 48% !important;
+    height:304px;
+    float: left;
+}
+.columns{
+	float: left;
+    width: 78%;
+    margin-left: 17px;
+}
+.columns1>button{
+	float:right;
+    margin-top: 10px;
+}
+.modal-dialog.detail.asad{
+	width: 479px;
+}
+.punctuality>ul, .punctuality>ul>li{
+	    margin-left: 23px;
+}
+}
+.punctuality>ul, .punctuality>ul>li{
+	    margin-left: 23px;
+}
+label.col-xs-3.control-label.name.project.on {
+    margin-left: 0;
+}
+.new_team{
+    position: absolute;
+    top: 5px;
+    right: 37px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    font-size: 26px;
+    cursor: pointer;
+}
+.modal-dialog.breadth ,
+.modal-content.newteam{
+    width: 800px;
+    height: 280px;
+}
+.velocity{
+    position: relative;
+}
+.velocity>span{
+	position: absolute;
+    top: 7px;
+    right: 5px;
+    font-size: 22px;
+    color: #FDB494;
+    border: 1px solid;
+    border-radius: 50%;
+    width: 23px;
+    height: 23px;
+    text-align: center;
+    line-height: 20px;
+    cursor: pointer;
+}
+.newteam .col-sm-10 .form-control{
+	height:37px;
+    border-radius: 7px;
+}
+.newteam .modal-body .control-label{
+    margin-top: 3px;
+}
+.omnibutton>span{
+	font-size: 22px;
+    color: #fff;
+    border: 1px solid;
+    border-radius: 50%;
+    width: 23px;
+    height: 23px;
+    text-align: center;
+    line-height: 20px;
+    cursor: pointer;
+    position: absolute;
+    top: 6px;
+    right: 67px;
+    background: -webkit-linear-gradient(bottom left, #FC636B, #FF6D92 35%, #FFB900 100%);
+    background: linear-gradient(to top right, #FC636B, #FF6D92 35%, #FFB900 100%);
+    -webkit-transition: .2s height,.2s width;
+    transition: .2s height,.2s width;	
+}
+.omnibutton .dropdown-menu{
+    top: 36px;
+}
+.omnibutton .dropdown-menu>li{
+    height: 50px;
+    padding: 0 30px 0 15px;
+    line-height: 50px;
+}
+label.col-xs-2.control-label.name.project.on {
+    font-size: small;
+    color: #666;
+}
+.roof-container.fixed .mainnav{
+	position: fixed;
+	left: 0;
+    top: 59px;
+    z-index: 123;
+}
+.roof-container.fixed .main-container-scroll{
+	padding: 0 0 10px 10px;
+}
+.projecttype li div{
+	font-size: 1px;
+}
+.form-group.designation.pron {
+    position: relative;
+}
+ul#teamShow, ul#projectShow {
+    z-index: 99999;
+    height: 140px;
+    overflow-y: auto;
+    position: absolute;
+    left: 88px;
+    top: 29px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: none;
+    min-width: 225px;
+    min-height: 160px;
+    max-height: 320px;
+}
+ul#teamShow li,
+ul#projectShow li{
+	cursor: pointer;
+}
+ul#teamShow li:hover,
+ul#projectShow li:hover{
+	background-color: #179dba;
+    color: #fff;
+}
+#myTabContent canvas {
+    max-width: 162px;
+    max-height: 162px;
+    margin-top: 22px;
+}
+.delivery span img {
+    max-width: 200px;
+    max-height: 131px;
+    margin: 0 3px 4px -9px;
+}
+.delivery>span:first-child {
+    margin: -13px 0 1px -55px;
+    text-align: center;
+    width: 180px;
+}
+.delivery>span:nth-child(2){
+	margin: -29px 1px 0 -26px;
+	font-size: 16px !important;
+}
+.highcharts-container{
+	margin:0 auto;
+}
+.punctuality ul li span>img{
+	margin-top: -14px;
+}
+.receptacle11 section {
+	position: relative;
+}
+.Complete-tasks.position {
+    position: absolute;
+    right: 17px;
+    top: 0;
+    background: initial;
+    line-height: initial;
+}
+.Complete-tasks.position li{
+	 background: transparent;
+}
+#add-team-message li.projecttype_schedule.invoking {
+    margin-right: 0;
+    margin-left: 6px;
+}
+.Complete-tasks .mistaken {
+    position: absolute;
+    top: 9px;
+    right: -8px;
+    font-size: 22px;
+    color: #666;
+    width: 23px;
+    height: 23px;
+    text-align: center;
+    line-height: 20px;
+    cursor: pointer;
+}
+.chart_label {
+    height: 18px;
+    text-align: initial;
+    background: #EAEFF3;
+    line-height: 29px;
+    padding-left: 19px;
+    font-size: 16px;
+    font-weight: bolder;
+    padding-top: 4px;
+}
+
+
+
+
+

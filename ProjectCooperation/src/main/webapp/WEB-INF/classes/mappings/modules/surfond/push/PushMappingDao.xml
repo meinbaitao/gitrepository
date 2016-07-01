@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bt.surfond.push.dao.PushMappingDao">
+    
+	<sql id="pushMappingColumns">
+		a.id AS "id",
+		a.alias AS "alias",
+		a.cid AS "cid",
+		a.device_token AS "deviceToken",
+		a.device_type AS "deviceType",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<select id="get" resultType="PushMapping">
+		SELECT 
+			<include refid="pushMappingColumns"/>
+		FROM poj_push_mapping a
+		WHERE a.id = #{id}
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO poj_push_mapping(
+			id,
+			alias,
+			cid,
+			device_token,
+			device_type,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{alias},
+			#{cid},
+			#{deviceToken},
+			#{deviceType},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<!-- 更新推送映射信息 -->
+	<update id="updatePushMapping">
+		UPDATE poj_push_mapping
+		<set>
+			<if test="alias != null and alias != ''">
+				alias = #{alias},
+			</if>
+			<if test="cid != null and cid != ''">
+				cid = #{cid},
+			</if>
+			<if test="deviceToken != null and deviceToken != ''">
+				device_token = #{deviceToken},
+			</if>
+			<if test="deviceType != null and deviceType != ''">
+				device_type = #{deviceType},
+			</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 根据当前用户查询推送映射 -->
+	<select id="findPushMappingByUserId" resultType="PushMapping">
+		SELECT
+			<include refid="pushMappingColumns"/>
+		FROM poj_push_mapping a
+		where a.create_by = #{userId}
+	</select>
+	
+</mapper>

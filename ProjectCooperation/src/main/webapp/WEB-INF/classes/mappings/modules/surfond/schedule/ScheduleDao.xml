@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bt.surfond.schedule.dao.ScheduleDao">
+    
+	<sql id="scheduleColumns">
+		a.id AS "id",
+		a.type AS "type",
+		a.status AS "status",
+		a.task_id AS "taskId",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="scheduleJoins">
+	</sql>
+    
+	<select id="get" resultType="Schedule">
+		SELECT 
+			<include refid="scheduleColumns"/>
+		FROM poj_schedule a
+		<include refid="scheduleJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Schedule">
+		SELECT 
+			<include refid="scheduleColumns"/>
+		FROM poj_schedule a
+		<include refid="scheduleJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Schedule">
+		SELECT 
+			<include refid="scheduleColumns"/>
+		FROM poj_schedule a
+		<include refid="scheduleJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO poj_schedule(
+			id,
+			type,
+			status,
+			task_id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{type},
+			#{status},
+			#{taskId},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE poj_schedule SET 	
+			type = #{type},
+			status = #{status},
+			task_id = #{taskId},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE poj_schedule SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<select id="findScheduleByTaskId" resultType="Schedule">
+		SELECT 
+			a.id
+		FROM poj_schedule a
+		WHERE
+			a.del_flag = #{DEL_FLAG_NORMAL}
+	      	and a.type=#{type}
+	      	and a.`status`=#{status}
+	      	and a.task_id=#{taskId}
+	      	and a.create_by=#{currentUser.id}	
+	</select>
+	
+	<delete id="delSchedule">
+		DELETE from poj_schedule 
+		WHERE id = #{id} 
+	</delete>
+	
+	<!-- 查询当前用户关联的空间列表及其调度选项 -->
+	<select id="findSpaceListAndItsScheduleOptions" resultType="map" parameterType="map">
+		SELECT 
+			a.id, 
+			a.title, 
+			IFNULL((SELECT b.`status` FROM poj_schedule b WHERE b.task_id = a.id AND b.create_by = sm.user_id AND b.`status` = #{dayRemind} AND b.type = #{remindType}), '') AS taskStatusZero, 
+			IFNULL((SELECT b.`status` FROM poj_schedule b WHERE b.task_id = a.id AND b.create_by = sm.user_id AND b.`status` = #{weekRemind} AND b.type = #{remindType}), '') AS taskStatusOne
+		FROM 
+			poj_space a
+			LEFT JOIN poj_space_member sm ON sm.space_id = a.id
+		WHERE 
+			a.del_flag = #{DEL_FLAG_NORMAL} 
+			AND a.`status` = #{status} 
+			AND sm.user_id = #{userId} 
+			AND ((a.type = #{type}) OR (a.create_by = #{userId} AND a.type = #{personalType}))
+	</select>
+	
+	
+	<select id="findScheduleByStatus" resultType="Schedule">
+		SELECT a.id,
+			   a.type,
+			   a.`status`,
+			   a.task_id,
+			   a.create_by 
+		FROM poj_schedule a 
+		WHERE
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			and a.type=#{type}
+			and a.`status`=#{status}
+	</select>
+
+</mapper>

@@ -1,0 +1,909 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bt.surfond.task.dao.ProjectTaskDao">
+    
+	<sql id="projectTaskColumns">
+		a.id AS "id",
+		a.parent_id AS "parentId",
+		IFNULL(a.title, '') AS "title",
+		IFNULL(a.description, '') AS "description",
+		a.sort AS "sort",
+		a.type AS "type",
+		a.status AS "status",
+		a.user_id AS "user.id",
+		DATE_FORMAT(a.due_date, '%Y-%m-%d') AS "dueDate",
+		DATE_FORMAT(a.finish_date, '%Y-%m-%d') AS "finishDate",
+		IFNULL(a.task_group, '') AS "taskGroup",
+		IFNULL(a.praise_amount, 0) AS "praiseAmount",
+		IFNULL(a.address, '') AS "address",
+		IFNULL(a.source, '') AS "source",
+		a.has_chart AS "hasChart",
+		a.team_id AS "teamId",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		IFNULL(a.remarks, '') AS "remarks",
+		a.del_flag AS "delFlag",
+		IFNULL(u8.name, '') AS "user.name",
+		IFNULL(u8.email, '') AS "user.email",
+		IFNULL(u8.photo, '') AS "user.photo"
+	</sql>
+    
+    <!-- 主键查询记录 -->
+	<select id="get" resultType="ProjectTask">
+		SELECT 
+			<include refid="projectTaskColumns"/>
+		FROM poj_project_task a
+			LEFT JOIN sys_user u8 ON u8.id = a.user_id
+		WHERE a.id = #{id}
+	</select>
+
+	<!-- 插入记录 -->
+	<insert id="insert">
+		INSERT INTO poj_project_task(
+			id,
+			parent_id,
+			title,
+			description,
+			sort,
+			type,
+			status,
+			user_id,
+			due_date,
+			task_group,
+			finish_date,
+			praise_amount,
+			has_chart,
+			address,
+			source,
+			team_id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{parentId},
+			#{title},
+			#{description},
+			#{sort},
+			#{type},
+			#{status},
+			#{user.id},
+			#{dueDate},
+			#{taskGroup},
+			#{finishDate},
+			#{praiseAmount},
+			#{hasChart},
+			#{address},
+			#{source},
+			#{teamId},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<!-- 逻辑删除记录 -->
+	<update id="delete">
+		UPDATE poj_project_task SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 查询项目中最大的排序值 -->
+	<select id="findMaxProjectSort" resultType="int">
+		SELECT 
+			IFNULL(MAX(a.sort), 0) 
+		FROM poj_project_task a 
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} AND a.type = #{type} 
+	</select>
+	
+	<!-- 保存(项目/任务)-成员的关联关系 -->
+	<insert id="saveProjectTaskMember">
+		INSERT INTO poj_project_task_member(
+			id, 
+			record_id, 
+			user_id
+		) VALUES (
+			#{id}, 
+			#{recordId}, 
+			#{userId}
+		)
+	</insert>
+	
+	<!-- 删除(项目/任务)-成员的关联关系 -->
+	<delete id="deleteProjectTaskMember">
+		DELETE FROM poj_project_task_member
+		WHERE record_id = #{recordId} AND user_id = #{userId}
+	</delete>
+	
+	<!-- 保存空间-(项目/任务)的关联关系 -->
+	<insert id="saveSpaceProjectTask">
+		INSERT INTO poj_space_project_task(
+			id, 
+			space_id, 
+			record_id
+		) VALUES (
+			#{id}, 
+			#{spaceId}, 
+			#{recordId}
+		)
+	</insert>
+	
+	<!-- 组装APP端查询项目返回列表 -->
+	<resultMap id="appProjectList" type="Map">
+		<id property="id" column="teamId"/>
+		<result property="name" column="teamName"/>
+		<collection property="teamList" column="teamId" javaType="list" ofType="ProjectTask">
+			<id property="id" column="id"/>
+			<result property="title" column="title"/>
+			<result property="favoriteFlag" column="favoriteFlag"/>
+		</collection>
+	</resultMap>
+	
+	<!-- APP端查询项目列表 -->
+	<select id="findAppProjectList" resultMap="appProjectList">
+		SELECT 
+			a.id AS "id",
+			IFNULL(a.title, '') AS "title",
+			"" as "teamName",
+      		"" as "teamId",
+			EXISTS(SELECT c.id FROM poj_bookmark c WHERE c.resource_id = a.id AND c.create_by = #{currentUser.id} AND c.del_flag = #{DEL_FLAG_NORMAL}) AS favoriteFlag
+		FROM poj_project_task a
+			LEFT JOIN poj_space_project_task sp ON sp.record_id = a.id
+			LEFT JOIN poj_project_task_member ptm ON ptm.record_id = a.id
+			LEFT JOIN sys_user u8 ON u8.id = a.user_id
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} AND a.type = #{type} AND sp.space_id = #{spaceId} AND ptm.user_id = #{currentUser.id}
+			GROUP BY a.id
+		UNION ALL
+		SELECT
+			a.id AS "id",
+			IFNULL(a.title, '') AS "title",
+			t.`name` as "teamName",
+      		t.id as "teamId",
+			EXISTS(SELECT c.id FROM poj_bookmark c WHERE c.resource_id = a.id AND c.create_by =#{currentUser.id} AND c.del_flag =#{DEL_FLAG_NORMAL}) AS favoriteFlag
+		FROM poj_project_task a
+			LEFT JOIN poj_team t ON t.id = a.team_id
+			LEFT JOIN poj_team_member tm ON tm.team_id = t.id
+			LEFT JOIN sys_user u8 ON u8.id = a.user_id
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} AND a.type = #{type} 
+			AND t.space_id = #{spaceId}
+			AND tm.user_id = #{currentUser.id}
+			GROUP BY a.id
+	</select>
+	
+	<!-- 查询项目列表 -->
+	<select id="findProjectList" resultType="ProjectTask">
+		SELECT 
+			<include refid="projectTaskColumns"/>,
+			EXISTS(SELECT c.id FROM poj_bookmark c WHERE c.resource_id = a.id AND c.create_by = #{currentUser.id} AND c.del_flag = #{DEL_FLAG_NORMAL}) AS favoriteFlag
+		FROM poj_project_task a
+			LEFT JOIN poj_space_project_task sp ON sp.record_id = a.id
+			LEFT JOIN poj_project_task_member ptm ON ptm.record_id = a.id
+			LEFT JOIN sys_user u8 ON u8.id = a.user_id
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} AND a.type = #{type} AND sp.space_id = #{spaceId} AND ptm.user_id = #{currentUser.id}
+			<if test="title != null and title != ''">
+				AND a.title LIKE CONCAT('%', #{title}, '%')
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+		GROUP BY a.id
+		ORDER BY a.update_date DESC
+	</select>
+	
+	<!-- 查询项目列表 -->
+	<select id="findAllProjectList" resultType="ProjectTask">
+		SELECT
+			<include refid="projectTaskColumns"/>
+		FROM
+			(SELECT 
+				b.*
+			FROM poj_project_task b
+				LEFT JOIN poj_space_project_task spt ON spt.record_id = b.id
+				LEFT JOIN poj_project_task_member ptm ON .ptm.record_id = b.id
+			WHERE b.del_flag = #{DEL_FLAG_NORMAL}
+				AND b.type = #{type}
+				AND spt.space_id = #{spaceId}
+				AND ptm.user_id = #{currentUser.id}
+				<if test="status != null and status != ''">
+					AND b.status = #{status}
+				</if>
+			UNION ALL
+			SELECT 
+				b.*
+			FROM poj_project_task b
+				LEFT JOIN poj_team t ON t.id = b.team_id
+				LEFT JOIN poj_team_member tm ON tm.team_id = t.id
+			WHERE b.del_flag = #{DEL_FLAG_NORMAL}
+				AND b.type = #{type}
+				AND t.space_id = #{spaceId}
+				AND tm.user_id = #{currentUser.id}
+				<if test="status != null and status != ''">
+					AND b.status = #{status}
+				</if>
+			) a
+			LEFT JOIN sys_user u8 ON u8.id = a.user_id
+		ORDER BY a.update_date DESC
+	</select>
+	
+	<!-- 查询团队下项目列表 -->
+	<select id="findTeamProjectList" resultType="ProjectTask">
+		SELECT 
+			<include refid="projectTaskColumns"/>,
+			EXISTS(SELECT c.id FROM poj_bookmark c WHERE c.resource_id = a.id AND c.create_by = #{currentUser.id} AND c.del_flag = #{DEL_FLAG_NORMAL}) AS favoriteFlag
+		FROM poj_project_task a
+			LEFT JOIN poj_team t ON t.id = a.team_id
+			LEFT JOIN sys_user u8 ON u8.id = a.user_id
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} AND a.type = #{type} 
+			<if test="spaceId != null and spaceId != ''">
+				AND t.space_id = #{spaceId}
+			</if>
+			<if test="teamId != null and teamId != ''">
+				AND a.team_id = #{teamId}
+			</if>
+			<if test="title != null and title != ''">
+				AND a.title LIKE CONCAT('%', #{title}, '%')
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+		GROUP BY a.id
+		ORDER BY a.update_date DESC
+	</select>
+	
+    <!-- 主键查询项目 -->
+	<select id="findProject" resultType="ProjectTask">
+		SELECT 
+			<include refid="projectTaskColumns"/>,
+			EXISTS(SELECT c.id FROM poj_bookmark c WHERE c.resource_id = a.id AND c.create_by = #{currentUser.id} AND c.del_flag = #{DEL_FLAG_NORMAL}) AS favoriteFlag,
+			u.id AS 'createById',
+			u.name AS 'createByName'
+		FROM poj_project_task a
+			LEFT JOIN sys_user u8 ON u8.id = a.user_id
+			LEFT JOIN sys_user u ON u.id = a.create_by
+		WHERE a.id = #{id}
+	</select>
+	
+	<!-- 修改(项目/任务)状态-->
+	<update id="updateStatusById">
+		UPDATE poj_project_task SET 
+			status = #{status},
+			finish_date = #{finishDate},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			finish_date = #{finishDate}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 查询任务中最大的排序值 -->
+	<select id="findMaxTaskSort" resultType="int">
+		SELECT 
+			IFNULL(MAX(a.sort), 0) 
+		FROM poj_project_task a 
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} AND a.type = #{type} 
+	</select>
+	
+	<!-- 保存项目-任务的关联关系 -->
+	<insert id="saveProjectTaskMapping">
+		INSERT INTO poj_project_task_mapping(
+			id, 
+			project_id, 
+			task_id 
+		) VALUES (
+			#{id}, 
+			#{projectId}, 
+			#{taskId}
+		)
+	</insert>
+	
+	<!-- 查询项目下任务列表 -->
+	<select id="findTaskList" resultType="ProjectTask">
+		SELECT
+			<include refid="projectTaskColumns"/>,
+			a.tagsId,
+			a.tagsTitle,
+			a.projectId,
+			a.projectTitle,
+			a.dynamicDescription,
+			a.favoriteFlag
+		FROM
+			(SELECT 
+				b.*,
+           		IFNULL((SELECT group_concat(c.id separator ';') from poj_tags c LEFT JOIN poj_tags_task pm ON pm.tags_id = c.id where pm.task_id=b.id AND c.del_flag = #{DEL_FLAG_NORMAL}), '') AS "tagsId",
+				IFNULL((SELECT group_concat(c.title separator ';') from poj_tags c LEFT JOIN poj_tags_task pm ON pm.tags_id = c.id where pm.task_id=b.id AND c.del_flag = #{DEL_FLAG_NORMAL}), '') AS "tagsTitle",
+				p.id AS projectId,
+				p.title AS projectTitle,
+				IFNULL((SELECT CONCAT(u.name, d.description) FROM poj_dynamic d LEFT JOIN sys_user u ON u.id = d.create_by WHERE d.task_id = b.id AND d.del_flag = #{DEL_FLAG_NORMAL} ORDER BY d.create_date DESC LIMIT 1), '') AS dynamicDescription,
+				EXISTS(SELECT c.id FROM poj_bookmark c WHERE c.resource_id = b.id AND c.create_by = #{currentUser.id} AND c.del_flag = #{DEL_FLAG_NORMAL}) AS favoriteFlag
+			FROM poj_project_task b
+				LEFT JOIN poj_project_task_mapping ptm ON ptm.task_id = b.id
+				LEFT JOIN poj_project_task p ON p.id = ptm.project_id
+				LEFT JOIN poj_space_project_task spt ON spt.record_id = p.id
+			WHERE b.del_flag = #{DEL_FLAG_NORMAL}
+				AND p.del_flag = #{DEL_FLAG_NORMAL}
+				AND b.type = #{type}
+				<if test="spaceId != null and spaceId != ''">
+					AND spt.space_id = #{spaceId}
+				</if>
+				<if test="projectId != null and projectId != ''">
+					AND p.id = #{projectId} 
+				</if>
+				<if test="status != null and status != ''">
+					AND b.status = #{status}
+				</if>
+				<if test="user != null and user.id != null and user.id != ''">
+					AND b.user_id = #{user.id}
+				</if>
+				<if test="createBy != null and createBy.id != null and createBy.id != ''">
+					AND b.create_by = #{createBy.id}
+				</if>
+			) a
+			LEFT JOIN sys_user u8 ON u8.id = a.user_id
+		GROUP BY a.id
+		ORDER BY a.update_date DESC
+	</select>
+	
+	<!-- 查询我的任务列表 -->
+	<select id="findMyTaskList" resultType="ProjectTask">
+		SELECT
+			<include refid="projectTaskColumns"/>,
+			a.tagsId,
+			a.tagsTitle,
+			a.projectId,
+			a.projectTitle,
+			a.dynamicDescription,
+			a.favoriteFlag
+		FROM
+			(
+			SELECT 
+				b.*,
+				'' AS projectId,
+				'' AS projectTitle,
+				EXISTS(SELECT c.id FROM poj_bookmark c WHERE c.resource_id = b.id AND c.create_by = #{currentUser.id} AND c.del_flag = #{DEL_FLAG_NORMAL}) AS favoriteFlag,
+				IFNULL((SELECT CONCAT(u.name, d.description) FROM poj_dynamic d LEFT JOIN sys_user u ON u.id = d.create_by WHERE d.task_id = b.id AND d.del_flag = #{DEL_FLAG_NORMAL} ORDER BY d.create_date DESC LIMIT 1), '') AS dynamicDescription,
+           		IFNULL((SELECT group_concat(c.id separator ';') from poj_tags c LEFT JOIN poj_tags_task pm ON pm.tags_id = c.id where pm.task_id=b.id AND c.del_flag = #{DEL_FLAG_NORMAL}), '') AS "tagsId",
+				IFNULL((SELECT group_concat(c.title separator ';') from poj_tags c LEFT JOIN poj_tags_task pm ON pm.tags_id = c.id where pm.task_id=b.id AND c.del_flag = #{DEL_FLAG_NORMAL}), '') AS "tagsTitle"
+			FROM poj_project_task b
+				LEFT JOIN poj_space_project_task st ON st.record_id = b.id
+			WHERE b.del_flag = #{DEL_FLAG_NORMAL} 
+				AND b.type = #{type} 
+				<if test="spaceId != null and spaceId != ''">
+					AND st.space_id = #{spaceId}
+				</if>
+				<if test="status != null and status != ''">
+					AND b.status = #{status}
+				</if>
+				<if test="user != null and user.id != null and user.id != '' and otherType == 'owner'">
+					AND b.user_id = #{user.id}
+				</if>
+				<if test="createBy != null and createBy.id != null and createBy.id != '' and otherType == 'creator'">
+					AND b.create_by = #{createBy.id}
+				</if>
+				<if test="user != null and user.id != null and user.id != '' and createBy != null and createBy.id != null and createBy.id != ''">
+					AND ((b.user_id = #{user.id}) OR (b.create_by = #{createBy.id}))
+				</if>
+			UNION ALL
+			SELECT 
+				b.*,
+				p.id AS projectId,
+				p.title AS projectTitle,
+				EXISTS(SELECT c.id FROM poj_bookmark c WHERE c.resource_id = b.id AND c.create_by = #{currentUser.id} AND c.del_flag = #{DEL_FLAG_NORMAL}) AS favoriteFlag,
+				IFNULL((SELECT CONCAT(u.name, d.description) FROM poj_dynamic d LEFT JOIN sys_user u ON u.id = d.create_by WHERE d.task_id = b.id AND d.del_flag = #{DEL_FLAG_NORMAL} ORDER BY d.create_date DESC LIMIT 1), '') AS dynamicDescription,
+           		IFNULL((SELECT group_concat(c.id separator ';') from poj_tags c LEFT JOIN poj_tags_task pm ON pm.tags_id = c.id where pm.task_id=b.id AND c.del_flag = #{DEL_FLAG_NORMAL}), '') AS "tagsId",
+				IFNULL((SELECT group_concat(c.title separator ';') from poj_tags c LEFT JOIN poj_tags_task pm ON pm.tags_id = c.id where pm.task_id=b.id AND c.del_flag = #{DEL_FLAG_NORMAL}), '') AS "tagsTitle"
+			FROM poj_project_task b
+				LEFT JOIN poj_project_task_mapping ptm ON ptm.task_id = b.id
+				LEFT JOIN poj_project_task p ON p.id = ptm.project_id
+				LEFT JOIN poj_space_project_task spt ON spt.record_id = p.id
+			WHERE b.del_flag = #{DEL_FLAG_NORMAL}
+				AND p.del_flag = #{DEL_FLAG_NORMAL}
+				AND b.type = #{type}
+				<if test="spaceId != null and spaceId != ''">
+					AND spt.space_id = #{spaceId}
+				</if>
+				<if test="projectId != null and projectId != ''">
+					AND p.id = #{projectId} 
+				</if>
+				<if test="status != null and status != ''">
+					AND b.status = #{status}
+				</if>
+				<if test="user != null and user.id != null and user.id != '' and otherType == 'owner'">
+					AND b.user_id = #{user.id}
+				</if>
+				<if test="createBy != null and createBy.id != null and createBy.id != '' and otherType == 'creator'">
+					AND b.create_by = #{createBy.id}
+				</if>
+				<if test="user != null and user.id != null and user.id != '' and createBy != null and createBy.id != null and createBy.id != ''">
+					AND ((b.user_id = #{user.id}) OR (b.create_by = #{createBy.id}))
+				</if>
+			UNION ALL
+			SELECT 
+				b.*,
+				p.id AS projectId,
+				p.title AS projectTitle,
+				EXISTS(SELECT c.id FROM poj_bookmark c WHERE c.resource_id = b.id AND c.create_by = #{currentUser.id} AND c.del_flag = #{DEL_FLAG_NORMAL}) AS favoriteFlag,
+				IFNULL((SELECT CONCAT(u.name, d.description) FROM poj_dynamic d LEFT JOIN sys_user u ON u.id = d.create_by WHERE d.task_id = b.id AND d.del_flag = #{DEL_FLAG_NORMAL} ORDER BY d.create_date DESC LIMIT 1), '') AS dynamicDescription,
+           		IFNULL((SELECT group_concat(c.id separator ';') from poj_tags c LEFT JOIN poj_tags_task pm ON pm.tags_id = c.id where pm.task_id=b.id AND c.del_flag = #{DEL_FLAG_NORMAL}), '') AS "tagsId",
+				IFNULL((SELECT group_concat(c.title separator ';') from poj_tags c LEFT JOIN poj_tags_task pm ON pm.tags_id = c.id where pm.task_id=b.id AND c.del_flag = #{DEL_FLAG_NORMAL}), '') AS "tagsTitle"
+			FROM poj_project_task b 
+				LEFT JOIN poj_project_task_mapping ptm ON ptm.task_id = b.id
+				LEFT JOIN poj_project_task p ON p.id = ptm.project_id
+				LEFT JOIN poj_team t ON t.id = p.team_id
+			WHERE b.del_flag = #{DEL_FLAG_NORMAL}
+				AND p.del_flag = #{DEL_FLAG_NORMAL}
+				AND b.type = #{type}
+				<if test="spaceId != null and spaceId != ''">
+					AND t.space_id = #{spaceId}
+				</if>
+				<if test="projectId != null and projectId != ''">
+					AND p.id = #{projectId} 
+				</if>
+				<if test="status != null and status != ''">
+					AND b.status = #{status}
+				</if>
+				<if test="user != null and user.id != null and user.id != '' and otherType == 'owner'">
+					AND b.user_id = #{user.id}
+				</if>
+				<if test="createBy != null and createBy.id != null and createBy.id != '' and otherType == 'creator'">
+					AND b.create_by = #{createBy.id}
+				</if>
+				<if test="user != null and user.id != null and user.id != '' and createBy != null and createBy.id != null and createBy.id != ''">
+					AND ((b.user_id = #{user.id}) OR (b.create_by = #{createBy.id}))
+				</if>
+			) a
+			LEFT JOIN sys_user u8 ON u8.id = a.user_id
+		GROUP BY a.id
+		<if test="groupType==0 or groupType==null or groupType=='' ">
+			ORDER BY a.update_date DESC
+		</if>
+		<if test="groupType==1">
+			ORDER BY a.due_date DESC
+		</if>
+		<if test="groupType==2">
+			ORDER BY a.projectTitle DESC
+		</if>
+	</select>
+	
+	<!-- 查询标签的任务列表 -->
+	<select id="findTagsTaskList" resultType="ProjectTask">
+		SELECT 
+			<include refid="projectTaskColumns"/>,
+			a.tagsId,
+			a.tagsTitle,
+			a.projectId,
+			a.projectTitle,
+			a.dynamicDescription
+		FROM
+			(SELECT 
+				b.*,
+				p.id AS projectId,
+				p.title AS projectTitle,
+				IFNULL((SELECT CONCAT(u.name, d.description) FROM poj_dynamic d LEFT JOIN sys_user u ON u.id = d.create_by WHERE d.task_id = b.id AND d.del_flag = #{DEL_FLAG_NORMAL} ORDER BY d.create_date DESC LIMIT 1), '') AS dynamicDescription,
+				IFNULL((SELECT group_concat(c.id separator ';') from poj_tags c LEFT JOIN poj_tags_task pm ON pm.tags_id = c.id where pm.task_id=b.id AND c.del_flag = #{DEL_FLAG_NORMAL}), '') AS "tagsId",
+				IFNULL((SELECT group_concat(c.title separator ';') from poj_tags c LEFT JOIN poj_tags_task pm ON pm.tags_id = c.id where pm.task_id=b.id AND c.del_flag = #{DEL_FLAG_NORMAL}), '') AS "tagsTitle"
+			FROM poj_project_task p
+				LEFT JOIN poj_project_task_member m ON m.record_id = p.id
+				LEFT JOIN poj_project_task_mapping ptm ON ptm.project_id = p.id
+				LEFT JOIN poj_project_task b ON b.id = ptm.task_id
+				LEFT JOIN poj_tags_task ptt ON ptt.task_id = b.id
+			WHERE p.del_flag = #{DEL_FLAG_NORMAL} 
+				AND b.del_flag = #{DEL_FLAG_NORMAL}
+				AND m.user_id = #{currentUser.id} 
+				AND b.type = #{type}
+				AND ptt.tags_id = #{tagsId}
+				<if test="projectId != null and projectId != ''">
+					AND p.id = #{projectId} 
+				</if>
+				<if test="status != null and status != ''">
+					AND b.status = #{status}
+				</if>
+				<if test="user != null and user.id != null and user.id != ''">
+					AND b.user_id = #{user.id}
+				</if>
+				<if test="createBy != null and createBy.id != null and createBy.id != ''">
+					AND b.create_by = #{createBy.id}
+				</if>
+			) a
+			LEFT JOIN sys_user u8 ON u8.id = a.user_id
+		GROUP BY a.id
+		ORDER BY a.update_date DESC
+	</select>
+	
+	<!-- 主键查询任务 -->
+	<select id="findTask" resultType="ProjectTask">
+		SELECT 
+			<include refid="projectTaskColumns"/>,
+			IFNULL(p.id, '') AS "projectId",
+    		IFNULL(p.title, '') AS "projectTitle",
+    		IFNULL(p.team_id, '') AS "projectTeamId",
+    		IFNULL(p.user_id, '') AS "projectOwnerId",
+    		IFNULL(p.create_by, '') AS "projectCreateById",
+    		u.id AS "createById",
+    		(SELECT COUNT(1) FROM poj_project_task h WHERE h.del_flag = #{DEL_FLAG_NORMAL} AND h.parent_id = a.id) AS subTaskAmount,
+			IFNULL((SELECT CONCAT(u.name, d.description) FROM poj_dynamic d LEFT JOIN sys_user u ON u.id = d.create_by WHERE d.task_id = a.id AND d.del_flag = #{DEL_FLAG_NORMAL} ORDER BY d.create_date DESC LIMIT 1), '') AS dynamicDescription,
+			<if test="praiseType != null and praiseType != ''">
+				EXISTS(SELECT a1.id FROM poj_member_praise a1 WHERE a1.type = #{praiseType} AND a1.user_id = #{currentUser.id} and a1.record_id=a.id limit 1) as "praiseFlag",
+			</if>
+           	IFNULL((SELECT group_concat(c.id separator ';') from poj_tags c LEFT JOIN poj_tags_task pm ON pm.tags_id = c.id where pm.task_id=a.id), '') AS "tagsId",
+			IFNULL((SELECT group_concat(c.title separator ';') from poj_tags c LEFT JOIN poj_tags_task pm ON pm.tags_id = c.id where pm.task_id=a.id), '') AS "tagsTitle"
+		FROM poj_project_task a
+		  	LEFT JOIN poj_project_task_mapping ptm ON ptm.task_id = a.id
+	    	LEFT JOIN poj_project_task p ON p.id = ptm.project_id
+			LEFT JOIN sys_user u8 ON u8.id = a.user_id
+			LEFT JOIN sys_user u ON u.id = a.create_by
+		WHERE a.id = #{id}
+	</select>
+	
+	<!-- 修改(项目/任务)标题 -->
+	<update id="updateTitleById">
+		UPDATE poj_project_task SET
+			title = #{title},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 修改(项目/任务)描述 -->
+	<update id="updateDescriptionById">
+		UPDATE poj_project_task SET 
+			description = #{description},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 修改(项目/任务)截止时间 -->
+	<update id="updateDueDateById">
+		UPDATE poj_project_task SET 
+			due_date = #{dueDate},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate} 
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 保存记录-成员点赞的关联关系 -->
+	<insert id="saveMemberPraise">
+		INSERT INTO poj_member_praise (
+			id, 
+			user_id, 
+			record_id,
+			type 
+		) VALUES (
+			#{id}, 
+			#{userId}, 
+			#{recordId},
+			#{type}
+		)
+	</insert>
+	
+	<!-- 查询记录-成员点赞的关联关系 -->
+	<select id="findMemberPraise" resultType="map">
+		SELECT 
+			mp.id, 
+			mp.user_id AS "userId", 
+			mp.record_id AS "recordId",
+			mp.type AS type
+		FROM poj_member_praise mp
+		WHERE mp.user_id = #{userId} AND mp.record_id = #{recordId}
+	</select>
+	
+	<!-- 删除记录-成员点赞的关联关系 -->
+	<delete id="deleteMemberPraise">
+		DELETE FROM poj_member_praise
+		WHERE user_id = #{userId} AND record_id = #{recordId}
+	</delete>	
+	
+	<!-- 将指定记录的被赞数加一 -->
+	<update id="updatePraiseAmountUpById">
+		UPDATE poj_project_task SET 
+			praise_amount = praise_amount + 1 
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 将指定记录的被赞数减一 -->
+	<update id="updatePraiseAmountDownById">
+		UPDATE poj_project_task SET 
+			praise_amount = praise_amount - 1 
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 删除空间-(项目/任务)的关联关系 -->
+	<delete id="deleteSpaceProjectTask">
+		DELETE FROM poj_space_project_task 
+		WHERE space_id = #{spaceId} AND record_id = #{recordId}
+	</delete>
+	
+	<!-- 删除项目-任务的关联关系 -->
+	<delete id="deleteProjectTaskMapping">
+		DELETE FROM poj_project_task_mapping 
+		WHERE project_id = #{projectId} AND task_id = #{taskId}
+	</delete>
+	
+	<!-- 修改(项目/任务)负责人 -->
+	<update id="updateOwnerById">
+		UPDATE poj_project_task SET
+			user_id = #{user.id},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate}  
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 查询指定任务的子任务列表 -->
+	<select id="findSubTaskList" resultType="ProjectTask">
+		SELECT  
+			<include refid="projectTaskColumns"/>
+		FROM poj_project_task a
+			LEFT JOIN sys_user u8 ON u8.id = a.user_id
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} AND a.parent_id = #{parentId}  
+		ORDER BY a.create_date DESC
+	</select>
+	
+	<!-- 修改(项目/任务)部分信息 -->
+	<update id="updatePartInfoById">
+		UPDATE poj_project_task SET 
+			title = #{title},
+			user_id = #{user.id},
+			description = #{description},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 查询(项目/任务)成员 -->
+	<select id="findProjectTaskMember" resultType="map">
+		SELECT
+	    	a.id,
+			a.name,
+			a.email,
+			a.photo
+		FROM sys_user a
+			LEFT JOIN poj_project_task_member ptm ON ptm.user_id = a.id
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} AND ptm.record_id = #{recordId} AND ptm.user_id = #{userId}  
+	</select>
+	
+	<!-- 查询(项目/任务)成员列表 -->
+	<select id="findProjectTaskMemberList" resultType="map">
+		SELECT
+	    	a.id,
+			a.name,
+			a.email,
+			a.photo
+		FROM sys_user a
+			LEFT JOIN poj_project_task_member ptm ON ptm.user_id = a.id
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} AND ptm.record_id = #{id}  
+	</select>
+	
+	<!-- start - xiaocai -->
+	<sql id="doneConditionColumns">
+		<if test="isOntime!=null and isOntime!='' and isOntime == 'onTimeUnDone' and taskStatus!=null and taskStatus!=''">	
+				<!-- 按时未完成 -->
+				and to_days(projecttask.due_date) &gt;= to_days(now()) and projecttask.status = #{taskStatus}
+			</if>
+			<if test="isOntime!=null and isOntime!='' and isOntime == 'overTimeUnDone' and taskStatus!=null and taskStatus!=''">	
+				<!-- 超时未完成 -->
+				and to_days(projecttask.due_date) &lt; to_days(now()) and projecttask.status = #{taskStatus}
+			</if>
+			<if test="isOntime!=null and isOntime!='' and isOntime == 'onTimeDone' and taskStatus!=null and taskStatus!=''">	
+				<!-- 按时完成 -->
+				and to_days(projecttask.due_date) &gt;= to_days(projecttask.finish_date) and projecttask.status = #{taskStatus}
+			</if>
+			<if test="isOntime!=null and isOntime!='' and isOntime == 'overTimeDone' and taskStatus!=null and taskStatus!=''">	
+				<!-- 超时完成 -->
+				and to_days(projecttask.due_date) &lt; to_days(projecttask.finish_date) and projecttask.status = #{taskStatus}
+			</if>
+	</sql>
+	<select id="countTaskByCondition" parameterType="map" resultType="int">
+		select ifnull(count(*),0) 
+		   from poj_project_task project
+				  left join poj_project_task_mapping ptmapping on ptmapping.project_id=project.id
+				  left join poj_project_task projecttask on projecttask.id=ptmapping.task_id
+				  left join sys_user sysuser on sysuser.id=projecttask.user_id 
+		where project.del_flag = #{DEL_FLAG_NORMAL} 
+				and project.type=#{projectType} and projecttask.type=#{taskType}
+			<if test="projectId!=null and projectId!=''">
+				and project.id=#{projectId}
+			</if>
+			<if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' and isFinish=='unDone'">
+				and projecttask.create_date between #{startDate} and #{endDate}
+			</if>
+			<if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' and isFinish=='done'">
+				and projecttask.finish_date between #{startDate} and #{endDate}
+			</if>
+			<include refid="doneConditionColumns"/>
+			<if test="taskStatus!=null and taskStatus!=''">
+				and projecttask.status = #{taskStatus}
+			</if>
+	</select>
+	
+	<select id="getCountTaskByCondition" parameterType="map" resultType="map">
+		select 
+			 ifnull(count(*),0) as count,
+			 sysuser.name as userName
+		 from poj_project_task project
+				  join poj_project_task_mapping ptmapping on ptmapping.project_id=project.id
+				  join poj_project_task projecttask on projecttask.id=ptmapping.task_id
+				  join sys_user sysuser on sysuser.id=projecttask.user_id 
+		where project.del_flag = #{DEL_FLAG_NORMAL} 
+				and project.type=#{projectType} and projecttask.type=#{taskType}
+			<if test="projectId!=null and projectId!=''">
+				and project.id=#{projectId}
+			</if>
+			<if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' and isFinish=='unDone'">
+				and projecttask.create_date between #{startDate} and #{endDate}
+			</if>
+			<if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' and isFinish=='done'">
+				and projecttask.finish_date between #{startDate} and #{endDate}
+			</if>
+			<include refid="doneConditionColumns"/>
+			<if test="taskStatus!=null and taskStatus!=''">
+				and projecttask.status = #{taskStatus}
+			</if>
+			group by sysuser.id 
+	</select>
+	<!-- 统计项目任务数 -->
+	<select id="countProjectTaskByCondition" parameterType="map" resultType="map">
+		select 
+			project.id as id,
+			count(project.id) as count 
+		from poj_project_task project
+				  left join poj_project_task_mapping ptmapping on ptmapping.project_id=project.id
+				  left join poj_project_task projecttask on projecttask.id=ptmapping.task_id
+		where project.del_flag = #{DEL_FLAG_NORMAL}
+		 	<if test="createDate!=null and createDate!=''">
+				and to_days(projecttask.create_date)=to_days(#{createDate})
+			</if>
+			<include refid="doneConditionColumns"/>
+			<if test="taskStatus!=null and taskStatus!=''">	
+				<!-- 任务状态 -->
+				and projecttask.status = #{taskStatus}
+			</if>
+		group by project.id
+	</select>
+	<!-- 获取当前用户关联的项目  -->
+	<select id="getCurrentUserProject" resultType="ProjectTask">
+		SELECT 
+			a.id AS "id",
+			a.title AS "title"
+		FROM poj_project_task a
+			left join poj_space_project_task spacetask on spacetask.record_id = a.id
+		WHERE a.del_flag = #{delFlag} and a.type=#{type}
+			<if test="spaceId!=null and spaceId!=''">
+				and spacetask.space_id = #{spaceId} 
+			</if>
+			<if test="title!=null and title!=''">
+				and a.title like concat('%',#{title},'%')
+			</if>
+			group by a.id 
+			order by a.create_date desc
+	</select>
+	<!-- 查看空间下项目的任务数据 -->
+	<select id="countSpaceProjectTaskByCondition" parameterType="map" resultType="int">
+		select 
+			count(project.id) as count 
+		from poj_project_task project 
+			join poj_space_project_task spaceprojecttask on spaceprojecttask.record_id=project.id
+			join poj_space space on space.id=spaceprojecttask.space_id
+			join poj_project_task_mapping projecttaskmapping on projecttaskmapping.project_id=project.id
+			join poj_project_task projecttask on projecttask.id=projecttaskmapping.task_id
+			join poj_project_task_member projecttaskmember on projecttaskmember.record_id=project.id
+		where project.del_flag = #{DEL_FLAG_NORMAL} and projecttask.type=#{taskType} and project.type=#{projectType}
+				and projecttaskmember.user_id = #{currentUserId}
+			<if test="beforeDate!=null and beforeDate!=''">	
+				and to_days(projecttask.create_date) &lt;= to_days(#{beforeDate})
+			</if>
+			<if test="finishDate!=null and finishDate!='' and taskStatus!=null and taskStatus!=''">	
+				and to_days(projecttask.finish_date)=to_days(#{finishDate}) and projecttask.status = #{taskStatus}
+			</if>
+			<if test="spaceId!=null and spaceId!=''">
+				and space.id=#{spaceId}
+			</if>
+			<if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' and (isFinish=='unDone' or isFinish=='all')">
+				and projecttask.create_date between #{startDate} and #{endDate}
+			</if>
+			<if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' and isFinish=='done'">
+				and projecttask.finish_date between #{startDate} and #{endDate}
+			</if>
+			<include refid="doneConditionColumns"/>
+			
+			<if test="taskStatus!=null and taskStatus!=''">
+				and projecttask.status = #{taskStatus}
+			</if>
+		 	
+	</select>
+	
+	<select id="getCountSpaceProjectTaskByCondition" parameterType="map" resultType="map">
+		select 
+			 ifnull(count(*),0) as count,
+			 sysuser.name as userName
+		from poj_project_task project 
+			join poj_space_project_task spaceprojecttask on spaceprojecttask.record_id=project.id
+			join poj_space space on space.id=spaceprojecttask.space_id
+			join poj_project_task_mapping projecttaskmapping on projecttaskmapping.project_id=project.id
+			join poj_project_task projecttask on projecttask.id=projecttaskmapping.task_id
+			join poj_project_task_member projecttaskmember on projecttaskmember.record_id=project.id
+			join sys_user sysuser on sysuser.id=projecttask.user_id
+		where projecttask.del_flag = #{DEL_FLAG_NORMAL} and projecttask.type=#{taskType} and project.type=#{projectType}
+				and projecttaskmember.user_id = #{currentUserId}
+			<if test="spaceId!=null and spaceId!=''">
+				and space.id=#{spaceId}
+			</if>
+			<if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' and isFinish=='unDone'">
+				and projecttask.create_date between #{startDate} and #{endDate}
+			</if>
+			<if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' and isFinish=='done'">
+				and projecttask.finish_date between #{startDate} and #{endDate}
+			</if>
+			<include refid="doneConditionColumns"/>
+			<if test="taskStatus!=null and taskStatus!=''">
+				and projecttask.status = #{taskStatus}
+			</if>
+			group by sysuser.id 
+	</select>
+	<select id="sumPraiseAmountByCondition" parameterType="map" resultType="map">
+		select * from 
+			(
+				select ifnull(sum(projecttask.praise_amount),0) as praiseamount ,
+						sysuser.login_name as loginName,
+					  	sysuser.`name` as userName
+				 from poj_project_task project 
+					join poj_space_project_task spaceprojecttask on spaceprojecttask.record_id=project.id
+					join poj_space space on space.id=spaceprojecttask.space_id
+					join poj_project_task_mapping projecttaskmapping on projecttaskmapping.project_id=project.id
+					join poj_project_task projecttask on projecttask.id=projecttaskmapping.task_id
+					join poj_project_task_member projecttaskmember on projecttaskmember.record_id=project.id
+					join sys_user sysuser on sysuser.id=projecttask.user_id
+				where projecttask.del_flag = #{DEL_FLAG_NORMAL} and projecttask.type=#{taskType} and project.type=#{projectType}
+					<if test="spaceId!=null and spaceId!=''">
+						and space.id=#{spaceId}
+					</if>
+					<if test="startDate!=null and startDate!='' and endDate!=null and endDate!=''">
+						and projecttask.create_date between #{startDate} and #{endDate}
+					</if>
+				group by sysuser.id 
+			) b
+		order by b.praiseamount desc
+			<if test="start >=0 and size > 0">
+				limit #{start},#{size} 
+			</if>
+	</select>
+	<select id="getCountSpaceProjectTaskForChartLog" parameterType="map" resultType="map">
+		select 
+			space.id as id,
+			count(projecttask.id) as count 
+		from poj_project_task project 
+			join poj_space_project_task spaceprojecttask on spaceprojecttask.record_id=project.id
+			join poj_space space on space.id=spaceprojecttask.space_id
+			join poj_project_task_mapping projecttaskmapping on projecttaskmapping.project_id=project.id
+			join poj_project_task projecttask on projecttask.id=projecttaskmapping.task_id
+			join poj_project_task_member projecttaskmember on projecttaskmember.record_id=project.id
+			join sys_user sysuser on sysuser.id=projecttask.user_id
+		where projecttask.del_flag = #{DEL_FLAG_NORMAL} and projecttask.type=#{taskType} and project.type=#{projectType}
+		 	<if test="beforeDate!=null and beforeDate!=''">	
+				and to_days(projecttask.create_date)&lt;=to_days(#{beforeDate})
+			</if>
+			<if test="finishDate!=null and finishDate!='' and taskStatus!=null and taskStatus!=''">	
+				and to_days(projecttask.finish_date)=to_days(#{finishDate}) and projecttask.status = #{taskStatus}
+			</if>
+		 	<if test="createDate!=null and createDate!=''">
+				and to_days(projecttask.create_date)=to_days(#{createDate})
+			</if>
+			<include refid="doneConditionColumns"/>
+		group by space.id
+	</select>
+	<!-- end - xiaocai -->
+	
+	<select id="findOneProjectTaskCount" resultType="int">
+		SELECT count(pt.id) FROM poj_project_task pt
+			LEFT JOIN poj_project_task_mapping ptm ON ptm.task_id = pt.id 
+			WHERE ptm.project_id = #{id} AND pt.del_flag = #{DEL_FLAG_NORMAL}
+	</select>
+	
+</mapper>

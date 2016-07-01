@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.sys.dao.UserDao">
+	
+	<!-- <resultMap id="userResult" type="User">
+		<id property="id" column="id" />
+		<result property="company.id" column="company.id" />
+		<result property="office.id" column="office.id" />
+		<result property="loginName" column="login_name" />
+		<result property="password" column="password" />
+		<result property="no" column="no" />
+		<result property="name" column="name" />
+		<result property="email" column="email" />
+		<result property="phone" column="phone" />
+		<result property="mobile" column="mobile" />
+		<result property="userType" column="user_type" />
+		<result property="loginIp" column="login_ip" />
+		<result property="loginDate" column="login_date" />
+		<result property="remarks" column="remarks" />
+		<result property="loginFlag" column="loginFlag" />
+		<result property="photo" column="photo" />
+		<result property="createBy.id" column="createBy.id" />
+		<result property="createDate" column="create_date" />
+		<result property="updateBy.id" column="updateBy.id" />
+		<result property="updateDate" column="update_date" />
+		<result property="company.name" column="company.name" />
+		<result property="company.parentId" column="company.parentId" />
+		<result property="company.parentIds" column="company.parentIds" />
+		<result property="company.area.id" column="company.area.id" />
+		<result property="company.area.name" column="company.area.name" />
+		<result property="company.area.parentId" column="company.area.parentId" />
+		<result property="company.area.parentIds" column="company.area.parentIds" />
+		<result property="company.primaryPerson.id" column="company.primaryPerson.id" />
+		<result property="company.primaryPerson.name" column="company.primaryPerson.name" />
+		<result property="company.deputyPerson.id" column="company.deputyPerson.id" />
+		<result property="company.deputyPerson.name" column="company.deputyPerson.name" />
+		<result property="office.name" column="office.name" />
+		<result property="office.parentId" column="office.parentId" />
+		<result property="office.parentIds" column="office.parentIds" />
+		<result property="office.area.id" column="office.area.id" />
+		<result property="office.area.name" column="office.area.name" />
+		<result property="office.area.parentId" column="office.area.parentId" />
+		<result property="office.area.parentIds" column="office.area.parentIds" />
+		<result property="office.primaryPerson.id" column="office.primaryPerson.id" />
+		<result property="office.primaryPerson.name" column="office.primaryPerson.name" />
+		<result property="office.deputyPerson.id" column="office.deputyPerson.id" />
+		<result property="office.deputyPerson.name" column="office.deputyPerson.name" />
+		<collection property="roleList" ofType="Role">
+			<id property="id" column="roleList.id" />
+			<result property="office.id" column="roleList.office.id" />
+			<result property="name" column="roleList.name" />
+			<result property="enname" column="roleList.enname" />
+			<result property="roleType" column="roleList.roleType" />
+			<result property="dataScope" column="roleList.dataScope" />
+			<collection property="officeList" ofType="Office">
+				<id property="id" column="roleList.officeList.id" />
+			</collection>
+		</collection>
+	</resultMap> -->
+	
+    <sql id="userColumns">
+    	a.id,
+    	a.login_name,
+    	a.password,
+		a.name,
+		a.email,
+		a.phone,
+		a.mobile,
+		a.user_type,
+		a.login_date,
+		a.login_flag,
+		a.photo,
+		a.create_by AS "createBy.id",
+		a.create_date,
+		a.update_by AS "updateBy.id",
+		a.update_date,
+		a.del_flag,
+		a.remarks,
+		a.code
+    </sql>
+    
+    <sql id="userJoins">
+		
+    </sql>
+	
+	<!-- 根据编号获得用户 -->
+	<select id="get" resultType="User">
+		SELECT
+			<include refid="userColumns"/><!-- ,
+			ro.office_id AS "roleList.officeList.id" -->
+		FROM sys_user a
+		WHERE a.id = #{id}
+	</select>
+	
+	<!-- 根据邮箱获得用户 -->
+	<select id="getByEmail" resultType="User" parameterType="User">
+		SELECT
+			a.id,
+    		a.login_name,
+			a.name,
+			a.email,
+			a.phone,
+			a.mobile,
+			a.user_type,
+			a.login_date,
+			a.login_flag,
+			a.photo,
+			a.create_by AS "createBy.id",
+			a.create_date,
+			a.update_by AS "updateBy.id",
+			a.update_date,
+			a.del_flag,
+			a.remarks,
+			a.code
+		FROM sys_user a
+		WHERE a.email = #{email} AND a.del_flag = #{DEL_FLAG_NORMAL}
+	</select>
+	
+	<!-- 根据登录名查询用户 -->
+	<select id="getByLoginName" resultType="User" parameterType="User">
+		SELECT
+			a.id,
+    		a.login_name,
+   			a.password,
+			a.name,
+			a.email,
+			a.phone,
+			a.mobile,
+			a.user_type,
+			a.login_date,
+			a.login_flag,
+			a.photo,
+			a.create_by AS "createBy.id",
+			a.create_date,
+			a.update_by AS "updateBy.id",
+			a.update_date,
+			a.del_flag,
+			a.remarks,
+			a.code
+		FROM sys_user a
+		WHERE a.login_name = #{loginName} AND a.del_flag = #{DEL_FLAG_NORMAL}
+	</select>
+	
+	<!-- 根据登录名查询用户 -->
+	<select id="getByLoginNameOrEmail" resultType="User" parameterType="User">
+		SELECT
+			a.id,
+    		a.login_name,
+   			a.password,
+			a.name,
+			a.email,
+			a.phone,
+			a.mobile,
+			a.user_type,
+			a.login_date,
+			a.login_flag,
+			a.photo,
+			a.create_by AS "createBy.id",
+			a.create_date,
+			a.update_by AS "updateBy.id",
+			a.update_date,
+			a.del_flag,
+			a.remarks,
+			a.code
+		FROM sys_user a
+		WHERE (a.login_name = #{loginName} or a.email = #{email}) AND a.del_flag = #{DEL_FLAG_NORMAL}
+	</select>
+	
+	
+	
+	<!-- 查询全部用户 -->
+	<select id="findAllList" resultType="User">
+		SELECT
+			<include refid="userColumns"/>
+		FROM sys_user a
+		<include refid="userJoins"/>
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+		ORDER BY c.code, o.code, a.name
+	</select>
+	
+	<!-- 查询全部用户数目 -->
+	<select id="findAllCount" resultType="long">
+		SELECT
+			COUNT(1)
+		FROM sys_user a
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+	</select>
+	
+	<!-- 插入用户 -->
+	<insert id="insert">
+		INSERT INTO sys_user(
+			id,
+			login_name, 
+			password, 
+			name, 
+			email, 
+			phone, 
+			mobile, 
+			user_type, 
+			create_by, 
+			create_date, 
+			update_by, 
+			update_date, 
+			login_flag, 
+			photo, 
+			del_flag,
+			remarks,
+			code
+		) VALUES (
+			#{id}, 
+			#{loginName}, 
+			#{password}, 
+			#{name}, 
+			#{email}, 
+			#{phone}, 
+			#{mobile}, 
+			#{userType}, 
+			#{createBy.id}, 
+			#{createDate}, 
+			#{updateBy.id}, 
+			#{updateDate},  
+			#{loginFlag}, 
+			#{photo}, 
+			#{delFlag},
+			#{remarks},
+			#{code}
+		)
+	</insert>
+	
+	<!-- 更新用户 -->
+	<update id="update">
+		UPDATE sys_user SET 
+			login_name = #{loginName}, 
+			password = #{password}, 
+			name = #{name}, 
+			email = #{email}, 
+			phone = #{phone}, 
+			mobile = #{mobile}, 
+			user_type = #{userType}, 
+			update_by = #{updateBy.id}, 
+			update_date = #{updateDate}, 
+			login_flag = #{loginFlag},
+			photo = #{photo},
+			remarks = #{remarks},
+			code = #{code}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 通过邮箱申请修改密码 -->
+	<update id="emailUpdatePassWord">
+		UPDATE sys_user SET 
+			password = #{password}, 
+			code = #{code}
+		WHERE id = #{id}
+	</update>
+	
+	<!--激活用户 -->
+	<update id="activationUser">
+		UPDATE sys_user SET 
+			login_flag = #{loginFlag},
+			code = #{code}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 删除用户和角色关联表数据 -->
+	<delete id="deleteUserRole">
+		DELETE FROM sys_user_role WHERE user_id = #{id}
+	</delete>
+	
+
+	<!-- 更新用户信息  -->
+	<update id="updateUserInfo">
+		UPDATE sys_user SET 
+			email = #{email}, 
+			phone = #{phone}, 
+			mobile = #{mobile}, 
+			update_by = #{updateBy.id}, 
+			update_date = #{updateDate}, 
+			photo = #{photo},
+			remarks = #{remarks},
+			code = #{code}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 更新用户密码 -->
+	<update id="updatePasswordById">
+		UPDATE sys_user SET 
+			password = #{password} 
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 更新登录信息，如登录IP、登录时间 -->
+	<update id="updateLoginInfo">
+		UPDATE sys_user SET 
+			login_Date = #{loginDate} 
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 逻辑删除用户 -->
+	<update id="delete">
+		UPDATE sys_user SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 更新用户部分信息  -->
+	<update id="updateUserInfoByUserId">
+		UPDATE sys_user SET 
+			name = #{name}, 
+			<if test="email != null and email != ''">
+				email = #{email},  
+			</if>
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 根据用户编号更新头像下载地址 -->
+	<update id="updataPhotoByUserId">
+		UPDATE sys_user SET 
+			photo = #{photo}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 更新用户名称、描述  -->
+	<update id="updateUserName">
+		UPDATE sys_user SET 
+			<if test="name != null and name != ''">
+				name = #{name}
+			</if>
+			<if test="remarks != null and remarks != ''">
+				remarks = #{remarks}
+			</if>
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 查询全部用户数目 -->
+	<select id="findGroupMembers" resultType="User">
+		SELECT 
+		a.id,a.name,a.email,a.photo,
+		(SELECT IF(COUNT(b.id)>0,'1','0') FROM poj_bookmark b WHERE b.resource_id = a.id AND b.del_flag = #{delFlag}) AS "favoriteFlag"
+ 			FROM sys_user a
+		LEFT JOIN poj_group_member gm ON gm.user_id = a.id
+		WHERE gm.group_id = #{groupId} AND a.del_flag = #{delFlag} <!--AND a.login_flag = #{loginFlag}-->
+	</select>
+	
+	
+	<!-- 根据用户名查找 用户信息   验证用名是否存在-->
+	<select id="findUserInfoByUserLoginName" resultType="User">
+		SELECT * FROM sys_user u WHERE u.login_name = #{loginName}
+	</select>
+	
+	<!-- 根据邮箱查找 用户信息   验证邮箱是否存在  -->
+	<select id="findUserInfoByUserEmail" resultType="User">
+		SELECT * FROM sys_user u WHERE u.email = #{email}
+	</select>
+	
+	<!-- write at the last ： what i do is what i want. -->
+	
+	<!-- 根据ID修改用户信息 -->
+	<update id="updateUserInfomation">
+		update sys_user
+		<set>
+			<if test="name != null and name != ''">
+				name = #{name},
+			</if>
+			<if test="remarks != null and remarks != ''">
+				remarks = #{remarks},
+			</if>
+			<if test="phone != null and phone != ''">
+				phone = #{phone},
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<!-- 根据id集合查询用户信息集合 -->
+	<select id="findUserInfomationList" resultType="map">
+		select 
+			ifnull(a.id, '') as id,
+			ifnull(a.name, '') as name,
+			ifnull(a.email, '') as email,
+			ifnull(a.photo, '') as photo,
+			ifnull(a.phone, '') as phone
+		from sys_user a 
+		where a.id in 
+		<foreach collection="array" open="(" close=")" item="id" separator=",">
+			#{id}
+		</foreach>
+	</select>
+	
+	<!-- 根据邮箱查询用户信息 -->
+	<select id="findUserInfomationByEmail" resultType="map">
+		select 
+			ifnull(a.id, '') as id,
+			ifnull(a.name, '') as name,
+			ifnull(a.email, '') as email,
+			ifnull(a.photo, '') as photo,
+			ifnull(a.phone, '') as phone,
+			ifnull(a.remarks, '') as remarks
+		from sys_user a 
+		where a.email = #{email}
+	</select>
+	
+</mapper>

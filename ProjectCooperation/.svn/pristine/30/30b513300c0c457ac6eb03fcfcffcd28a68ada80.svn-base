@@ -1,0 +1,28 @@
+<div class="modal-body">
+	<form class="form-horizontal" target="_top" method="post">
+		<div class='select-area'>
+			<div class='header'>空间成员</div>
+			<div class='select-content'>
+				<ul class='member-list'  id="show-sapce-member-to-team-responsible">
+						 
+				</ul>
+			</div>
+			</div>
+			<div  class='selected-area'>
+				<div class='header'>已选负责人</div>
+				<div class='select-content'>
+				<ul class='member-list' ></ul>
+			</div>
+		</div>
+	</form>
+</div>
+
+<div class="modal-footer">
+	<div class="form-group">
+		<label for="message-text" class="col-sm-4 control-label">&nbsp;</label>
+		<div class="botton col-sm-8">
+			<button  class="btn-orange"  data-dismiss="modal" aria-label="Close" id="save-remmember-space-member">保存</button>
+			<button  class="btn-gray " data-dismiss="modal" aria-label="Close" data-toggle="modal" data-target="#new_team" >取消</button>
+		</div>
+	</div>
+</div>

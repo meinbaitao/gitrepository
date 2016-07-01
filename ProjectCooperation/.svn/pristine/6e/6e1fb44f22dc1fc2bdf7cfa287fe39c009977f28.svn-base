@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    	<meta charset="utf-8">
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <meta name="apple-mobile-web-app-capable" content="yes" /><!-- 删除苹果默认的工具栏和菜单栏 -->
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" /><!-- 设置苹果工具栏颜色 -->
+        <meta name="format-detection" content="telphone=no, email=no" /><!-- 忽略页面中的数字识别为电话，忽略email识别 -->
+        <!-- 启用360浏览器的极速模式(webkit) -->
+        <meta name="renderer" content="webkit">
+        <!-- 避免IE使用兼容模式 -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
+        <meta name="HandheldFriendly" content="true">
+        <!-- 微软的老式浏览器 -->
+        <meta name="MobileOptimized" content="320">
+        <!-- uc强制竖屏 -->
+        <meta name="screen-orientation" content="portrait">
+        <!-- QQ强制竖屏 -->
+        <meta name="x5-fullscreen" content="true">
+        <!-- UC应用模式 -->
+        <meta name="browsermode" content="application">
+        <!-- QQ应用模式 -->
+        <meta name="x5-page-mode" content="app">
+        <!-- windows phone 点击无高光 -->
+        <meta name="msapplication-tap-highlight" content="no">
+        <!-- 适应移动端end -->
+        <title>Surfond | 登录</title>
+        <link rel="shortcut icon" href="../common/images/favicon.ico">
+        
+        <!-- css -->
+		<link rel="stylesheet" href="../common/css/common.css">
+		<link rel="stylesheet" href="css/log.css">
+    </head>
+<body>
+<!-- start header -->
+<div class="header"></div>
+<!-- end header -->
+
+
+
+<!-- start container -->
+<div class="container">
+		<!-- logo  -->
+		<div class="logo-img">
+			<img src="../common/images/logo.png">
+		</div>
+		<form id="loginFormost" class="" action="../mytask/mytask.html" method="post" onkeydown="if(event.keyCode==13)return false;">
+		  <!-- 请输入邮箱/用户名  -->
+			  <div class="user-pword"> 
+			  	<div class="user_div">
+					<img src="../common/images/username.png"/>
+				</div>
+				<div class="input_div">
+			  		<input type="text" id="username" placeholder="请输入邮箱/用户名" name="fname" />
+			  	</div>
+			  </div>
+		  <!-- 请输入密码 -->
+			  <div class="user-pword">
+			  	<div class="lock_div">
+					<img src="../common/images/lock.png"/>
+				</div>
+				<div class="input_div">
+			  		<input type="password" id="password" placeholder="请输入密码" name="lname" />
+			  	</div>
+			  </div>
+		  <!-- 提交表单-->
+			  <div class="the_login">
+				<input class="font18" type="button" value="登录" />
+			  </div>
+		</form>
+		<!-- <div class="assist">忘记密码？</div>
+		<div class="assist">你还没有账号？<a href="sign.html">免费注册</a></div> -->
+</div>
+<!-- end container -->
+
+
+
+<!-- start footer -->
+<!-- <div class="footer">&copy;2015 广州市柏涛信息技术有限责任公司 版权所有</div> -->
+<!-- end footer -->
+
+
+<!-- JSSDK -->
+<script src="../common/js/jquery.min.js"></script>
+<script src="../common/js/jquery.cookie.js"></script>
+<script type="text/javascript" src="../../../static/common/common_service.js"></script>
+<script type="text/javascript" src="../../../static/modules/surfond/common/js/constants.js"></script>
+<script>
+$(function(){
+	
+	$(document).on('touchstart','.the_login input',function(){
+		var username=$('#username').val();
+		var password=$('#password').val();
+		if ( username == ''|| password == ''){
+			alert("请输入账号或密码");
+		}else{
+			var data = {"loginName":username, "password":password};
+			var url = "/m/login";
+			startUp.ajaxForm(url, data, false, function(resultMap){
+				var user_idd=resultMap.result.id;
+				var COOKIE_NAME = 'spaceId';
+				var user_id = 'user_id';
+				$.cookie(user_id, user_idd , { expires: 1, path: '/' });
+				$.cookie(COOKIE_NAME, "1a072407d9e14c11b3a2fb50eb0bb2af", { expires: 1, path: '/' });
+					if(resultMap){
+						if(resultMap.status == "1"){
+							$.cookie("status", "100", { expires: 1, path: '/' });
+							window.location.href = startUp.getRootPath() + "/h5/home/mytask/mytask.html"
+						}else{
+							alert("账号或密码有误");
+						}
+					}	
+			});
+		} 
+	});
+})
+</script>
+<!-- JSSDK -->
+</body>
+</html>

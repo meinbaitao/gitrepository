@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bt.surfond.bookmark.dao.BookmarkDao">
+    
+	<sql id="bookmarkColumns">
+		a.id AS "id",
+		a.title AS "title",
+		a.url AS "url",
+		a.type AS "type",
+		a.space_id AS "spaceId",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.del_flag AS "delFlag",
+		a.resource_id AS "resourceId"
+	</sql>
+	
+	<sql id="bookmarkJoins">
+	</sql>
+    
+	<select id="get" resultType="Bookmark">
+		SELECT 
+			<include refid="bookmarkColumns"/>
+		FROM poj_bookmark a
+		<include refid="bookmarkJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Bookmark">
+		SELECT 
+			<include refid="bookmarkColumns"/>
+		FROM poj_bookmark a
+		<include refid="bookmarkJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="title != null and title != ''">
+				AND a.title LIKE 
+					<if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{title},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Bookmark">
+		SELECT 
+			<include refid="bookmarkColumns"/>
+		FROM poj_bookmark a
+		<include refid="bookmarkJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO poj_bookmark(
+			id,
+			type,
+			title,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag,
+			resource_id,
+			space_id,
+			address
+		) VALUES (
+			#{id},
+			#{type},
+			#{title},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag},
+			#{resourceId},
+			#{spaceId},
+			#{address}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE poj_bookmark SET 	
+			title = #{title},
+			url = #{url},
+			type = #{type},
+			resource_id = #{resourceId},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE poj_bookmark SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 查询是否存在收藏记录 -->
+	<select id="getWhetherExist" resultType="int">
+		SELECT COUNT(1) FROM poj_bookmark a WHERE a.resource_id = #{resourceId} AND a.create_by = #{createBy.id} AND a.del_flag = #{DEL_FLAG_NORMAL}
+	</select>
+	
+	<!-- 删除收藏记录 -->
+	<delete id="deleteBookmark">
+		DELETE FROM poj_bookmark  
+		WHERE resource_id = #{resourceId} AND create_by = #{createBy.id}
+	</delete>
+	
+	<select id="findMobileBookMarkList" resultType="map">
+		select
+			b.id,
+			b.create_date as "createDate",
+  			b.type,
+			b.resource_id as "resourceId",
+  			p.title,
+  			IFNULL(p.address,"") as "address",
+  			IFNULL(p.description,"") as "description",
+			(select count(t.id) from poj_project_task t
+  			LEFT JOIN poj_project_task_mapping pm on pm.task_id=t.id 
+  			where t.type=#{taskType} AND pm.project_id=b.resource_id) as "taskCount",
+			(select count(u.id) from sys_user u
+  			LEFT JOIN poj_project_task_member m on m.user_id=u.id
+			where m.record_id=b.resource_id) as "memberCount",
+  			spt.space_id AS "spaceId"
+		from poj_bookmark b
+		LEFT JOIN poj_project_task p on p.id=b.resource_id
+		LEFT JOIN poj_space_project_task spt on spt.record_id = p.id 
+		where 
+			b.create_by=#{userId} 
+			and 
+  			b.type=#{bookMarkProject}
+  			AND
+      		p.del_flag=#{delFlag}
+	UNION ALL
+ 		select
+			b.id,
+			b.create_date as "createDate",
+			b.type,
+			b.resource_id as "resourceId",
+			s.title,
+			IFNULL(s.address,"") as "address",
+			IFNULL(s.description,"") as "description",
+  			(select count(p.id)  from poj_project_task p
+			LEFT JOIN poj_space_project_task spt on spt.record_id = p.id
+			where spt.space_id=s.id) as "taskCount",
+  			(select count(u.id)   from sys_user u
+			LEFT JOIN poj_space_member sm on sm.user_id = u.id
+			where sm.space_id=s.id) as "memberCount",
+  			s.id AS "spaceId"
+		from poj_bookmark b
+		LEFT JOIN poj_space s on s.id=b.resource_id
+		where 
+			b.create_by=#{userId} 
+			and 
+  			b.type=#{bookMarkSpace}
+  			AND
+      		s.del_flag=#{delFlag}
+	UNION ALL
+ 		select
+			b.id,
+			b.create_date as "createDate",
+			b.type,
+			b.resource_id as "resourceId",
+  			p.title,
+  			IFNULL(p.address,"") as "address",
+  			IFNULL(p.description,"") as "description",
+  			(select count(mp.id)  from poj_member_praise mp
+			where mp.record_id=p.id) as "taskCount",
+  			(select count(c.id) from poj_comment c 
+  			where c.resource_id=p.id and c.del_flag=#{delFlag}) as "memberCount",
+  			s.id AS "spaceId"
+		from poj_bookmark b
+		LEFT JOIN poj_conversation p on p.id=b.resource_id
+		LEFT JOIN poj_space s on s.id=p.resource_id
+		where 
+			b.create_by=#{userId} 
+			and 
+  			b.type=#{bookMarkConverstion}
+  			AND
+      		p.del_flag=#{delFlag}
+  	UNION ALL
+		select
+			b.id,
+			b.create_date as "createDate",
+  			b.type,
+			b.resource_id as "resourceId",
+  			u.`name` as "title",
+			IFNULL(u.photo,"") as "address",
+  			IFNULL(u.remarks,"") as "description",
+			(SELECT 
+				COUNT(b.id)
+				FROM poj_project_task b
+				LEFT JOIN poj_project_task_mapping ptm ON ptm.task_id = b.id
+				LEFT JOIN poj_project_task p ON p.id = ptm.project_id
+				LEFT JOIN poj_space_project_task sp ON sp.record_id = p.id
+				WHERE b.del_flag = #{delFlag} 
+				AND b.type = #{taskType} 
+				AND (b.user_id = u.id OR b.create_by = u.id)
+				AND p.id IN 
+				(SELECT p.id FROM poj_project_task_member m
+				LEFT JOIN poj_project_task p ON p.id = m.record_id
+				WHERE p.del_flag = #{delFlag} AND p.type = '0' AND (m.user_id = u.id OR m.user_id = #{userId})
+				GROUP BY m.record_id HAVING COUNT(m.record_id) = 2)) as "taskCount",
+			0 as "memberCount",
+  			"" AS "spaceId"
+		from poj_bookmark b
+		LEFT JOIN sys_user u on u.id=b.resource_id
+		where 
+			b.create_by=#{userId} 
+			and 
+  			b.type=#{bookmarkMember}
+  			AND
+      		u.del_flag=#{delFlag}
+	UNION ALL
+		select
+			b.id,
+			b.create_date as "createDate",
+  			b.type,
+			b.resource_id as "resourceId",
+  			p.title,
+  			"" as "address",
+  			IFNULL(p.description,"") as "description",
+			(select count(mp.id) from poj_member_praise mp
+				where mp.type=0 AND mp.record_id=b.resource_id) as "taskCount",
+			(select count(t.id) from poj_comment t
+				where t.type=#{taskType} AND t.resource_id=b.resource_id) as "memberCount",
+  			"" AS "spaceId"
+		from poj_bookmark b
+		LEFT JOIN poj_project_task p on p.id=b.resource_id
+		where 
+			b.create_by=#{userId} 
+			and 
+  			b.type=#{bookmarkTask}
+      		AND
+      		p.del_flag=#{delFlag}
+	</select>
+	
+	<!-- 根据信息ID查找被收藏次数 -->
+	<select id="findBookmarkMember" resultType="int">
+		SELECT count(1) FROM poj_bookmark a WHERE a.resource_id = #{resourceId} AND a.del_flag = #{DEL_FLAG_NORMAL}
+	</select>
+	
+	<!-- 根据收藏类型编号查询收藏人 -->
+	<select id="findBookmarkUser" resultType="Bookmark">
+		SELECT create_by AS 'createBy.id' FROM poj_bookmark a WHERE a.resource_id = #{resourceId} AND a.del_flag = #{DEL_FLAG_NORMAL} 
+	</select>
+	
+	
+	<!-- 根据用户查找用户的收藏信息 -->
+	<select id="findBookmarkGroupByUser" resultType="map">
+		SELECT 
+			b.title AS 'title',
+			b.type AS 'type',
+			count(1) AS 'count' 
+		FROM poj_bookmark b
+		WHERE b.create_by = #{createBy.id} AND b.space_id = #{spaceId}
+		GROUP BY b.type
+	</select>
+	
+	<!-- 根据用户查找用户收藏的项目 -->
+	<select id="findBookmarkProjectByUser" resultType="map">
+		SELECT
+			pt.id AS "id",
+			b.type,
+			IFNULL(pt.team_id, '') AS "teamId",
+			IFNULL(pt.title, '') AS "title"
+		FROM poj_bookmark b
+		LEFT JOIN poj_project_task pt ON pt.id = b.resource_id
+		WHERE b.type = #{type} AND b.space_id = #{spaceId} AND b.create_by = #{createById} AND pt.del_flag = #{delFlag}
+	</select>
+	
+	<!-- 根据用户查找用户收藏的标签 -->
+	<select id="findBookmarkTasgByUser" resultType="map">
+		SELECT 
+			pt.id AS "id",
+			b.type,
+			IFNULL(pt.title, '') AS "title"
+		FROM poj_bookmark b
+		LEFT JOIN poj_tags pt ON pt.id = b.resource_id
+		WHERE b.type = #{type} AND b.space_id = #{spaceId} AND b.create_by = #{createById} AND pt.del_flag = #{delFlag}
+	</select>
+	
+	<!-- 根据用户查找用户收藏的话题 -->
+	<select id="findBookmarkConversationByUser" resultType="map">
+		SELECT
+			pt.id AS "id",
+			b.type,
+			IFNULL(pt.title,'') AS "title",
+			IFNULL(pt.resource_id, '') AS "teamId"
+ 		FROM poj_bookmark b
+		LEFT JOIN poj_conversation pt ON pt.id = b.resource_id
+		WHERE b.type = #{type} AND b.space_id = #{spaceId} AND b.create_by = #{createById} AND pt.del_flag = #{delFlag}
+	</select>
+	
+	<!-- 根据用户查找用户收藏的成员 -->
+	<select id="findBookmarkMemberByUser" resultType="map">
+		SELECT
+			pt.id,
+			b.type,
+			IFNULL(pt.name,'') AS "title",
+			IFNULL(pt.email,''),
+			IFNULL(pt.photo,'')
+		FROM poj_bookmark b
+		LEFT JOIN sys_user pt ON pt.id = b.resource_id
+		WHERE b.type = #{type} AND b.space_id = #{spaceId} AND b.create_by = #{createById} AND pt.del_flag = #{delFlag}
+	</select>
+	
+	
+</mapper>

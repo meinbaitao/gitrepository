@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bt.surfond.chart.dao.ChartLogDao">
+    
+	<sql id="chartLogColumns">
+		a.id AS "id",
+		a.source_id as "sourceId",
+		a.type AS "type",
+		a.description AS "description",
+		a.create_date AS "createDate",
+		a.log_date AS "logDate"
+	</sql>
+	
+	<sql id="chartLogJoins">
+	</sql>
+    
+	<select id="get" resultType="ChartLog">
+		SELECT 
+			<include refid="chartLogColumns"/>
+		FROM poj_chart_log a
+		<include refid="chartLogJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ChartLog">
+		SELECT 
+			<include refid="chartLogColumns"/>
+		FROM poj_chart_log a
+		<include refid="chartLogJoins"/>
+	</select>
+	
+	<select id="findAllList" resultType="ChartLog">
+		SELECT 
+			<include refid="chartLogColumns"/>
+		FROM poj_chart_log a
+		<include refid="chartLogJoins"/>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO poj_chart_log(
+			id,
+			source_id,
+			type,
+			description,
+			create_date,
+			log_date
+		) VALUES (
+			#{id},
+			#{sourceId},
+			#{type},
+			#{description},
+			#{createDate},
+			#{logDate}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE poj_chart_log SET 	
+			description = #{description}
+			<if test="type!=null and type!=''">
+				,type=#{type}
+			</if>
+			<if test="logDate!=null and logDate!=''">
+				,log_date=#{logDate}
+			</if>
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		delete from poj_chart_log 
+		WHERE id = #{id}
+	</update>
+	
+	<select id="selectByCondition" parameterType="map" resultType="ChartLog">
+		SELECT 
+			a.id AS "id",
+			a.source_id as "sourceId",
+			a.type AS "type",
+			ifnull(sum(a.description),0) AS "description",
+			a.create_date AS "createDate",
+			a.log_date AS "logDate"
+		FROM poj_chart_log a
+		where (1=1)
+			<if test="sourceId != null and sourceId != ''">
+				and a.source_id=#{sourceId}
+			</if>
+			<if test="type!=null and type!=''">
+				and a.type=#{type}
+			</if>
+			<if test="startDate!=null and startDate!='' and endDate!=null and endDate!=''">
+				and a.log_date between #{startDate} and #{endDate}
+			</if>
+			<if test="logDate!=null and logDate!=''">
+				and TO_DAYS(a.log_date)=TO_DAYS(#{logDate})
+			</if>
+			group by a.source_id
+	</select>
+	<select id="getOneByCondition" resultType="ChartLog">
+		SELECT 
+			<include refid="chartLogColumns"/>
+		FROM poj_chart_log a
+		<include refid="chartLogJoins"/>
+		WHERE (1=1)
+			<if test="logDate!=null and logDate!=''">
+				and TO_DAYS(a.log_date)=TO_DAYS(#{logDate})
+			</if>
+			<if test="sourceId != null and sourceId != ''">
+				and a.source_id=#{sourceId}
+			</if>
+			<if test="type!=null and type!=''">
+				and a.type=#{type}
+			</if>
+		limit 0,1
+	</select>
+	
+</mapper>

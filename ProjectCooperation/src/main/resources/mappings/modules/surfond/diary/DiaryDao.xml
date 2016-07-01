@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bt.surfond.front.diary.dao.DiaryDao">
+
+	<!-- 日志信息映射 -->
+	<resultMap type="Diary" id="diaryRM">
+		<id property="id" column="ID"/>
+		<result property="title" column="TITLE"/>
+		<result property="content" column="CONTENT"/>
+		<result property="taskId" column="TASK_ID"/>
+		<result property="createDate" column="CREATE_DATE"/>
+		<result property="updateDate" column="UPDATE_DATE"/>
+		<result property="remarks" column="REMARKS"/>
+		<result property="delFlag" column="DEL_FLAG"/>
+		<association property="createBy" javaType="User">
+			<id property="id" column="CREATE_BY"/>
+		</association>
+		<association property="updateBy" javaType="User">
+			<id property="id" column="UPDATE_BY"/>
+		</association>
+		<association property="activeCreateBy" javaType="com.bt.surfond.front.core.entity.ActiveUser">
+			<id property="id" column="ACTIVECREATEBY_ID"/>
+			<result property="name" column="ACTIVECREATEBY_NAME"/>
+			<result property="email" column="ACTIVECREATEBY_EMAIL"/>
+			<result property="photo" column="ACTIVECREATEBY_PHOTO"/>
+		</association>
+	</resultMap>
+	
+	<!-- 日志信息及其附件列表映射 -->
+	<resultMap type="Diary" id="diaryAttachmentRM" extends="diaryRM">
+		<collection property="attachmentList" ofType="Attachment">
+			<id property="id" column="ATTACHMENT_ID"/>
+			<id property="name" column="ATTACHMENT_NAME"/>
+			<id property="attachmentType" column="ATTACHMENT_ATTACHMENT_TYPE"/>
+			<id property="absolutePath" column="ATTACHMENT_ABSOLUTE_PATH"/>
+			<id property="accessPath" column="ATTACHMENT_ACCESS_PATH"/>
+			<id property="taskId" column="ATTACHMENT_TASK_ID"/>
+			<id property="createDate" column="ATTACHMENT_CREATE_DATE"/>
+			<id property="updateDate" column="ATTACHMENT_UPDATE_DATE"/>
+			<id property="remarks" column="ATTACHMENT_REMARKS"/>
+			<id property="delFlag" column="ATTACHMENT_DEL_FLAG"/>
+			<id property="type" column="ATTACHMENT_TYPE"/>
+			<id property="status" column="ATTACHMENT_STATUS"/>
+			<id property="size" column="ATTACHMENT_SIZE"/>
+			<id property="timeLength" column="ATTACHMENT_TIME_LENGTH"/>
+			<association property="createBy" javaType="User">
+				<id property="id" column="ATTACHMENT_CREATE_BY"/>
+			</association>
+			<association property="updateBy" javaType="User">
+				<id property="id" column="ATTACHMENT_UPDATE_BY"/>
+			</association>
+			<association property="activeCreateBy" javaType="com.bt.surfond.front.core.entity.ActiveUser">
+				<id property="id" column="ATTACHMENT_ACTIVECREATEBY_ID"/>
+				<result property="name" column="ATTACHMENT_ACTIVECREATEBY_NAME"/>
+				<result property="email" column="ATTACHMENT_ACTIVECREATEBY_EMAIL"/>
+				<result property="photo" column="ATTACHMENT_ACTIVECREATEBY_PHOTO"/>
+			</association>
+		</collection>
+	</resultMap>
+	
+	<!-- 根据ID查询日志 -->
+	<select id="get" resultMap="diaryRM">
+		select 
+			a.id as id,
+			a.title as title,
+			a.content as content,
+			a.task_id as task_id,
+			a.create_by as 'create_by',
+			a.create_date as create_date,
+			a.update_by as 'update_by',
+			a.update_date as update_date,
+			a.remarks as remarks,
+			a.del_flag as del_flag,
+			uc.id as 'activeCreateBy_id',
+			uc.name as 'activeCreateBy_name',
+			uc.email as 'activeCreateBy_email',
+			uc.photo as 'activeCreateBy_photo'
+		from poj_diary a
+			left join sys_user uc on uc.id = a.create_by
+		where a.id = #{id}
+	</select>
+	
+	<!-- 根据ID查询日志（详细信息） -->
+	<select id="find" resultMap="diaryAttachmentRM">
+		select 
+			a.id as id,
+			a.title as title,
+			a.content as content,
+			a.task_id as task_id,
+			a.create_by as 'create_by',
+			a.create_date as create_date,
+			a.update_by as 'update_by',
+			a.update_date as update_date,
+			a.remarks as remarks,
+			a.del_flag as del_flag,
+			uc.id as 'activeCreateBy_id',
+			uc.name as 'activeCreateBy_name',
+			uc.email as 'activeCreateBy_email',
+			uc.photo as 'activeCreateBy_photo',
+			
+			d.id as attachment_id,
+			d.name as attachment_name,
+			d.attachment_type as attachment_attachment_type,
+			d.absolute_path as attachment_absolute_path,
+			d.access_path as attachment_access_path,
+			d.task_id as attachment_task_id,
+			d.create_by as attachment_create_by,
+			d.create_date as attachment_create_date,
+			d.update_by as attachment_update_by,
+			d.update_date as attachment_update_date,
+			d.remarks as attachment_remarks,
+			d.del_flag as attachment_del_flag,
+			d.type as attachment_type,
+			d.status as attachment_status,
+			d.size as attachment_size,
+			d.time_length as attachment_time_length,
+			d.attachment_activeCreateBy_id as attachment_activeCreateBy_id,
+			d.attachment_activeCreateBy_name as attachment_activeCreateBy_name,
+			d.attachment_activeCreateBy_email as attachment_activeCreateBy_email,
+			d.attachment_activeCreateBy_photo as attachment_activeCreateBy_photo
+		from
+		
+		(select b.* from poj_diary b where id = #{id}) a
+		
+		left join
+		
+		(select c.*, ucuc.id as attachment_activeCreateBy_id, ucuc.name as attachment_activeCreateBy_name, 
+			ucuc.email as attachment_activeCreateBy_email, ucuc.photo as attachment_activeCreateBy_photo
+		from poj_attachment c 
+			left join sys_user ucuc on ucuc.id = c.create_by
+		where c.del_flag = #{delFlag} and c.status = #{status} and c.type = #{id} order by c.create_date desc) d
+		
+		on d.type = a.id
+		
+		left join sys_user uc on uc.id = a.create_by
+	</select>
+	
+	<!-- 插入日志 -->
+	<insert id="insert">
+		insert into poj_diary (
+			id,
+			title,
+			content,
+			task_id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) values (
+			#{id},
+			#{title},
+			#{content},
+			#{taskId},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<!-- 根据ID删除日志 -->
+	<update id="delete">
+		update poj_diary
+			set del_flag = #{DEL_FLAG_DELETE}
+		where id = #{id}
+	</update>
+	
+	<!-- 根据传入条件查询日志列表 -->
+	<select id="findList" resultMap="diaryRM">
+		select 
+			a.id as id,
+			a.title as title,
+			a.content as content,
+			a.task_id as task_id,
+			a.create_by as 'create_by',
+			a.create_date as create_date,
+			a.update_by as 'update_by',
+			a.update_date as update_date,
+			a.remarks as remarks,
+			a.del_flag as del_flag,
+			uc.id as 'activeCreateBy_id',
+			uc.name as 'activeCreateBy_name',
+			uc.email as 'activeCreateBy_email',
+			uc.photo as 'activeCreateBy_photo'
+		from poj_diary a 
+			left join sys_user uc on uc.id = a.create_by
+		where a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="taskId != null and taskId != ''">and a.task_id = #{taskId}</if>
+		order by a.create_date desc
+	</select>
+	
+</mapper>

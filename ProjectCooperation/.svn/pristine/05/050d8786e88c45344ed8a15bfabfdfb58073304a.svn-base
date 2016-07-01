@@ -1,0 +1,289 @@
+﻿<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js">
+<!--<![endif]-->
+
+<head>
+<meta charset="utf-8">
+<title>Surfond | 用户案例</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="description" content="#" />
+<meta name="keywords" content="#" />
+<meta name="author" content="#" />
+
+<!-- CSS -->
+<link rel="stylesheet" href="http://www.surfond.com/home/css/foundation.min.css">
+<link rel="stylesheet" href="http://www.surfond.com/home/css/styles.css">
+<link rel="icon" href="http://www.surfond.com/home/images/favicon.ico" />
+<!-- JQUERY KENBURN SLIDER  -->
+<script src="http://www.surfond.com/home/js/foundation.min.js"></script>
+
+<script src="http://www.surfond.com/home/js/app.js"></script>
+<script src="http://www.surfond.com/home/js/rs-plugin/js/jquery.slideBox.js" type="text/javascript"></script>
+<!-- JAVASCRIPT FOUNDATION (COMPRESSED) -->
+
+
+<!-- IE Fix for HTML5 Tags -->
+<!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+</head>
+<body>
+
+<!-- HEADER -->
+<div id="header">
+  <div class="row height">
+    <div class="three columns"> <a href="http://www.surfond.com/home/index.html" title="Surfond" id="logo"></a> </div>
+    
+    <!-- NAVIGATION -->
+    <div class="nine columns" id="columns nine ">
+      <nav class="top-bar">
+        <ul>
+          <!-- RESPONSIVE NAVIGATION -->
+          <li class="name">
+            <h1><a href="#" id="choose"> 请选择页面 </a></h1>
+          </li>
+          <li class="toggle-topbar"><a href="#"></a></li>
+          <!-- END RESPONSIVE NAVIGATION -->
+        </ul>
+        <section>
+          <ul class="right navbar-product">
+            <li> <a id="moduleNo_product_1" class="home" href="http://www.surfond.com/home/index.html">首页</a></li>
+            <li> <a id="moduleNo_product_2" href="http://www.surfond.com/home/function.html">产品功能</a></li>
+            <li> <a id="moduleNo_product_3" class="active" href="http://www.surfond.com/home/case.html">用户案例</a></li>
+            <li> <a id="moduleNo_product_4" href="http://www.surfond.com/home/aboutus.html">关于我们</a></li>
+            <div class="lienter">
+              <a id="moduleNo_product_5" href="http://www.surfond.com/a/login" class="enter" target='_blank'>登录
+              </a>
+            </div>
+            <div class="lilogin">
+               <a id="moduleNo_product_6" href="http://www.surfond.com/m/system/user/innerRegist" class="login" target='_blank'>注册
+               </a>
+            </div>
+          </ul>
+        </section>
+      </nav>
+    </div>
+    <!-- END NAVIGATION -->
+    <div class="shadow-down"></div>
+  </div>
+</div>
+<!--END HEADER --> 
+<!-- PAGE HEADER -->
+<div class="container page-header ph-bg2">
+  <div class="row">
+    <div class="twelve columns">
+      <p class="page-title" style="color:#FFF;">用户案例</p>
+      <ul class="breadcrumbs">
+        <li><a href="#">我们的产品在不同的领域都能为你提供优质的服务</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+<!-- END PAGE HEADER --> 
+
+<!-- BLOG CONTAINER -->
+<div class="container main_content">
+  <div class="row">
+    <div class="nine columns" id="ninecolumns"> 
+      <!-- BLOG POSTS -->
+      <div class="twelve columns">
+        <div class="blog-post"> <a href="#"><img class="entry-img" src="http://www.surfond.com/home/images/blog_entry_1.jpg" alt="" width="880" height="300" border="0" /></a>
+          <div class="postdate">
+            <h3>30</h3>
+            <h6>NOV 2011</h6>
+          </div>
+          <div class="entry-title">
+            <h1 class="uppercase"> 软件研发团队案例: </h1>
+            <!-- POSTMETA BLCOK -->
+            <p class="postmeta">30 November 2015 </p>
+            <!-- END POSTMETA BLCOK -->
+            <p class="entry-text">我们是一个专门进行软件研发的团队。团队在研发软件的过程中，团队成员之间的协作与沟通必不可少，各个成员的意见需要及时沟通，开发的数据资料需要共享。
+</p>
+<p class="entry-text">
+一直以来，我们尽可能的使用对我们研发有帮助的软件，比如QQ、Excel、微信等等。我们通过QQ建群发布任务，发送文件，用Excel进行数据统计，用微信进行沟通讨论。我们和其他公司一样，长期以来都是使用这些软件作为我们的工作的辅助，但是对于像我们这些需要高效率并且需要更专心去研发的团队来说，时间长了，问题就出现了。
+</p>
+<p class="entry-text">
+有次项目完成作总结，整理资料的时候发现关于开发部的设计图表找不到了，赶紧找人重发一份，麻烦的是文件在那人家里的电脑里，无奈只好让人下班回去再发了。还有一次因为有其中一部分人去参加科技研讨会，结果负责记笔记的同事直接把本子弄不见了，开会的时候说得不清不楚，有些人在底下就玩起了手机。
+
+            </p>
+            <p class="entry-text">
+         因为我们团队里类似这样的情况经常出现，致使整个研发团队的整体工作效率变低了。为此，我们很希望能够改变现状。于是，我们请了个小秘书。让小秘书去防止状况的发生就是让她亲自担任这些工作。这样一来我们的小秘书每天就有很多工作了。
+
+            </p>
+             <p class="entry-text">
+  由于我们是做软件研发的，每个人都有负责不同的版块，所以协作很重要。我们的小秘书负责把我制定安排好的工作任务分发到每个人手上，写明截止日期。然后所有人要提交的数据资料都让小秘书去整理上传给我，包括创意想法以及意见，都会第一时间打包整理好放在我面前。我还让小秘书每天把项目进度和时间安排罗列出来，让整个团队的人都能心中有数。这么给力的小秘书，我们整个团队已经完全依赖上她了。以前我们经常会因为时间太过久远而找不回需要的信息或者文件，又或者不了解进展情况每次开会都要一个一个自报进度，现在这样的情况不会再出现了。           
+             </p>
+             <p class="entry-text">
+  在我们看来，效率对于一个软件研发团队来说是非常重要的。而这个秘书的存在，让我们团队的每一个人再也不需要花上半天时间去解决怎么整理数据更好，通知下达也不用一一告知，队员们也都对自己的工作一清二楚，对项目的进度也了如指掌。小秘书的存在让我们团队真正实现了更加轻松的工作，而我们搞研发的就能更专心的去搞研发。现在，她已经成为我们团队中不可缺少的一份子。我们都认为，一个软件研发团队都应该配备一名像我们这位有能力的小秘书。我们的小秘书叫Surfond，基于互联网的好秘书。一名专业的效率管理小秘书 。          
+             </p>
+             
+            <a class="link-btn" href="#">更多内容 &rarr;</a> </div>
+          <hr/>
+        </div>
+        <div class="blog-post"> <a href="#"><img class="entry-img" src="http://www.surfond.com/home/images/blog_entry_2.jpg" alt="" width="880" height="300" border="0" /></a>
+          <div class="postdate">
+            <h3>23</h3>
+            <h6>SEP 2015</h6>
+          </div>
+          <div class="entry-title">
+            <h1 class="uppercase"> 工程项目团队管理案例 </h1>
+            <!-- POSTMETA BLCOK -->
+            <p class="postmeta">23 September 2015 </p>
+            <!-- END POSTMETA BLCOK -->
+             <p class="entry-text">我是这个工程项目团队的总工程师。
+</p>
+<p class="entry-text">
+我还有个助手。
+</p>
+<p class="entry-text">
+我想说说这个助手对我们团队的影响有多大。
+            </p>
+<p class="entry-text">
+一个有经验的工程项目团队是要具备专业的资源发掘团队和对市场动态的客观剖析，团队所有人共同承担项目目标的责任，并向总负责人汇报。我们现在的这个团队的优势在于业务一体化、有专业的设计团队、产业链优势以及拥有资质证书。
+            </p>
+            <p class="entry-text">
+但是在以前，我们团队并没有这些优势，那时候我们用的最多的沟通联络方式就是电话，有什么问题直接说，明明白白清清楚楚。团队里面并不是所有人都整日都在一起，所以很多时候都是计算好了测量好了之后直接和负责人联系，轮到谁去做下一步了就打个电话告诉他时间地点。计划、组织、监督、控制、协调，每一个环节都不能出差错。工作量大而且每个人要做的事情多，有时候电话联络不上负责人，只能继续打电话直到电话接通。
+            </p>
+            <p class="entry-text">
+然而每个施工项目都要经过项目论证、审查与立项、办理项目相关许可手续、初步设计审查、征地、考古、勘察、施工图纸设计、设备订货组织、材料计划及预算编制、工程招标发包与施工组织、竣工验收与施工结算、工程审计以及效能评价等等一系列的流程。每一步基本上都要做到位。搞工程的，不是说干就干，而是要做好相当多的人员和物料准备等等的工作才能动工。一般情况下是由总负责人接洽项目，然后分头把任务下达给负责粉刷、搬运、电线线路、安装等板块的人员，按照进展的情况一步步做，我的助手就是去把所有的任务传达下去，所有人统一从我助手那里获取任务。然后分类归纳好哪个项目是哪个客户的，方便给我们团队去联系沟通；有项目了就把项目的安排和每个人的日程表同步在一起，时间安排就能心中有数。
+            </p>
+            <p class="entry-text">
+这就是我的助手。也正是有了这个助手，我们才在同行中展现我们的优势。
+            </p>
+            <p class="entry-text">
+对我们团队影响极大的助手——Surfond。我必须承认，这个助手我非常喜欢，对工程项目团队来说，能够更好的异地沟通协作以及高层人员能够时刻详细了解把控整个公司运营是最重要的。Surfond当然也是可以做到。立足当前实际，着眼未来发展，管理方式更加简单直接有效，就是工程项目团队最好的助手。
+            </p>
+            <a class="link-btn" href="#">更多内容 &rarr;</a> </div>
+          <hr/>
+        </div>
+        
+        
+        
+        
+        
+        
+      <div class="blog-post"> <a href="#"><img class="entry-img" src="http://www.surfond.com/home/images/11.jpg" alt="" width="880" height="300" border="0" /></a>
+          <div class="postdate">
+            <h3>10</h3>
+            <h6>JUN 2015</h6>
+          </div>
+          <div class="entry-title">
+            <h1 class="uppercase"> 与你相遇，是我们的幸运 </h1>
+            <!-- POSTMETA BLCOK -->
+            <p class="postmeta">20 June 2015 </p>
+            <!-- END POSTMETA BLCOK -->
+             <p class="entry-text">我和我老公新婚快半年了，结婚以来我们都忙于日常生活，蜜月也还没有去，庆幸的是我们有了家庭新成员，现在我辞职做了全职太太，我的老公在工作之余就陪我散散步，聊聊天。那天我们晚饭后在小区里散步，偶然聊起我们的婚礼，他突然停下脚步回过身轻轻摸了摸我的小肚子说：“辛苦了，老婆。”我鼻子酸酸的，“谢谢你，我亲爱的老公。”这一刻，又将成为我们之间一个美好的回忆。
+</p>
+<p class="entry-text">
+谈起我们的婚礼，记忆之中，除了满满的幸福就是一大堆，准确的来说是超级一大堆的准备工作。
+</p>
+<p class="entry-text">
+我和我老公都是长期在广州生活工作的80后，恋爱长跑了4年，去年圣诞节在一家咖啡馆里向我求了婚。我们和其他新人一样，都希望这场婚礼是完完全全属于我们自己的，而不是走流程出来的。我们决定自己去筹划整个婚礼。我和我老公把工作以外的时间全部给了婚礼。先是列清单，完了之后老公突然来了一句：“老婆，这清单比你的超市购物清单还要长啊！”，酒店地点、时间、司仪、装修婚房、礼金、拍婚纱照、宾客名单、当日的吉时、婚车行驶路线、兄弟团姐妹团、花童、人员服装、摄影师、化妆师、婚纱礼服、装饰用品、喜糖盒、婚车装饰、嫁妆、座位安排、场景布置……全部都需要我们两个人亲力亲为。后来，我们已经对新房做好了设计图，于是找了个周末一起去挑选家具，我们在家具市场花了整整一天的时间，却是无功而返，一些家具不能定制，一些家具又太贵，还有就是颜色不搭配。我和我老公吃完晚饭回到家，直接累趴在沙发上，第二天起床脚还是很没力的感觉。眼看离婚礼都不到四个月了，而我们除了定好了时间地点，其他什么都没确定下来，一个礼拜就只有周末才有充足的时间去准备婚礼的东西，昨天逛了个家具没买成，今天一点都不想理会婚礼的事情了。我们决定好好待在家，上网找找看有没有什么办法可以帮助像我们这样的新人去应付繁琐的婚礼准备。最后我们真的找到了办法，而且还是很给力的办法。
+            </p>
+<p class="entry-text">
+于是我和我老公把还没有完成的全部清单内容排好顺序同步到我们的日程表上，然后按照日程表上面计划好的一步步去准备。每当完成一个事情就结束一个。我们结束每一个项目时，就像打游戏机一样，一关一关通过，离打大BOSS越来越近那么离成功也就越来越近。我和我老公自从用了这个办法之后对婚礼的准备越来越有信心，既不用担心时间安排不够，又不用担心准备的东西有缺漏，最重要的是让我们能够完全知道整个准备过程进展的怎样了，可以按照实际情况作调整，对我们这些偶尔要加班的预备夫妻来说这种办法简直就是大大的福利，这让我们对我们的婚礼越来越充满信心与期待了。
+            </p>
+            <p class="entry-text">
+今年八月十三日，我们终于完成了属于我们的婚礼，努力换取了满满的幸福，让所有人见证了我们的爱情步入婚姻。我还记得，那时候我老公还当着所有人的面说了一句：“从今往后，我有个好老婆啦！”这就是我们的幸福。
+            </p>
+            <p class="entry-text">
+妈妈说：“一辈子就那么一次，不要委屈了自己。”，Surfond帮助了我们完成婚礼，成全了我们的幸福。我想说：“我不委屈，我有我爱的老公，我有你们，我还有Surfond。”
+            </p>
+            <a class="link-btn" href="#">更多内容 &rarr;</a> </div>
+          <hr/>
+        </div>
+        
+        
+        
+        
+        
+        
+        <!-- END SINGLE POST --> 
+      </div>
+      <!-- END BLOG POSTS --> 
+    </div>
+</div>
+</div>
+<!-- END BLOG CONTAINER --> 
+
+<!-- FOOTER -->
+<div class="container footer">
+  <div class="row">
+    <div class="three columns">
+      <h5>页面导航</h5>
+      <div class="list-type-footer">
+        <ul>
+          <li> <a href="http://www.surfond.com/home/index.html">首页</a></li>
+          <li> <a class="active" href="http://www.surfond.com/home/function.html">产品功能</a></li>
+          <li> <a href="http://www.surfond.com/home/case.html">用户案例</a></li>
+         <!--  <li> <a href="http://www.surfond.com/home/help.html">支持与帮助</a></li> -->
+          <li> <a href="http://www.surfond.com/home/aboutus.html">关于我们</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="three columns">
+      <h5>合作伙伴</h5>
+      <div class="list-type-footer">
+        <ul>
+          <li> <a href="#">微软MicroSoft</a> </li>
+          <li> <a href="#">阿里云</a> </li>
+          <li> <a href="#">百度云</a> </li>
+          <li> <a href="#">腾讯</a> </li>
+          <li> <a href="#">中国移动</a> </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="three columns">
+      <h5>安全保障</h5>
+      <p><a href="#"> <img class="img_float_left" src="http://www.surfond.com/home/images/thumb_1.jpg" width="40" height="40" alt=
+      "" /> <strong style="font-size:14px; color:#FFF;">企业自有服务</strong></a><br />
+        让您不再担心数据安全问题</p>
+      <p><a href="#"> <img class="img_float_left" src="http://www.surfond.com/home/images/thumb_2.jpg" width="40" height="40" alt=
+      "" /> <strong style="font-size:14px; color:#FFF;">三天退款保障</strong></a><br />
+        购买三天后不满意可以退款</p>
+      <p><a href="#"> <img class="img_float_left" src="http://www.surfond.com/home/images/thumb_3.jpg" width="40" height="40" alt=
+      "" /> <strong style="font-size:14px; color:#FFF;">7X24小时技术支持</strong></a><br />
+        安心保障让您放心使用</p>
+    </div>
+
+    <div class="three columns">
+      <h5>联系方式</h5>
+      <img class="img_float_left" src="http://www.surfond.com/home/images/footer_icon_1.png" alt="" />
+      <p> (+86) 020 3815 3945 </p>
+      <img class="img_float_left" src="http://www.surfond.com/home/images/footer_icon_2.png" alt="" />
+      <p> <a href="mailto:#">baitao@clearcom.com.cn</a> </p>
+      <img src="http://www.surfond.com/home/images/footer_icon_3.png" alt="" class="img_float_left" />
+      <p class="tab"> <strong style="color:#FFF;">广州柏涛信息技术有限责任公司</strong><br />
+        广州市天河区华观路1933-1号<br />
+        万科云城B栋7楼718</p>
+        
+    </div>
+  </div>
+</div>
+<!-- END FOOTER --> 
+<!-- SUBFOOTER -->
+<div class="container subfooter">
+  <div class="row">
+    <div class="six columns">
+      <p> &#169; Copyright - 版权所有 <a href="http://www.clearcom.com.cn/" target="_blank" title="广州市柏涛信息技术有限责任公司">广州市柏涛信息技术有限责任公司</a> </p>
+    </div>
+    <!--
+    <div class="six columns">
+      <div class="large-social-block"> <a href="#"><span class="social dribbble"></span></a> <a href="#"><span class="social flickr"></span></a> <a href="#"><span class="social linkedin"></span></a> <a href="#"><span class="social google"></span></a> <a href="#"><span class="social twitter"></span></a> <a href="#"><span class="social facebook"></span></a>
+ </div>
+ --> 
+  </div>
+</div>
+</div>
+<!-- END SUBFOOTER --> 
+<script src="http://www.surfond.com/home/js/service.js"></script>
+
+</body>
+</html>

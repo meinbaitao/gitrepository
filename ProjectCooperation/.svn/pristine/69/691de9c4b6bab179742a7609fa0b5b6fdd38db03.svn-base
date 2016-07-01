@@ -1,0 +1,42 @@
+<div class="modal-body">
+	<form class="form-horizontal" target="_top" method="post">
+		<div class='select-area'>
+			<div class='header'>空间部门</div>
+			<div class='select-content'>
+				<ul class='member-list'  id="show-space-organize-list">
+						<!-- <li user-id='member1' title="销售部">
+							<label  class='sicon-checkbox' for='input1'>
+								<input id='input1' id='input1' type='checkbox' autocomplete="false">
+							</label>
+							
+							<span class='member-name'>销售部</span>
+						</li>
+						
+						<li user-id='member2' title="设计部">
+							<label class='sicon-checkbox' for='input2'>
+								<input id='input2' type='checkbox'>
+							</label>
+							
+							<span class='member-name'>设计部</span>
+						</li> -->
+					</ul>
+				</div>
+			</div>
+			<div  class='selected-area'>
+				<div class='header'>已选部门</div>
+				<div class='select-content'>
+				<ul class='member-list' ></ul>
+			</div>
+		</div>
+	</form>
+</div>
+
+<div class="modal-footer">
+	<div class="form-group">
+		<label for="message-text" class="col-sm-4 control-label">&nbsp;</label>
+		<div class="botton col-sm-8">
+			<button  class="btn-orange" data-dismiss="modal" aria-label="Close">保存</button>
+			<button  class="btn-gray " data-dismiss="modal" aria-label="Close" data-toggle="modal" data-target="#add-staff" >取消</button>
+		</div>
+	</div>
+</div>

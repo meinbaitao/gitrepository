@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bt.surfond.space.dao.SpaceDao">
+    
+	<sql id="spaceColumns">
+		a.id AS "id",
+		IFNULL(a.title, '') AS "title",
+		IFNULL(a.description, '') AS "description",
+		a.type AS "type",
+		a.sort AS "sort",
+		a.status AS "status",
+		a.user_id AS "user.id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		IFNULL(a.remarks, '') AS "remarks",
+		a.del_flag AS "delFlag",
+		IFNULL(a.address,'') AS "address",
+		IFNULL(a.source,'') AS "source"
+	</sql>
+    
+    <!-- 主键查询记录 -->
+	<select id="geta" resultType="Space">
+		SELECT 
+			<include refid="spaceColumns"/>
+		FROM poj_space a
+		WHERE a.id = #{id}
+	</select>
+
+	<!-- 插入记录 -->
+	<insert id="insert1">
+		INSERT INTO poj_space(
+			id,
+			title,
+			description,
+			type,
+			sort,
+			status,
+			address,
+			user_id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			source
+		) VALUES (
+			#{id},
+			#{title},
+			#{description},
+			#{type},
+			#{sort},
+			#{status},
+			#{address},
+			#{user.id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{source}
+		)
+	</insert>
+	
+	<!-- 逻辑删除记录 -->
+	<update id="delete">
+		UPDATE poj_space SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 查询与当前登录用户关联的空间列表 -->
+	<select id="findSpaceList" resultType="Space">
+		SELECT 
+			<include refid="spaceColumns" />,
+			(select count(m.id) from poj_organize_member m where m.organize_id = o.id) AS "memberAmount"
+		FROM poj_space a
+			LEFT JOIN poj_organize o ON o.space_id = a.id
+			LEFT JOIN poj_organize_member om ON om.organize_id = o.id
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} AND om.user_id = #{currentUser.id}
+		GROUP BY a.id
+		ORDER BY a.update_date DESC
+	</select>
+	
+	<!-- 查询与当前登录用户关联的空间总数 -->
+	<select id="findSpaceCount" resultType="int">
+		SELECT 
+			IFNULL(COUNT(a.id), 0)
+		FROM poj_space a
+			LEFT JOIN poj_organize o ON o.space_id = a.id
+			LEFT JOIN poj_organize_member om ON om.organize_id = o.id
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} AND om.user_id = #{currentUser.id}
+	</select>
+	
+	<!-- 根据空间编号查询与当前登录用户关联的空间 -->
+	<select id="findSpace" resultType="Space">
+		SELECT 
+			<include refid="spaceColumns" />
+		FROM poj_space a
+			LEFT JOIN poj_organize o ON o.space_id = a.id
+			LEFT JOIN poj_organize_member om ON om.organize_id = o.id
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} AND a.id = #{id} AND om.user_id = #{currentUser.id}
+		GROUP BY a.id
+	</select>
+	
+	<!-- 查询最早创建的空间 -->
+	<select id="findEarlySpace" resultType="Space">
+		SELECT 
+			<include refid="spaceColumns" />
+		FROM poj_space a
+			LEFT JOIN poj_organize o ON o.space_id = a.id
+			LEFT JOIN poj_organize_member om ON om.organize_id = o.id
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} AND om.user_id = #{currentUser.id} 
+		GROUP BY a.id
+		ORDER BY a.create_date ASC 
+			LIMIT 1
+	</select>
+	
+	<!-- 更新空间标题和描述 -->
+	<update id="updateTitleAndDescriptionById">
+		UPDATE poj_space SET 
+			title = #{title},
+			description = #{description},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 查询空间成员列表 -->
+	<select id="findSpaceMemberList1" resultType="map">
+		SELECT 
+			u.id AS "id", 
+			u.name AS "name", 
+			u.photo AS "photo", 
+			u.email AS "email"
+		FROM poj_space a 
+			LEFT JOIN poj_organize o ON o.space_id = a.id
+			LEFT JOIN poj_organize_member om ON om.organize_id = o.id
+			LEFT JOIN sys_user u ON u.id = om.user_id
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} AND o.del_flag = #{DEL_FLAG_NORMAL} AND a.id = #{id} AND u.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="keyword != null and keyword != ''">
+				AND u.name like concat('%', #{keyword}, '%')
+			</if>
+	</select>
+	
+	<!-- start - xiaocai -->
+	<sql id="doneConditionColumns">
+		<if test="isOntime!=null and isOntime!='' and isOntime == 'onTimeUnDone' and taskStatus!=null and taskStatus!=''">	
+				<!-- 按时未完成 -->
+				and to_days(projecttask.due_date) &gt;= to_days(now()) and projecttask.status = #{taskStatus}
+			</if>
+			<if test="isOntime!=null and isOntime!='' and isOntime == 'overTimeUnDone' and taskStatus!=null and taskStatus!=''">	
+				<!-- 超时未完成 -->
+				and to_days(projecttask.due_date) &lt; to_days(now()) and projecttask.status = #{taskStatus}
+			</if>
+			<if test="isOntime!=null and isOntime!='' and isOntime == 'onTimeDone' and taskStatus!=null and taskStatus!=''">	
+				<!-- 按时完成 -->
+				and to_days(projecttask.due_date) &gt;= to_days(projecttask.finish_date) and projecttask.status = #{taskStatus}
+			</if>
+			<if test="isOntime!=null and isOntime!='' and isOntime == 'overTimeDone' and taskStatus!=null and taskStatus!=''">	
+				<!-- 超时完成 -->
+				and to_days(projecttask.due_date) &lt; to_days(projecttask.finish_date) and projecttask.status = #{taskStatus}
+			</if>
+	</sql>
+	<select id="countTaskByCondition" parameterType="map" resultType="int">
+		select ifnull(count(*),0) 
+		 from poj_space space
+			 join poj_space_project_task spaceprojecttask on spaceprojecttask.space_id=space.id
+			 join poj_project_task projecttask on projecttask.id=spaceprojecttask.record_id
+		where projecttask.del_flag = #{DEL_FLAG_NORMAL} and projecttask.type=#{taskType}
+			<if test="beforeDate!=null and beforeDate!=''">	
+				and to_days(projecttask.create_date) &lt;= to_days(#{beforeDate})
+			</if>
+			<if test="finishDate!=null and finishDate!='' and taskStatus!=null and taskStatus!=''">	
+				and to_days(projecttask.finish_date)=to_days(#{finishDate}) and projecttask.status = #{taskStatus}
+			</if>
+			<if test="spaceId!=null and spaceId!=''">
+				and space.id=#{spaceId}
+			</if>
+			<if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' and (isFinish=='unDone' or isFinish=='all')">
+				and projecttask.create_date between #{startDate} and #{endDate}
+			</if>
+			<if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' and isFinish=='done'">
+				and projecttask.finish_date between #{startDate} and #{endDate}
+			</if>
+			<include refid="doneConditionColumns"/>
+			<if test="taskStatus!=null and taskStatus!=''">
+				and projecttask.status = #{taskStatus}
+			</if>
+	</select>
+	
+	<select id="sumPraiseAmountByCondition" parameterType="map" resultType="map">
+		select * from 
+			(
+				select ifnull(sum(projecttask.praise_amount),0) as praiseamount ,
+						sysuser.login_name as loginName,
+					  	sysuser.`name` as userName
+				 from poj_space space
+					 join poj_space_project_task spaceprojecttask on spaceprojecttask.space_id=space.id
+					 join poj_project_task projecttask on projecttask.id=spaceprojecttask.record_id
+					 join sys_user sysuser on sysuser.id=projecttask.user_id
+				where projecttask.del_flag = #{DEL_FLAG_NORMAL} and projecttask.type=#{taskType}
+					<if test="spaceId!=null and spaceId!=''">
+						and space.id=#{spaceId}
+					</if>
+					<if test="startDate!=null and startDate!='' and endDate!=null and endDate!=''">
+						and projecttask.create_date between #{startDate} and #{endDate}
+					</if>
+					<!-- 
+					<if test="isOntime!=null and isOntime!='' and isOntime == true">
+						and projecttask.finish_date &lt;= projecttask.due_date
+					</if>
+					<if test="taskStatus!=null and taskStatus!=''">
+						and projecttask.status = #{taskStatus}
+					</if>
+					-->
+				group by sysuser.id 
+			) b
+		order by b.praiseamount desc
+			<if test="start >=0 and size > 0">
+				limit #{start},#{size} 
+			</if>
+	</select>
+	<select id="getCountTaskByCondition" parameterType="map" resultType="map">
+		select 
+			 ifnull(count(*),0) as count,
+			 sysuser.name as userName
+		 from poj_space space
+			 join poj_space_project_task spaceprojecttask on spaceprojecttask.space_id=space.id
+			 join poj_project_task projecttask on projecttask.id=spaceprojecttask.record_id
+			 join sys_user sysuser on sysuser.id=projecttask.user_id
+		where projecttask.del_flag = #{DEL_FLAG_NORMAL} and projecttask.type=#{taskType}
+			<if test="spaceId!=null and spaceId!=''">
+				and space.id=#{spaceId}
+			</if>
+			<if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' and isFinish=='unDone'">
+				and projecttask.create_date between #{startDate} and #{endDate}
+			</if>
+			<if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' and isFinish=='done'">
+				and projecttask.finish_date between #{startDate} and #{endDate}
+			</if>
+			<include refid="doneConditionColumns"/>
+			<if test="taskStatus!=null and taskStatus!=''">
+				and projecttask.status = #{taskStatus}
+			</if>
+			group by sysuser.id 
+	</select>
+	<!-- 统计空间成员数 -->
+	<select id="countSpanceMember" parameterType="map" resultType="map">
+		select 
+				space.id as id,
+				count(spacemember.id) as count 
+			from poj_space space
+ 				left join poj_space_member spacemember on spacemember.space_id=space.id
+			where (1=1)
+			<if test="spaceId!=null and spaceId!=''">
+				and space.id = #{spaceId}
+			</if>
+			group by space.id
+	</select>
+	<!-- 统计空间任务数 -->
+	<select id="countSpaceTaskByCondition" parameterType="map" resultType="map">
+		select 
+			space.id as id,
+			count(spaceprojecttask.id) as count 
+		from poj_space space
+			 left join poj_space_project_task spaceprojecttask on spaceprojecttask.space_id=space.id
+			 left join poj_project_task projecttask on projecttask.id=spaceprojecttask.record_id
+		where projecttask.del_flag = #{DEL_FLAG_NORMAL} and projecttask.type=#{taskType}
+		 	<if test="beforeDate!=null and beforeDate!=''">	
+				and to_days(projecttask.create_date)&lt;=to_days(#{beforeDate})
+			</if>
+			<if test="finishDate!=null and finishDate!='' and taskStatus!=null and taskStatus!=''">	
+				and to_days(projecttask.finish_date)=to_days(#{finishDate}) and projecttask.status = #{taskStatus}
+			</if>
+		 	<if test="createDate!=null and createDate!=''">
+				and to_days(projecttask.create_date)=to_days(#{createDate})
+			</if>
+			<include refid="doneConditionColumns"/>
+		group by space.id
+	</select>
+	<!-- end - xiaocai -->
+	
+	<!-- write at the last ： what i do is what i want. -->
+	
+	<!-- 空间信息映射 -->
+	<resultMap type="Space" id="spaceRM">
+		<id property="id" column="ID"/>
+		<result property="title" column="TITLE"/>
+		<result property="description" column="DESCRIPTION"/>
+		<result property="type" column="TYPE"/>
+		<result property="sort" column="SORT"/>
+		<result property="status" column="STATUS"/>
+		<result property="createDate" column="CREATE_DATE"/>
+		<result property="updateDate" column="UPDATE_DATE"/>
+		<result property="remarks" column="REMARKS"/>
+		<result property="delFlag" column="DEL_FLAG"/>
+		<result property="address" column="ADDRESS"/>
+		<result property="source" column="SOURCE"/>
+		<result property="ownerId" column="OWNER_ID"/>
+		<association property="createBy" javaType="User">
+			<id property="id" column="CREATE_BY"/>
+		</association>
+		<association property="updateBy" javaType="User">
+			<id property="id" column="UPDATE_BY"/>
+		</association>
+		<association property="owner" javaType="com.bt.surfond.front.core.entity.ActiveUser">
+			<id property="id" column="OWNER_ID"/>
+			<result property="name" column="OWNER_NAME"/>
+			<result property="email" column="OWNER_EMAIL"/>
+			<result property="photo" column="OWNER_PHOTO"/>
+		</association>
+		<association property="activeCreateBy" javaType="com.bt.surfond.front.core.entity.ActiveUser">
+			<id property="id" column="ACTIVECREATEBY_ID"/>
+			<result property="name" column="ACTIVECREATEBY_NAME"/>
+			<result property="email" column="ACTIVECREATEBY_EMAIL"/>
+			<result property="photo" column="ACTIVECREATEBY_PHOTO"/>
+		</association>
+	</resultMap>
+	
+	<!-- 插入记录 -->
+	<insert id="insert">
+		insert into poj_space(
+			id,
+			title,
+			description,
+			type,
+			sort,
+			status,
+			address,
+			user_id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			source
+		) values (
+			#{id},
+			#{title},
+			#{description},
+			#{type},
+			#{sort},
+			#{status},
+			#{address},
+			#{ownerId},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{source}
+		)
+	</insert>
+	
+	<!-- 根据ID查询空间 -->
+	<select id="get" resultMap="spaceRM">
+		select 
+			a.id,
+			a.title,
+			a.description,
+			a.type,
+			a.sort,
+			a.status,
+			a.create_by,
+			a.create_date,
+			a.update_by,
+			a.update_date,
+			a.remarks,
+			a.del_flag,
+			a.address,
+			a.source,
+			a.user_id as owner_id,
+			uo.id as owner_id,
+			uo.name as owner_name,
+			uo.email as owner_email,
+			uo.photo as owner_photo,
+			uc.id as activeCreateBy_id,
+			uc.name as activeCreateBy_name,
+			uc.email as activeCreateBy_email,
+			uc.photo as activeCreateBy_photo
+		from poj_space a
+			left join sys_user uo on uo.id = a.user_id
+			left join sys_user uc on uc.id = a.create_by
+		where a.id = #{id}
+	</select>
+	
+	<!-- 根据ID更新空间 -->
+	<update id="update">
+		update poj_space 
+		<set>
+			<if test="title != null and title != ''">
+				title = #{title},
+			</if>
+			<if test="description != null and description != ''">
+				description = #{description},
+			</if>
+			<if test="ownerId != null and ownerId != ''">
+				user_id = #{ownerId},
+			</if>
+			<if test="updateBy != null and updateBy.id != null and updateBy.id != ''">
+				update_by = #{updateBy.id},
+			</if>
+			<if test="updateDate != null">
+				update_date = #{updateDate},
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<!-- 跨空间：个人所在空间所有成员列表 -->
+	<select id="findMemberListIgnoreSpace" resultType="com.bt.surfond.front.core.entity.ActiveUser">
+		select ut.id, ut.name, ut.email, ut.photo from (
+		
+		select * from sys_user u where u.del_flag = #{DEL_FLAG_NORMAL}) ut
+		
+		inner join (
+		
+		select omom.user_id from (
+		
+		select s.id from poj_space s where s.del_flag = #{DEL_FLAG_NORMAL}) ss
+		
+		inner join (
+		
+		select (select o.space_id from poj_organize o where o.del_flag = #{DEL_FLAG_NORMAL} and o.id = om.organize_id) as space_id 
+		from poj_organize_member om where om.user_id = #{memberId}
+		group by space_id) tt
+		
+		on tt.space_id = ss.id
+		
+		inner join (
+		
+		select oo.id, oo.space_id from poj_organize oo where oo.del_flag = #{DEL_FLAG_NORMAL}) ooo
+		
+		on ooo.space_id = tt.space_id
+		
+		inner join poj_organize_member omom on omom.organize_id = ooo.id
+		
+		group by omom.user_id) umt
+		
+		on umt.user_id = ut.id
+	</select>
+	
+	<!-- 查询空间成员列表 -->
+	<select id="findSpaceMemberList" resultType="com.bt.surfond.front.core.entity.ActiveUser">
+		select um.id, um.name, um.email, um.photo from sys_user um 
+		
+		inner join (
+		
+		select om.user_id from poj_organize_member om where om.organize_id in (
+		
+		select o.id from poj_organize o where o.del_flag = #{DEL_FLAG_NORMAL} and o.space_id = #{id})
+		
+		group by om.user_id) mmt
+		
+		on mmt.user_id = um.id
+	</select>
+	
+</mapper>

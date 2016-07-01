@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bt.surfond.taskboard.dao.TaskBoardDao">
+    
+	<sql id="taskBoardColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.type AS "type",
+		a.sort AS "sort",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate"
+	</sql>
+    
+    <parameterMap type="map" id="taskBoardVO">    
+   		<parameter property="type" jdbcType="VARCHAR" mode="IN"/>    
+   		<parameter property="userId" jdbcType="VARCHAR" mode="IN"/>    
+   		<parameter property="uuId" jdbcType="VARCHAR" mode="IN"/>  
+   		<parameter property="spaceId" jdbcType="VARCHAR" mode="IN"/>
+ 	</parameterMap>  
+    
+    <sql id="taskBoardJoins">
+    	
+	</sql>
+	
+    <select id="get" resultType="TaskBoard">
+		SELECT 
+			<include refid="taskBoardColumns"/>
+		FROM poj_taskboard a
+		<include refid="taskBoardJoins"/>
+		WHERE a.id = #{id}
+	</select>
+    
+	
+	<!-- 插入记录 -->
+	<insert id="insert">
+		INSERT INTO poj_taskboard(
+			id,
+			name,
+			space_id,
+			type,
+			sort,
+			create_by,
+			create_date,
+			update_by,
+			update_date
+		) VALUES (
+			#{id},
+			#{name},
+			#{spaceId},
+			#{type},
+			#{sort},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate}
+		)
+	</insert>
+	
+	<select id="initTaskBoard" parameterMap="taskBoardVO" statementType="CALLABLE">  
+      {call proc_init_taskboard(  
+        #{type},#{createBy.id},#{id},#{spaceId}
+      )}  
+  	</select>  
+	
+	<!-- 当前成员与看板关系-->
+	<insert id="saveTaskBoardAndUser">
+		INSERT INTO poj_taskboard_member(
+			id,
+			taskboard_id,
+			resource_id
+		) VALUES (
+			#{id},
+			#{boardId},
+			#{resourceId}
+		)
+	</insert>
+	
+	<!-- 当前成员与看板关系-->
+	<insert id="saveTaskBoardAndTask">
+		INSERT INTO poj_taskboard_task(
+			id,
+			taskboard_id,
+			resource_id
+		) VALUES (
+			#{id},
+			#{boardId},
+			#{resourceId}
+		)
+	</insert>
+	
+	<!-- 根据类型(当前登陆人、项目、空间)查询看板列表-->
+	<select id="findListByType" resultType="TaskBoard">
+		select a.id,a.`name`,a.sort from poj_taskboard a
+		LEFT JOIN poj_taskboard_member tm on a.id=tm.taskboard_id
+		where 
+		tm.resource_id=#{currentUser.id}
+		ORDER BY sort
+	</select>
+	
+	<!-- 根据类型(当前登陆人、项目、空间)查询看板总数-->
+	<select id="findCountByType" resultType="TaskBoard">
+		select count(1) as count from poj_taskboard a where a.type=#{type} and a.create_by=#{createBy.id};
+	</select>
+	
+	<!-- 根据看板ID查询所关联的对象(任务、项目下的任务、空间等)-->
+	<select id="findListByTaskBoardId" resultType="TaskBoard">
+		
+	</select>
+	
+	<!--修改看板名称-->
+	<update id="updateName">
+		
+	</update>
+	
+	<!-- 删除看板 -->
+	<delete id="delete">
+		
+	</delete>
+	
+	<!--修改看板排序-->
+	<update id="updateSort">
+		
+	</update>
+	
+</mapper>

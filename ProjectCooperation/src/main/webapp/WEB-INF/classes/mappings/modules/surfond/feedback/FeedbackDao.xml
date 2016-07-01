@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bt.surfond.feedback.dao.FeedbackDao">
+    
+	<sql id="feedbackColumns">
+		a.id AS "id",
+		a.parent_id AS "parentId",
+		IFNULL(a.description,'') AS "description",
+		a.type AS "type",
+		a.status AS "status",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="feedbackJoins">
+	</sql>
+    
+	<select id="get" resultType="Feedback">
+		SELECT 
+			<include refid="feedbackColumns"/>
+		FROM poj_feedback a
+		<include refid="feedbackJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Feedback">
+		SELECT 
+			<include refid="feedbackColumns"/>
+		FROM poj_feedback a
+		<include refid="feedbackJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Feedback">
+		SELECT 
+			<include refid="feedbackColumns"/>
+		FROM poj_feedback a
+		<include refid="feedbackJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO poj_feedback(
+			id,
+			parent_id,
+			description,
+			type,
+			status,
+			create_by,
+			create_date,
+			del_flag
+		) VALUES (
+			#{id},
+			#{parentId},
+			#{description},
+			#{type},
+			#{status},
+			#{createBy.id},
+			#{createDate},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE poj_feedback SET 	
+			parent_id = #{parentId},
+			description = #{description},
+			type = #{type},
+			status = #{status}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE poj_feedback SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 按用户查找所有意见反馈信息 -->
+	<select id="findAllFeedbackInfo" resultType="Feedback">
+	SELECT 
+		u.`name` AS "userName",
+		u.photo AS "userPhoto",
+		<include refid="feedbackColumns"/>
+	FROM poj_feedback a
+		LEFT JOIN sys_user u ON a.create_by = u.id 
+		WHERE a.type = #{type} AND a.create_by = #{createBy.id} AND a.del_flag = #{DEL_FLAG_NORMAL} ORDER BY a.create_date DESC
+	</select>
+	
+	<!-- 管理员查找所有意见反馈信息 -->
+	<select id="AdminfindAllFeedbackInfo" resultType="Feedback">
+	SELECT 
+		u.`name` AS "userName",
+		u.photo AS "userPhoto",
+		<include refid="feedbackColumns"/>
+	FROM poj_feedback a
+		LEFT JOIN sys_user u ON a.create_by = u.id 
+		WHERE a.type = #{type} AND a.del_flag = #{DEL_FLAG_NORMAL} ORDER BY a.create_date DESC
+	</select>
+	
+	<!-- 查找单个意见反馈/回复信息  -->
+	<select id="findOneFeedbackInfo" resultType="Feedback">
+	SELECT 
+		u.`name` AS "userName",
+		u.photo AS "userPhoto",
+		<include refid="feedbackColumns"/>
+	FROM poj_feedback a
+		LEFT JOIN sys_user u ON a.create_by = u.id 
+		WHERE a.id = #{id} AND a.del_flag = #{DEL_FLAG_NORMAL}
+	</select>
+	
+	<!-- 查找所有的意见反馈回复  -->
+	<select id="findAllFeedbackCommentListByParentId" resultType="Feedback">
+	SELECT 
+		u.`name` AS "userName",
+		u.photo AS "userPhoto",
+		<include refid="feedbackColumns"/>
+	FROM poj_feedback a
+		LEFT JOIN sys_user u ON a.create_by = u.id 
+		WHERE a.parent_id = #{parentId} AND a.type = #{type} AND a.del_flag = #{DEL_FLAG_NORMAL} ORDER BY a.create_date
+	</select>
+	
+	<!-- 查找所有的意见反馈新的回复数  -->
+	<select id="findAllFeedbackNewCommentCount" resultType="int">
+		SELECT COUNT(a.id) FROM poj_feedback a
+		LEFT JOIN poj_feedback f ON a.parent_id = f.id
+		WHERE f.create_by = #{createBy.id} AND f.del_flag = #{DEL_FLAG_NORMAL} AND a.type = #{type} AND a.`status` = #{status} AND a.del_flag = #{DEL_FLAG_NORMAL}
+	</select>
+
+	<!-- 标记新回复已读 -->
+	<update id="updateFeedbackNewCommentCount">
+		UPDATE poj_feedback SET `status` = '1' 
+		WHERE id IN (
+		SELECT b.id FROM
+		(SELECT a.id FROM poj_feedback a
+		LEFT JOIN poj_feedback f ON a.parent_id = f.id
+		WHERE f.create_by = #{createBy.id} AND a.type = #{type} AND a.`status` = #{status}
+		) b) 
+	</update>
+	
+</mapper>

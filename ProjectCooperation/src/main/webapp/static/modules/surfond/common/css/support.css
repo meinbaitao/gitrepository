@@ -1,0 +1,486 @@
+body,ul,li{
+	padding:0px;
+	margin:0px;
+	font-family:"\5FAE\8F6F\96C5\9ED1";
+	font-size:14px;
+    line-height:1;
+}
+textarea,input,button,a{
+	outline:none;
+}
+ul,div,span,a,p,textarea,img{
+	box-sizing:border-box;
+}
+
+/*复用的样式*/
+.add-imagefile{
+    width: 20px;
+    height: 16px;
+    background: url('../images/sprite/add-imagefile.png') no-repeat;
+    cursor: pointer;
+}
+.orangeSubmitBtn{
+	padding:0px;
+	width:65px;
+	height:30px;
+	line-height:30px;
+	color:#fff;
+	font-size:16px;
+	text-align:center;
+	border:0px;
+	border-radius:5px;
+	background-color:#ff6000;
+	cursor:pointer;
+}
+.portrait{
+	display:inline-block;
+    font-size: 16px;
+    line-height: 100%;
+    color: #f4f2e5;
+    text-align: center;
+    text-indent: 0px;
+    }
+
+/*清楚浮动*/
+.add-support:after,
+.supportor-info:after,
+.support-remark>.remark-nav:after,
+.task-file-list:after{
+	content:"";
+	display:block;
+	height:0;
+	clear:both;
+	visibility:hidden
+	}
+/*文字超长溢出*/
+.supportor-name-data>span{
+    text-overflow: ellipsis;
+    word-wrap: normal;
+    white-space: nowrap;
+    overflow:hidden;
+}	
+
+/*上面这个区域是复用的样式*/
+
+.support-main{
+	position:absolute;
+	padding:136px 0 0;
+	width:100%;
+	height:100%;
+
+}
+.header-nav{
+	margin:-136px 0 0;
+	width:100%;
+	height:136px;
+}
+.header-logo-nav{
+	margin:0px auto;
+	padding-left:220px;
+	width:900px;
+	height:86px;
+    background:url('../images/logo-login.png') no-repeat left center;
+}
+.header-logo-nav>span{
+    border-left: 1px solid #d5dce1;
+    color: #999999;
+    display: inline-block;
+    float: left;
+    font: 20px/22px "微软雅黑";
+    height: 22px;
+    margin: 30px 10px;
+    padding-left: 18px;
+}
+.menu-nav{
+	width:100%;
+	height:50px;
+	background-color:#2aa0d6;
+}
+.menu-nav-tabs{
+	margin:0px auto;
+	width:900px;
+	height:50px;
+	line-height:50px;
+	overflow:hidden;
+}
+.menu-nav-tabs>li{
+	padding:0 25px;
+	float:left;
+	height:50px;
+	font-size:16px;
+	color:#fefefe;
+	line-height:50px;
+	cursor:pointer;
+	list-style:none;
+}
+.menu-nav-tabs>li.current{
+	background-color:#1a89bc;
+}
+.menu-nav-tabs:hover>li.current{
+	background-color:#2aa0d6;
+}
+.menu-nav-tabs:hover>li:hover{
+	background-color:#1a89bc;
+}
+
+.support-list-scroll{
+	position:relative;
+	width:100%;
+	height:100%;
+	overflow-y:auto;
+}
+.support-list{
+	margin:0 auto;
+	padding:10px 0 0 100px;
+	width:900px;
+	height:auto;
+}
+.add-support,
+.support-list-item{
+	margin:10px 0;
+	padding:3px 0;
+	width:100%;
+	height:auto;
+	border:1px solid #c0ccd7;
+	background-color:#f9f9f9;
+	border-radius:3px;
+}
+
+.add-support>textarea{
+	padding:16px 19px;
+	width:100%;
+	height:145px;
+	font-size:16px;
+	color:#58666e;
+	line-height:24px;
+	border:0px;
+	background-color:#f9f9f9;
+	resize:none;
+    
+}
+.add-support-foot{
+	position:relative;
+	width:100%;
+	height:47px;
+	line-height:46px;
+	border-top:1px solid #c0ccd7;
+}
+.add-support-foot .add-imagefile{
+	position: absolute;
+    top: 17px;
+    left: 19px;
+}
+.add-support-foot .orangeSubmitBtn{
+	position:absolute;
+	top:10px;
+	right:10px;
+}
+
+.support-list-item>div{
+	width:100%;
+	height:auto;
+	padding:24px 20px 12px;
+}
+.support-list-item>div.support-remark{
+	width:100%;
+	background-color:#fff;
+}
+
+.support-list-item>div.support-content{
+	border-bottom:1px solid #c0ccd7;
+}
+.support-content .supportor-info{
+	padding:0 0 0 54px;
+	width:100%;
+	height:46px;
+	
+}
+.supportor-info>.portrait{
+	float:left;
+	margin:0 0 0 -54px;
+	width:46px;
+	height:46px;
+}
+.supportor-name-data{
+	float:left;
+	display:block;
+	width:100%;
+	height:46px;
+}
+.supportor-name-data>span{
+	display:block;
+	width:100%;
+}
+span.supportor-name{
+	font-size:20px;
+	line-height:30px;
+	color:#ff6000;
+}
+span.supportor-data{
+	font-size:12px;
+	line-height:16px;
+	color:#98a6ad;
+}
+.support-content-text{
+	padding:10px 0 0px;
+	font-size:14px;
+	line-height:22px;
+	color:#58666e;
+	text-indent:2em;
+}
+.remark-nav{
+	padding:0 0 0 45px;
+	width:100%;
+	height:auto;
+}
+.remark-nav>.portrait{
+	float:left;
+	margin:0 0 0 -45px;
+	width:36px;
+	height:36px;
+}
+.remark-input-nav{
+	position:relative;
+	float:left;
+	padding:0 0 10px 0;
+	width:100%;
+	height:auto;
+	border-bottom:1px solid #c0ccd7;
+}
+.remark-input-nav>textarea{
+	padding:0 5px;
+	width:100%;
+	height:36px;
+	font-size:14px;
+	color:#58666e;
+	line-height:34px;
+	border:1px solid #c0ccd7;
+	border-radius:3px;
+	background-color:#f9f9f9;
+	resize:none;
+    
+}
+.remark-submit-nav{
+	position:relative;
+	margin:6px 0 0;
+	width:100%;
+	height:auto;
+	min-height:30px;
+}
+.remark-submit-nav>div.add-imagefile{
+	position:absolute;
+	left:0px;
+	top:6px;
+}
+.remark-submit-nav>button{
+	position:absolute;
+	right:0px;
+	top:0px;
+}
+.remark-submit-nav .add-file-nav{
+	width:100%;
+	height:auto;
+	padding-top:35px;
+}
+.remark-list-section{
+	width:100%;
+	height:auto;
+	clear: left;
+}
+.remark-lists{
+	position:relative;
+	padding:12px 12px 12px 44px;
+	width:100%;
+	height:auto;
+	border-bottom:1px solid #ebebeb;
+}
+.remark-lists>.portrait{
+	position:absolute;
+	top:12px;
+	left:0px;
+	width:36px;
+	height:36px;
+}
+.remark-lists-info{
+	width:100%;
+	height:auto;
+	line-height:20px;
+}
+.remark-lists-contant{
+	width:100%;
+}
+.remark-lists-contant .remark-name{
+	width:auto;
+	font-weight:bold;
+	color:#ff6000;
+}
+.remark-lists-contant .remark-content{
+	padding:0 0 0 2px;
+    color:#58666e;
+    line-height: 16px;
+}
+
+.add-file-nav{
+	width:100%;
+	height:auto;
+	padding:5px;
+}
+.add-file-nav>a{
+	text-decoration:none;
+}
+.add-file-nav>a>img.hide{
+	display:none;
+}
+/*确认框样式*/
+.delete-bg,
+.alert-bg{
+	display:none;
+	position:fixed;
+	z-index:1115;
+	top:45%;
+	left:50%;
+	margin:-75px 0 0 -200px;
+	padding:40px 25px 60px 25px;
+	width:400px;
+	height:150px;
+	font-size:20px;
+	color:#000;
+	text-align:center;
+	box-shadow:0 0 8px #444;
+	border-radius:5px;
+	background-color:#fff;
+}
+.delete-bg-shade,
+.alert-bg-shade{	
+	display:none;
+	position:fixed;
+	z-index:1114;	
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	background:RGBA(0,0,0,.7);
+}
+.delete-bg .confirm-info,
+.alert-bg .alert-info{
+	width:100%;
+	height:100%;	
+	padding:0px;
+	text-align:left;
+	overflow:hidden;
+	line-height: 24px;
+	color:#000;
+	background-color:#fff;
+}
+.confirm-btn,
+.alert-btn{
+	text-align:right;
+	width:100%;
+	height:40px;
+}
+.confirm-btn >span,
+.alert-btn>span{
+	display: inline-block;
+	width:86px;
+	height:40px;
+	line-height:40px;
+	font-size:16px;
+	text-align:center;
+	border-radius:5px;
+	cursor:pointer;
+}
+.confirm-btn >span.confirm-no{
+	color:#999999;
+	line-height:40px;
+		
+}
+.confirm-btn >span.confirm-yes,
+.alert-btn>span.alert-yes{
+	color:#fff;
+	line-height:40px;
+	background-color: #ff6000;	
+}
+
+/*图片放大样式开始*/
+.imgEnlargeNav{
+	position:fixed;
+	z-index:1115;	
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	background:RGBA(0,0,0,.7);
+}
+
+.imgshowDiv > img {
+	display:block;
+    border: 12px solid #fff;
+    margin:auto;
+    vertical-align:top;
+}
+.imgshowDiv > span.icon-remove{
+	position:absolute;
+	top:0px;
+	right:-40px;
+	display:inline-block;
+	width:40px;
+	height:40px;
+	line-height:35px;
+	font-size:28px;
+	color:#fff;
+	text-align:center;
+	background-color:#8C8C8C;
+	cursor:pointer;
+	background:url(../images/sprite/closeImgShow.png) no-repeat;
+
+}
+
+.imgshowDiv > span.icon-remove:hover{
+	background:url(../images/sprite/closeImgShowHover.png) no-repeat;
+}
+.support-attachment{
+	width:100;
+	height:auto;
+}
+.file-images{
+	width:330px;
+	margin-bottom:10px;
+	height:auto;
+	
+}
+
+.task-file-list .file-images{
+	width:100%;
+	height:auto;
+	margin:0px;
+	
+}
+ .file-images .imgs-div{
+    position:relative;
+    float:left;
+    margin:5px;
+    width:100px;
+    height:100px;
+/*     border:1px solid #ccc;
+    box-shadow:0  0 5px #ccc; */
+    overflow:hidden;
+ }
+.file-images .imgs-div img{
+	position:absolute;
+	margin:auto;
+	max-height: 100px;
+	_height:expression(this.height > 100? "100px" : this.height);
+	min-width:100px;
+	_width:expression(this.width < 100 ? "100px" : this.width);
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	cursor:pointer;
+	cursor: -moz-zoom-in;
+	cursor: -webkit-zoom-in;
+	
+}
+/*修改删除评论*/
+
+

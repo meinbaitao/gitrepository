@@ -1,0 +1,629 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bt.surfond.team.dao.TeamDao">
+    
+	<sql id="teamColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.description AS "description",
+		
+		a.parent_id AS "parentId",
+		a.space_id AS "spaceId",
+		a.type AS "type",
+		
+		a.user_id AS "user.id",
+		
+		a.status AS "status",
+		
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.del_flag AS "delFlag"
+		
+	</sql>
+	
+	<sql id="teamJoins">
+	</sql>
+    
+	<select id="get1" resultType="Team">
+		SELECT 
+			<include refid="teamColumns"/>
+		FROM poj_team a
+		<include refid="teamJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList1" resultType="Team">
+		SELECT 
+			<include refid="teamColumns"/>
+		FROM poj_team a
+		<include refid="teamJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="title != null and title != ''">
+				AND a.title LIKE 
+					<if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{title},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Team">
+		SELECT 
+			<include refid="teamColumns"/>
+		FROM poj_team a
+		<include refid="teamJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert1">
+		INSERT INTO poj_team(
+			id,
+			name,
+			description,
+			
+			parent_id,
+			space_id,
+			type,
+			
+			user_id,
+			
+			status, 
+			
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag
+		) VALUES (
+			#{id},
+			#{name},
+			#{description},
+			
+			#{parentId},
+			#{spaceId},
+			#{type},
+			
+			#{user.id},
+			
+			#{status},
+			
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update1">
+		UPDATE poj_team SET 	
+			name = #{name},
+			description = #{description},
+			
+			parent_id = #{parentId},
+			space_id = #{spaceId},
+			type = #{type},
+			
+			user_id = #{user.id},
+			
+			status = #{status},
+			
+			update_by = #{updateBy.id},
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete1">
+		UPDATE poj_team SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	
+	<!-- 添加团队的单个成员  -->
+	<insert id="addTeamOneMember">
+		INSERT INTO poj_team_member(
+			id,
+			team_id,
+  			user_id,
+  			type
+		) VALUES (
+			#{id},
+			#{teamId},
+			#{userId},
+			#{type}
+		)
+	</insert>
+	
+	<!-- 移除团队的成员  -->
+	<delete id="deleteTeamMember1">
+		DELETE FROM poj_team_member
+		WHERE id = #{id}
+	</delete>
+	
+	
+	<!-- 批量移除团队的成员  -->
+	<delete id="deleteMoreTeamMember">
+		DELETE FROM poj_team_member WHERE team_id = #{id}
+	</delete>
+	
+	<!-- 更换团队的成员  -->
+	<update id="updateTeamMember">
+		UPDATE poj_team_member SET 
+			team_id = #{teamId}
+		WHERE id = #{id} 
+	</update>
+	
+	<!-- 更换团队负责人  -->
+	<update id="updateTeamResponsibiliter">
+		UPDATE poj_team SET 
+			user_id = #{userId}
+		WHERE id = #{id} 
+	</update>
+	
+	<!-- 查找团队成员是否存在 -->
+	<select id="findTeamMemberMapping" resultType="map">
+		SELECT 
+			a.*
+		FROM poj_team_member a
+		WHERE a.team_id = #{teamId} AND a.user_id = #{userId}
+	</select>
+	
+	
+	<!-- 根据团队ID查找团队成员  -->
+	<select id="findAllMemberOfOneTeam" resultType="User">
+		SELECT 
+			u.id,
+			u.`name`,
+			u.login_name,
+			u.email,
+			u.photo,
+			u.login_flag
+		FROM sys_user u
+		LEFT JOIN poj_team_member tm ON tm.user_id = u.id
+		WHERE tm.team_id = #{id} AND u.del_flag = #{DEL_FLAG_NORMAL}
+	</select>
+	
+	<!-- 根据空间ID查找空间下所有的团队  -->
+	<select id="findAllTeamOfOneSpace" resultType="Team">
+		SELECT 
+			<include refid="teamColumns"/>
+		FROM poj_team a
+		WHERE a.space_id = #{spaceId} AND a.del_flag = #{DEL_FLAG_NORMAL} ORDER BY a.create_date DESC
+	</select>
+	
+	<!-- 查找当前用户在一个空间下的所在的团队  -->
+	<select id="findAllTeamOfMine" resultType="Team">
+		SELECT 
+			<include refid="teamColumns"/>
+		FROM poj_team a
+		LEFT JOIN poj_team_member tm ON tm.team_id = a.id
+		WHERE (a.create_by = #{userId} OR tm.user_id = #{userId}) AND a.space_id = #{spaceId} AND a.del_flag = #{delFlag} GROUP BY a.id ORDER BY a.create_date DESC
+	</select>
+	<!-- 获取当前用户关联的团队  -->
+	<select id="getCurrentUserTeam" resultType="Team">
+		SELECT 
+			a.id AS "id",
+			a.name AS "name"
+		FROM poj_team a
+			left join poj_team_member tm on tm.team_id = a.id
+		WHERE a.del_flag = #{delFlag}
+			and (a.create_by = #{currentUser.id} or tm.user_id = #{currentUser.id})   
+			<if test="spaceId!=null and spaceId!=''">
+				and a.space_id = #{spaceId} 
+			</if>
+			<if test="name!=null and name!=''">
+				and a.name like concat('%',#{name},'%')
+			</if>
+			group by a.id 
+			order by a.create_date desc
+	</select>
+	
+	<!-- 根据团队ID查找团队下的项目信息  -->
+	<select id="findProjectTasksByTeam" resultType="ProjectTask">
+		SELECT a.* FROM poj_project_task a WHERE a.team_id = #{id} AND a.del_flag = #{DEL_FLAG_NORMAL} ORDER BY a.create_date DESC
+	</select>
+	
+	
+	<!-- start - xiaocai -->
+	<sql id="doneConditionColumns">
+		<if test="isOntime!=null and isOntime!='' and isOntime == 'onTimeUnDone' and taskStatus!=null and taskStatus!=''">	
+				<!-- 按时未完成 -->
+				and to_days(projecttask.due_date) &gt;= to_days(now()) and projecttask.status = #{taskStatus}
+			</if>
+			<if test="isOntime!=null and isOntime!='' and isOntime == 'overTimeUnDone' and taskStatus!=null and taskStatus!=''">	
+				<!-- 超时未完成 -->
+				and to_days(projecttask.due_date) &lt; to_days(now()) and projecttask.status = #{taskStatus}
+			</if>
+			<if test="isOntime!=null and isOntime!='' and isOntime == 'onTimeDone' and taskStatus!=null and taskStatus!=''">	
+				<!-- 按时完成 -->
+				and to_days(projecttask.due_date) &gt;= to_days(projecttask.finish_date) and projecttask.status = #{taskStatus}
+			</if>
+			<if test="isOntime!=null and isOntime!='' and isOntime == 'overTimeDone' and taskStatus!=null and taskStatus!=''">	
+				<!-- 超时完成 -->
+				and to_days(projecttask.due_date) &lt; to_days(projecttask.finish_date) and projecttask.status = #{taskStatus}
+			</if>
+	</sql>
+	<select id="countTaskByCondition" parameterType="map" resultType="int">
+		select ifnull(count(*),0) 
+		 from poj_team team
+			  left join poj_team_member teammember on teammember.team_id=team.id
+			  <!-- left join sys_user sysuser on sysuser.id=teammember.user_id -->
+			  left join poj_project_task projecttask on projecttask.user_id=teammember.user_id
+		where projecttask.del_flag = #{DEL_FLAG_NORMAL} and projecttask.type=#{type}
+			<if test="beforeDate!=null and beforeDate!=''">	
+				and to_days(projecttask.create_date) &lt;= to_days(#{beforeDate})
+			</if>
+			<if test="finishDate!=null and finishDate!='' and taskStatus!=null and taskStatus!=''">	
+				and to_days(projecttask.finish_date)=to_days(#{finishDate}) and projecttask.status = #{taskStatus}
+			</if>
+			<if test="teamId!=null and teamId!=''">
+				and team.id=#{teamId}
+			</if>
+			<if test="startDate!=null and startDate!='' and endDate!=null and endDate!=''">
+				and projecttask.create_date between #{startDate} and #{endDate}
+			</if>
+			<include refid="doneConditionColumns"/>
+			<if test="taskStatus!=null and taskStatus!=''">
+				and projecttask.status = #{taskStatus}
+			</if>
+	</select>
+	<select id="getCountTaskByCondition" parameterType="map" resultType="map">
+		select 
+			 ifnull(count(*),0) as count,
+			 sysuser.name as userName
+		 from poj_team team
+			  left join poj_team_member teammember on teammember.team_id=team.id
+			  left join sys_user sysuser on sysuser.id=teammember.user_id
+			  left join poj_project_task projecttask on projecttask.user_id=teammember.user_id
+		where projecttask.del_flag = #{DEL_FLAG_NORMAL} and projecttask.type=#{type}
+			<if test="teamId!=null and teamId!=''">
+				and team.id=#{teamId}
+			</if>
+			<if test="startDate!=null and startDate!='' and endDate!=null and endDate!=''">
+				and projecttask.create_date between #{startDate} and #{endDate}
+			</if>
+			<include refid="doneConditionColumns"/>
+			<if test="taskStatus!=null and taskStatus!=''">
+				and projecttask.status = #{taskStatus}
+			</if>
+			group by sysuser.id 
+	</select>
+	<select id="countTeamTaskByCondition" parameterType="map" resultType="map">
+		select 
+			 ifnull(count(*),0) as count,
+			 team.id as id
+		 from poj_team team
+			  left join poj_team_member teammember on teammember.team_id=team.id
+			  left join sys_user sysuser on sysuser.id=teammember.user_id
+			  left join poj_project_task projecttask on projecttask.user_id=teammember.user_id
+		where projecttask.del_flag = #{DEL_FLAG_NORMAL} and projecttask.type=#{type}
+			<if test="beforeDate!=null and beforeDate!=''">	
+				and to_days(projecttask.create_date)&lt;=to_days(#{beforeDate})
+			</if>
+			<if test="finishDate!=null and finishDate!='' and taskStatus!=null and taskStatus!=''">	
+				and to_days(projecttask.finish_date)=to_days(#{finishDate}) and projecttask.status = #{taskStatus}
+			</if>
+		 	<if test="createDate!=null and createDate!=''">
+				and to_days(projecttask.create_date)=to_days(#{createDate})
+			</if>
+			<include refid="doneConditionColumns"/>
+			group by team.id 
+	</select>
+	<!-- end - xiaocai -->
+	
+	
+	<!-- 根据团队ID查找团队下的话题  -->
+	<select id="findTeamConversations" resultType="ProjectTask">
+		SELECT c.* FROM poj_conversation c WHERE c.resource_id = #{id} AND c.del_flag = #{DEL_FLAG_NORMAL} ORDER BY c.create_date DESC
+	</select>
+	
+	
+	<!-- 根据ID查找团队基本信息  -->
+	<select id="findOneTeamBaseInfo" resultType="Team">
+		SELECT 
+			IFNULL(a.user_id,'') AS "userId",
+			IFNULL(u.name,'') AS "userName",
+			IFNULL(u.photo,'') "userPhoto",
+			IFNULL(u.email,'') "userEmail",
+			
+			a.create_by AS"createById",
+			IFNULL(u2.name,'') AS"createByName",
+			<include refid="teamColumns"/>
+		FROM poj_team a
+		LEFT JOIN sys_user u ON u.id = a.user_id
+		LEFT JOIN sys_user u2 ON u2.id = a.create_by
+		WHERE a.id = #{id}
+	</select>
+	
+	<!-- 查找团队下存在的项目和话题数总和  -->
+	<select id="findOneTeamProjectAndConversationCount" resultType="int">
+		SELECT 
+			 ((SELECT count(p.id) FROM poj_project_task p WHERE p.team_id = #{id} AND p.del_flag = #{DEL_FLAG_NORMAL})
+			+(SELECT count(c.id) FROM poj_conversation c WHERE c.resource_id = #{id} AND c.del_flag = #{DEL_FLAG_NORMAL}))
+	</select>
+	
+	<!-- write at the last ： what i do is what i want. -->
+	
+	<!-- 团队信息映射 -->
+	<resultMap type="Team" id="teamRM">
+		<id property="id" column="ID"/>
+		<result property="name" column="NAME"/>
+		<result property="description" column="DESCRIPTION"/>
+		<result property="parentId" column="PARENT_ID"/>
+		<result property="spaceId" column="SPACE_ID"/>
+		<result property="type" column="TYPE"/>
+		<result property="ownerId" column="OWNER_ID"/>
+		<result property="status" column="STATUS"/>
+		<result property="createDate" column="CREATE_DATE"/>
+		<result property="updateDate" column="UPDATE_DATE"/>
+		<result property="delFlag" column="DEL_FLAG"/>
+		<result property="memberAmount" column="MEMBERAMOUNT"/>
+		<association property="createBy" javaType="User">
+			<id property="id" column="CREATE_BY"/>
+		</association>
+		<association property="updateBy" javaType="User">
+			<id property="id" column="UPDATE_BY"/>
+		</association>
+		<association property="owner" javaType="com.bt.surfond.front.core.entity.ActiveUser">
+			<id property="id" column="OWNER_ID"/>
+			<result property="name" column="OWNER_NAME"/>
+			<result property="email" column="OWNER_EMAIL"/>
+			<result property="photo" column="OWNER_PHOTO"/>
+		</association>
+		<association property="activeCreateBy" javaType="com.bt.surfond.front.core.entity.ActiveUser">
+			<id property="id" column="ACTIVECREATEBY_ID"/>
+			<result property="name" column="ACTIVECREATEBY_NAME"/>
+			<result property="email" column="ACTIVECREATEBY_EMAIL"/>
+			<result property="photo" column="ACTIVECREATEBY_PHOTO"/>
+		</association>
+	</resultMap>
+	
+	<!-- 团队信息及其成员信息列表映射 -->
+	<resultMap type="Team" id="teamMemberRM" extends="teamRM">
+		<collection property="memberList" ofType="com.bt.surfond.front.core.entity.ActiveUser">
+			<id property="id" column="MEMBER_ID"/>
+			<id property="name" column="MEMBER_NAME"/>
+			<id property="email" column="MEMBER_EMAIL"/>
+			<id property="photo" column="MEMBER_PHOTO"/>
+		</collection>
+	</resultMap>
+	
+	<!-- 根据ID查询团队 -->
+	<select id="get" resultMap="teamRM">
+		select  
+			a.id,
+			a.name,
+			a.description,
+			a.parent_id,
+			a.space_id,
+			a.type,
+			a.user_id as owner_id,
+			a.status,
+			a.create_by,
+			a.create_date,
+			a.update_by,
+			a.update_date,
+			a.del_flag,
+			uo.id as owner_id,
+			uo.name as owner_name,
+			uo.email as owner_email,
+			uo.photo as owner_photo,
+			uc.id as activeCreateBy_id,
+			uc.name as activeCreateBy_name,
+			uc.email as activeCreateBy_email,
+			uc.photo as activeCreateBy_photo
+		from poj_team a
+			left join sys_user uc on uc.id = a.create_by
+			left join sys_user uo on uo.id = a.user_id
+		where a.id = #{id}
+	</select>
+	
+	<!-- 插入团队记录 -->
+	<insert id="insert">
+		insert into poj_team(
+			id,
+			name,
+			description,
+			parent_id,
+			space_id,
+			type,
+			user_id,
+			status, 
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag
+		) VALUES (
+			#{id},
+			#{name},
+			#{description},
+			#{parentId},
+			#{spaceId},
+			#{type},
+			#{ownerId},
+			#{status},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag}
+		)
+	</insert>
+	
+	<!-- 根据ID更新团队信息 -->
+	<update id="update">
+		update poj_team
+		<set>
+			<if test="name != null and name != ''">
+				name = #{name},
+			</if>
+			<if test="ownerId != null and ownerId != ''">
+				user_id = #{ownerId},
+			</if>
+			<if test="updateBy != null and updateBy.id != null and updateBy.id != ''">
+				update_by = #{updateBy.id},
+			</if>
+			<if test="updateDate != null">
+				update_date = #{updateDate},
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<!-- 根据ID删除团队 -->
+	<update id="delete">
+		update poj_team set
+			del_flag = #{DEL_FLAG_DELETE}
+		where id = #{id}
+	</update>
+	
+	<!-- 保存团队-成员的关联关系 -->
+	<insert id="insertTeamMember">
+		insert into poj_team_member (
+			id,
+			team_id,
+			user_id
+		) values (
+			#{id},
+			#{teamId},
+			#{memberId}
+		)
+	</insert>
+	
+	<!-- 查询团队-成员的关联关系 -->
+	<select id="findTeamMember" resultType="map">
+		select
+			tm.id,
+			tm.team_id as teamId,
+			tm.user_id as memberId
+		from poj_team_member tm
+		where tm.team_id = #{teamId} and tm.user_id = #{memberId}
+	</select>
+	
+	<!-- 删除团队-成员的关联关系 -->
+	<delete id="deleteTeamMember">
+		delete from poj_team_member
+		where team_id = #{teamId} and user_id = #{memberId}
+	</delete>
+	
+	<!-- 根据ID查询团队信息及其成员列表 -->
+	<select id="find" resultMap="teamMemberRM">
+		select  
+			a.id,
+			a.name,
+			a.description,
+			a.parent_id,
+			a.space_id,
+			a.type,
+			a.user_id as owner_id,
+			a.status,
+			a.create_by,
+			a.create_date,
+			a.update_by,
+			a.update_date,
+			a.del_flag,
+			uo.id as owner_id,
+			uo.name as owner_name,
+			uo.email as owner_email,
+			uo.photo as owner_photo,
+			uc.id as activeCreateBy_id,
+			uc.name as activeCreateBy_name,
+			uc.email as activeCreateBy_email,
+			uc.photo as activeCreateBy_photo,
+			
+			utm.id as member_id,
+			utm.name as member_name,
+			utm.email as member_email,
+			utm.photo as member_photo
+		from poj_team a
+			left join sys_user uc on uc.id = a.create_by
+			left join sys_user uo on uo.id = a.user_id
+			left join poj_team_member tm on tm.team_id = a.id
+			left join sys_user utm on utm.id = tm.user_id
+		where a.id = #{id}
+	</select>
+	
+	<!-- 查询当前登录用户在当前空间下参与的团队 -->
+	<select id="findList" resultMap="teamRM">
+		select 
+			a.id,
+			a.name,
+			a.description,
+			a.parent_id,
+			a.space_id,
+			a.type,
+			a.user_id as owner_id,
+			a.status,
+			a.create_by,
+			a.create_date,
+			a.update_by,
+			a.update_date,
+			a.del_flag,
+			uo.id as owner_id,
+			uo.name as owner_name,
+			uo.email as owner_email,
+			uo.photo as owner_photo,
+			uc.id as activeCreateBy_id,
+			uc.name as activeCreateBy_name,
+			uc.email as activeCreateBy_email,
+			uc.photo as activeCreateBy_photo,
+			
+			(select count(1) from poj_team_member tmtt where tmtt.team_id = a.id) as memberAmount
+		from
+		
+		(select * from poj_team t where t.del_flag = #{DEL_FLAG_NORMAL} and t.space_id = #{spaceId}
+		
+		and t.id in (
+		
+		select tm.team_id from poj_team_member tm where tm.user_id = #{memberId})) a
+		
+		left join sys_user uc on uc.id = a.create_by
+		left join sys_user uo on uo.id = a.user_id
+	</select>
+	
+	<!-- 跨空间：个人所在空间所有团队列表 -->
+	<select id="findListIgnoreSpace" resultMap="teamRM">
+		select a.* from (
+		
+		select s.id from poj_space s where s.del_flag = #{DEL_FLAG_NORMAL}) ss
+		
+		inner join (
+		
+		select (select o.space_id from poj_organize o where o.del_flag = #{DEL_FLAG_NORMAL} and o.id = om.organize_id) as space_id 
+		from poj_organize_member om where om.user_id = #{memberId}
+		group by space_id) tt 
+		
+		on tt.space_id = ss.id
+		
+		inner join (
+		
+		select t.* from poj_team t where t.del_flag = #{DEL_FLAG_NORMAL}) a
+		
+		on a.space_id = tt.space_id
+	</select>
+	
+</mapper>

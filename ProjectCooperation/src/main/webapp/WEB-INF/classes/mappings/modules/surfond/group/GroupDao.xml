@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bt.surfond.group.dao.GroupDao">
+    
+	<sql id="groupColumns">
+		a.id AS "id",
+		a.title AS "title",
+		a.description AS "description",
+		a.type AS "type",
+		a.sort AS "sort",
+		a.status AS "status",
+		a.space_id AS "spaceId",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="groupJoins">
+	</sql>
+    
+	<select id="get" resultType="Group">
+		SELECT 
+			<include refid="groupColumns"/>
+		FROM poj_group a
+		<include refid="groupJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Group">
+		SELECT 
+			<include refid="groupColumns"/>
+		FROM poj_group a
+		<include refid="groupJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="title != null and title != ''">
+				AND a.title LIKE 
+					<if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{title},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Group">
+		SELECT 
+			<include refid="groupColumns"/>
+		FROM poj_group a
+		<include refid="groupJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO poj_group(
+			id,
+			title,
+			description,
+			type,
+			sort,
+			status,
+			space_id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{title},
+			#{description},
+			#{type},
+			#{sort},
+			#{status},
+			#{spaceId},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE poj_group SET 	
+			title = #{title},
+			description = #{description},
+			type = #{type},
+			sort = #{sort},
+			status = #{status},
+			space_id = #{spaceId},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE poj_group SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 根据空间查询所有的分组-->
+	<select id="findGroupList" resultType="Group">
+		SELECT 
+			<include refid="groupColumns"/>,
+			(select COUNT(distinct(gm.user_id)) as "count" from poj_group_member gm where gm.group_id=a.id) as "memberCount"
+		FROM poj_group a
+		<include refid="groupJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			and
+			a.space_id=#{spaceId}
+		</where>
+	</select>
+	
+	<!-- 根据组ID查询所有的组成员-->
+	<select id="findMemberListByGroupId" resultType="Map">
+		select 
+			u.id,
+			u.`name`,
+  			u.email,
+  			u.photo,
+  			u.login_name,
+  			gm.type AS memberType 
+		from poj_group a 
+		LEFT JOIN poj_group_member gm on gm.group_id=a.id
+  		LEFT JOIN sys_user u on u.id=gm.user_id
+		where 
+			a.id=#{id}
+			and u.id is not null
+		GROUP BY gm.user_id
+	</select>
+	
+	<!--添加分组成员 -->
+	<insert id="addGroupMember">
+		INSERT INTO poj_group_member(
+			id,
+			group_id,
+			user_id,
+			`type`
+		) VALUES (
+			#{id},
+			#{groupId},
+			#{userId},
+			#{memberType}
+		)
+	</insert>
+	
+	<!--查询空间下所有成员 -->
+	<select id="findMemberListBySpaceId" resultType="Map">
+		select 
+			u.id,
+			u.`name`,
+  			u.email,
+  			u.photo,
+  			u.login_name AS loginName,
+			gm.type AS memberType  			
+		from poj_group a 
+			LEFT JOIN poj_group_member gm on gm.group_id=a.id
+  			LEFT JOIN sys_user u on u.id=gm.user_id
+		where 
+			a.space_id=#{spaceId}
+			<if test="keyword != null and keyword != ''">
+				AND (u.name LIKE concat('%',#{keyword},'%') OR u.email LIKE concat('%',#{keyword},'%'))
+			</if>
+			and u.id is not null
+  			GROUP BY gm.user_id
+	</select>
+	
+	<!--查询空间下成员 -->
+	<select id="findMemberBySpaceId" resultType="Map">
+		select 
+			u.id,
+			u.`name`,
+  			u.email,
+  			u.photo,
+  			u.login_name AS loginName,
+  			gm.id AS gmId,
+  			gm.type AS memberType
+		from poj_group a 
+			LEFT JOIN poj_group_member gm on gm.group_id=a.id
+  			LEFT JOIN sys_user u on u.id=gm.user_id
+		where 
+			a.space_id=#{spaceId}
+			AND gm.user_id = #{userId}
+			and u.id is not null
+	</select>
+	
+	<!--查询空间下成员是否存在 -->
+	<select id="findMemberIsExistBySpaceId" resultType="int">
+		select 
+			IFNULL(COUNT(1), 0)
+		from poj_group a 
+			LEFT JOIN poj_group_member gm on gm.group_id=a.id
+  			LEFT JOIN sys_user u on u.id=gm.user_id
+		where 
+			a.space_id=#{spaceId}
+			AND gm.user_id = #{userId}
+	</select>
+	
+	<!-- 查找空间下分组中的最大排序值 -->
+	<select id="findMaxGroupSortBySpaceId" resultType="int">
+		select 
+			IFNULL(MAX(a.sort), 0)
+		from poj_group a 
+		where 
+			a.space_id=#{spaceId}
+	</select>
+	
+	<!--查询空间中的未分组 -->
+	<select id="findNoGroupedBySpaceId" resultType="Group">
+		select 
+			<include refid="groupColumns"/>
+		from poj_group a 
+		where 
+			a.space_id=#{spaceId}
+			and a.type=#{type}
+	</select>
+	
+	<!-- 更改空间成员状态 -->
+	<update id="updateMemberType">
+		UPDATE poj_group_member 
+			SET `type` = #{memberType}
+		WHERE id = #{gmId}
+	</update>
+	
+	<!-- 删除空间成员 -->
+	<delete id="deleteGroupMember">
+		DELETE FROM poj_group_member
+		WHERE id = #{gmId}
+	</delete>
+	
+	<!--查詢當前用戶的好友分组-->
+	<select id="findMyGroupAndGroupMember" resultType="map">
+		SELECT 
+			g.id AS "id",
+			g.title AS "title",
+			u.id AS "userId",
+			u.email AS "email",
+			u.`name` AS "userName",
+			u.photo AS "photo"
+		FROM sys_user u
+		LEFT JOIN poj_group_member gm ON gm.user_id=u.id
+		LEFT JOIN poj_group g ON gm.group_id=g.id
+		WHERE g.create_by = #{createBy.id} AND g.del_flag = #{DEL_FLAG_NORMAL} 
+	</select>
+	
+	<!--查詢當前用戶的好友分组和分组好友 是否存在-->
+	<select id="findGroupMemberIfExsit" resultType="map">
+		SELECT g.id AS "groupId",g.type AS "type",gm.id AS "mapId" FROM poj_group g
+			LEFT JOIN poj_group_member gm ON gm.group_id = g.id
+			WHERE gm.user_id = #{friendId}  
+			AND g.create_by = #{userId} 
+			AND g.del_flag = #{delFlag}
+	</select>
+	
+	<!--将好友重新编组-->
+	<update id="updateGroupMemberToNewGroup">
+		UPDATE poj_group_member SET group_id = #{groupId} WHERE id = #{id}
+	</update>
+	
+	<!--查詢當前用戶的好友 分组-->
+	<select id="findMyGroup" resultType="Group">
+		SELECT 
+			<include refid="groupColumns"/>
+		FROM poj_group a 
+		WHERE a.create_by = #{createBy.id} AND a.del_flag = #{DEL_FLAG_NORMAL} order by a.create_date
+	</select>
+	
+	<!--根据创建人和类型查詢单个分组-->
+	<select id="findGroupByUserAndType" resultType="Group">
+		SELECT 
+			<include refid="groupColumns"/>
+		FROM poj_group a 
+		WHERE a.create_by = #{createBy.id} AND a.del_flag = #{DEL_FLAG_NORMAL} AND a.type = #{type}
+	</select>
+	
+	<!--修改分组名称-->
+	<update id="updateGroupName">
+		UPDATE poj_group SET 	
+			title = #{title}
+		WHERE id = #{id}
+	</update>
+	
+	<!--查找分组成员是否存在-->
+	<select id="findGroupMemberExsit" resultType="int">
+		SELECT count(*) FROM poj_group_member WHERE group_id = #{groupId} AND user_id = #{userId}
+	</select>
+	
+	<!--删除分组成员-->
+	<update id="deleteGroupMemberById">
+		DELETE FROM poj_group_member WHERE group_id = #{groupId} AND user_id = #{userId}
+	</update>
+	
+	<!--添加分组成员-->
+	<insert id="addMemberToGroup">
+		INSERT INTO poj_group_member(
+			id,
+			group_id,
+			user_id,
+			type
+		) VALUES (
+			#{id},
+			#{groupId},
+			#{userId},
+			#{type}
+		)
+	</insert>
+	
+	<!--根据用户名模糊查找我的好友 -->
+	<select id="findGroupMemberByLikeName" resultType="map">
+		SELECT 
+			g.id AS "id",
+			g.title AS "title",
+			u.id AS "userId",
+			u.email AS "email",
+			u.`name` AS "userName",
+			u.photo AS "photo"
+		FROM sys_user u
+		LEFT JOIN poj_group_member gm ON gm.user_id=u.id
+		LEFT JOIN poj_group g ON gm.group_id=g.id
+		WHERE g.create_by = #{id} AND g.type != #{type}  AND g.del_flag = #{delFlag} AND (u.`name` LIKE concat('%',#{name},'%') OR u.`email` LIKE concat('%',#{name},'%'))
+	</select>
+	
+	<!--根据用户名模糊查找我的好友数量 -->
+	<select id="findMyfriendsCount" resultType="int">
+		SELECT 
+			count(u.id)
+		FROM sys_user u 
+		LEFT JOIN poj_group_member gm ON gm.user_id = u.id
+		LEFT JOIN poj_group g ON g.id = gm.group_id
+		WHERE g.create_by = #{id} AND g.type != #{type} AND g.del_flag = #{delFlag}
+	</select>
+	
+	<!--查找我和好友共同参与的项目信息 -->
+	<select id="findProjectInfoBetween" resultType="map">
+			SELECT 
+			(SELECT count(a.id) FROM 
+			(SELECT pt.id,COUNT(ptm.id) AS "count" FROM poj_project_task_member ptm 
+			LEFT JOIN poj_project_task pt ON pt.id = ptm.record_id
+			WHERE (ptm.user_id = #{myId} 
+			OR ptm.user_id = #{friendId}) AND pt.type = #{projectType} AND pt.del_flag = #{delFlag}
+			GROUP BY ptm.record_id) a WHERE count = #{commonCount}) AS "oursProject",
+
+			(SELECT count(pt.id) FROM poj_project_task pt
+			LEFT JOIN poj_project_task_mapping ptm ON ptm.task_id = pt.id
+			WHERE ptm.project_id IN (SELECT a.id FROM 
+			(SELECT pt.id,COUNT(ptm.id) AS "count" FROM poj_project_task_member ptm 
+			LEFT JOIN poj_project_task pt ON pt.id = ptm.record_id
+			WHERE (ptm.user_id = #{myId} 
+			OR ptm.user_id = #{friendId}) AND pt.type = #{projectType} AND pt.del_flag = #{delFlag}
+			GROUP BY ptm.record_id) a WHERE count = #{commonCount}) AND pt.type = #{taskType} AND pt.del_flag = #{delFlag}) AS "allTask",
+
+			(SELECT count(pt.id) FROM poj_project_task pt
+			LEFT JOIN poj_project_task_mapping ptm ON ptm.task_id = pt.id
+			WHERE ptm.project_id IN (SELECT a.id FROM 
+			(SELECT pt.id,COUNT(ptm.id) AS "count" FROM poj_project_task_member ptm 
+			LEFT JOIN poj_project_task pt ON pt.id = ptm.record_id
+			WHERE (ptm.user_id = #{myId} 
+			OR ptm.user_id = #{friendId}) AND pt.type =  #{projectType} AND pt.del_flag = #{delFlag}
+			GROUP BY ptm.record_id) a WHERE count = #{commonCount}) AND pt.type = #{taskType} AND pt.del_flag = #{delFlag} AND pt.`status` = #{status}) AS "uncompletTask"
+
+	</select>
+	
+	<!--查找我参与的项目信息-->
+	<select id="findMyProjectInfo" resultType="map">
+		SELECT
+			(SELECT COUNT(pt.id) FROM poj_project_task_member ptm 
+			LEFT JOIN poj_project_task pt ON pt.id = ptm.record_id
+			WHERE ptm.user_id = #{myId} 
+			AND pt.type = #{projectType} AND pt.del_flag = #{delFlag}) AS "oursProject",
+
+			(SELECT COUNT(ppt.id) FROM poj_project_task ppt
+			LEFT JOIN poj_project_task_mapping pptm ON ppt.id = pptm.task_id
+			WHERE pptm.project_id IN(
+			SELECT pt.id FROM poj_project_task_member ptm 
+			LEFT JOIN poj_project_task pt ON pt.id = ptm.record_id
+			WHERE ptm.user_id = #{myId} 
+			AND pt.type = #{projectType} AND pt.del_flag = #{delFlag}) 
+			AND ppt.type = #{taskType} AND ppt.del_flag = #{delFlag}) AS "allTask",
+
+			(SELECT COUNT(ppt.id) FROM poj_project_task ppt
+			LEFT JOIN poj_project_task_mapping pptm ON ppt.id = pptm.task_id
+			WHERE pptm.project_id IN(
+			SELECT pt.id FROM poj_project_task_member ptm 
+			LEFT JOIN poj_project_task pt ON pt.id = ptm.record_id
+			WHERE ptm.user_id = #{myId} 
+			AND pt.type = #{projectType} AND pt.del_flag = #{delFlag}) 
+			AND ppt.type = #{taskType} AND ppt.del_flag = #{delFlag} AND ppt.status = #{status})
+			AS "uncompletTask"
+	</select>
+	
+	<!--修改分组成员所属（删除分组时有成员转移到我的好友中）-->
+	<update id="updateGroupMemberToMyGroup">
+		UPDATE poj_group_member SET group_id = #{newGroupId} WHERE group_id = #{id}
+	</update>
+	
+	
+	<!-- 组ID查询下面所有的用户ID，并用分号组装 -->
+	<select id="findMemberByGroupId" resultType="String">
+			select 
+				 group_concat(u.id separator ';') AS "id"
+			from poj_group a 
+			LEFT JOIN poj_group_member gm on gm.group_id=a.id
+  			LEFT JOIN sys_user u on u.id=gm.user_id
+			where 
+				a.id=#{id}
+				and u.id is not null
+	</select>
+	
+	<!-- 查找我的好友中的邮箱类型 -->
+	<select id="findEmailByMyFriend" resultType="map">
+			SELECT DISTINCT CONCAT("@",substring_index(u.email,"@",-1))  AS "email"
+		FROM sys_user u
+		LEFT JOIN poj_group_member gm ON gm.user_id=u.id
+		LEFT JOIN poj_group g ON gm.group_id=g.id
+		WHERE g.create_by = #{userId} AND g.del_flag = #{delFlag} AND u.email IS NOT NULL 
+	</select>
+	
+	
+	
+</mapper>

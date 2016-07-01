@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bt.surfond.front.project.dao.ProjectDao">
+	
+	<!-- 项目信息映射 -->
+	<resultMap type="ProjectTask" id="projectRM">
+		<id property="id" column="ID"/>
+		<result property="parentId" column="PARENT_ID"/>
+		<result property="title" column="TITLE"/>
+		<result property="description" column="DESCRIPTION"/>
+		<result property="sort" column="SORT"/>
+		<result property="type" column="TYPE"/>
+		<result property="status" column="STATUS"/>
+		<result property="ownerId" column="OWNER_ID"/>
+		<result property="dueDate" column="DUE_DATE"/>
+		<result property="taskGroup" column="TASK_GROUP"/>
+		<result property="praiseAmount" column="PRAISE_AMOUNT"/>
+		<result property="hasChart" column="HAS_CHART"/>
+		<result property="source" column="SOURCE"/>
+		<result property="createDate" column="CREATE_DATE"/>
+		<result property="updateDate" column="UPDATE_DATE"/>
+		<result property="remarks" column="REMARKS"/>
+		<result property="delFlag" column="DEL_FLAG"/>
+		<result property="address" column="ADDRESS"/>
+		<result property="finishDate" column="FINISH_DATE"/>
+		<result property="teamId" column="TEAM_ID"/>
+		<association property="createBy" javaType="User">
+			<id property="id" column="CREATE_BY"/>
+		</association>
+		<association property="updateBy" javaType="User">
+			<id property="id" column="UPDATE_BY"/>
+		</association>
+		<association property="owner" javaType="com.bt.surfond.front.core.entity.ActiveUser">
+			<id property="id" column="OWNER_ID"/>
+			<result property="name" column="OWNER_NAME"/>
+			<result property="email" column="OWNER_EMAIL"/>
+			<result property="photo" column="OWNER_PHOTO"/>
+		</association>
+		<association property="activeCreateBy" javaType="com.bt.surfond.front.core.entity.ActiveUser">
+			<id property="id" column="ACTIVECREATEBY_ID"/>
+			<result property="name" column="ACTIVECREATEBY_NAME"/>
+			<result property="email" column="ACTIVECREATEBY_EMAIL"/>
+			<result property="photo" column="ACTIVECREATEBY_PHOTO"/>
+		</association>
+	</resultMap>
+	
+	<!-- 根据ID查询项目 -->
+	<select id="get" resultMap="projectRM">
+		select 
+			a.id,
+			a.parent_id,
+			a.title,
+			a.description,
+			a.sort,
+			a.type,
+			a.status,
+			a.user_id as owner_id,
+			a.due_date,
+			a.task_group,
+			a.praise_amount,
+			a.has_chart,
+			a.source,
+			a.create_by,
+			a.create_date,
+			a.update_by,
+			a.update_date,
+			a.remarks,
+			a.del_flag,
+			a.address,
+			a.finish_date,
+			a.team_id,
+			uo.id as owner_id,
+			uo.name as owner_name,
+			uo.email as owner_email,
+			uo.photo as owner_photo,
+			uc.id as activeCreateBy_id,
+			uc.name as activeCreateBy_name,
+			uc.email as activeCreateBy_email,
+			uc.photo as activeCreateBy_photo
+		from poj_project_task a
+			left join sys_user uo on uo.id = a.user_id
+			left join sys_user uc on uc.id = a.create_by
+		where a.id = #{id}
+	</select>
+	
+	<!-- 插入记录 -->
+	<insert id="insert">
+		insert into poj_project_task (
+			id,
+			parent_id,
+			title,
+			description,
+			sort,
+			type,
+			status,
+			user_id,
+			due_date,
+			task_group,
+			finish_date,
+			praise_amount,
+			has_chart,
+			address,
+			source,
+			team_id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) values (
+			#{id},
+			#{parentId},
+			#{title},
+			#{description},
+			#{sort},
+			#{type},
+			#{status},
+			#{ownerId},
+			#{dueDate},
+			#{taskGroup},
+			#{finishDate},
+			#{praiseAmount},
+			#{hasChart},
+			#{address},
+			#{source},
+			#{teamId},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<!-- 根据ID更新项目信息 -->
+	<update id="update">
+		update poj_project_task 
+		<set>
+			<if test="title != null and title != ''">
+				title = #{title},
+			</if>
+			<if test="description != null and description != ''">
+				description = #{description},
+			</if>
+			<if test="ownerId != null and ownerId != ''">
+				user_id = #{ownerId},
+			</if>
+			<if test="updateBy != null and updateBy.id != null and updateBy.id != ''">
+				update_by = #{updateBy.id},
+			</if>
+			<if test="updateDate != null">
+				update_date = #{updateDate},
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<!-- 根据ID删除项目 -->
+	<update id="delete">
+		update poj_project_task
+			set del_flag = #{DEL_FLAG_DELETE}
+		where id = #{id}
+	</update>
+	
+	<!-- 保存空间-项目的关联关系 -->
+	<insert id="insertSpaceProject">
+		insert into poj_space_project_task(
+			id, 
+			space_id, 
+			record_id
+		) values (
+			#{id}, 
+			#{spaceId}, 
+			#{recordId}
+		)
+	</insert>
+	
+	<!-- 保存项目-成员的关联关系 -->
+	<insert id="insertProjectMember">
+		insert into poj_project_task_member (
+			id,
+			record_id,
+			user_id
+		) values (
+			#{id},
+			#{recordId},
+			#{memberId}
+		)
+	</insert>
+	
+	<!-- 查询项目-成员的关联关系 -->
+	<select id="findProjectMember" resultType="map">
+		select 
+			pm.id,
+			pm.record_id as projectId,
+			pm.user_id as memberId
+		from poj_project_task_member pm
+		where pm.record_id = #{recordId} and pm.user_id = #{memberId}
+	</select>
+	
+	<!-- 删除项目-成员的关联关系 -->
+	<delete id="deleteProjectMember">
+		delete from poj_project_task_member
+		where record_id = #{recordId} and user_id = #{memberId}
+	</delete>
+	
+	<!-- 查询项目成员列表 -->
+	<select id="findProjectMemberList" resultType="com.bt.surfond.front.core.entity.ActiveUser">
+		select 
+			um.id,
+			um.name,
+			um.email,
+			um.photo
+		from poj_project_task_member pm
+			inner join sys_user um on um.id = pm.user_id
+		where pm.record_id = #{id}
+	</select>
+	
+	<!-- 查询指定团队下的项目列表 -->
+	<select id="findListInTeam" resultMap="projectRM">
+		select 
+			a.id,
+			a.parent_id,
+			a.title,
+			a.description,
+			a.sort,
+			a.type,
+			a.status,
+			a.user_id as owner_id,
+			a.due_date,
+			a.task_group,
+			a.praise_amount,
+			a.has_chart,
+			a.source,
+			a.create_by,
+			a.create_date,
+			a.update_by,
+			a.update_date,
+			a.remarks,
+			a.del_flag,
+			a.address,
+			a.finish_date,
+			a.team_id,
+			uo.id as owner_id,
+			uo.name as owner_name,
+			uo.email as owner_email,
+			uo.photo as owner_photo,
+			uc.id as activeCreateBy_id,
+			uc.name as activeCreateBy_name,
+			uc.email as activeCreateBy_email,
+			uc.photo as activeCreateBy_photo
+		from poj_project_task a
+			left join sys_user uo on uo.id = a.user_id
+			left join sys_user uc on uc.id = a.create_by
+		where a.del_flag = #{DEL_FLAG_NORMAL} and a.type = #{type} and a.team_id = #{teamId}
+	</select>
+	
+</mapper>

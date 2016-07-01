@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bt.surfond.dynamic.dao.DynamicDao">
+    
+	<sql id="dynamicColumns">
+		a.id AS "id",
+		a.task_id AS "taskId",
+		a.type AS "type",
+		a.description AS "description",
+		a.remote_addr AS "remoteAddr",
+		a.year AS "year",
+		a.create_by AS "createBy.id",
+		DATE_FORMAT(a.create_date, '%Y-%m-%d %T') AS "createDate",
+		a.del_flag AS "delFlag",
+		a.about_user_id AS "aboutUserId",
+		a.status AS "status",
+		IFNULL(a.address,'') AS "address",
+		IFNULL(a.source,'') AS "source",
+		resource_id AS "resourceId"
+	</sql>
+	
+	<sql id="dynamicJoins">
+	</sql>
+    
+	<select id="get" resultType="Dynamic">
+		SELECT 
+			<include refid="dynamicColumns"/>
+		FROM poj_dynamic a
+		<include refid="dynamicJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Dynamic">
+		SELECT 
+			<include refid="dynamicColumns"/>
+		FROM poj_dynamic a
+		<include refid="dynamicJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Dynamic">
+		SELECT 
+			<include refid="dynamicColumns"/>
+		FROM poj_dynamic a
+		<include refid="dynamicJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO poj_dynamic(
+			id,
+			task_id,
+			type,
+			description,
+			remote_addr,
+			year,
+			create_by,
+			create_date,
+			del_flag,
+			about_user_id,
+			status,
+			address,
+			source,
+			resource_id
+		) VALUES (
+			#{id},
+			#{taskId},
+			#{type},
+			#{description},
+			#{remoteAddr},
+			#{year},
+			#{createBy.id},
+			#{createDate},
+			#{delFlag},
+			#{aboutUserId},
+			#{status},
+			#{address},
+			#{source},
+			#{resourceId}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE poj_dynamic SET 	
+			task_id = #{taskId},
+			type = #{type},
+			description = #{description},
+			remote_addr = #{remoteAddr},
+			year = #{year}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE poj_dynamic SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!--  根据用户查找空间下相关的话题/任务动态-->
+	<select id="findAllOfOneUserInSpace" resultType="Dynamic">
+		SELECT 
+			u.name AS "userName",
+			u.photo AS "photo",
+			<include refid="dynamicColumns"/>
+		FROM poj_dynamic a
+		LEFT JOIN sys_user u ON u.id = a.create_by
+		WHERE a.resource_id = #{resourceId} 
+			AND a.about_user_id = #{aboutUserId}
+			AND a.del_flag = #{DEL_FLAG_NORMAL} 
+			<if test="beginDate !=null and beginDate != ''">
+				AND a.create_date &gt; #{beginDate} 
+			</if>
+			<if test="endDate !=null and endDate != ''">
+				AND a.create_date &lt; #{endDate}
+			</if>
+			<if test="type !=null and type != ''">
+				AND a.type = #{type}
+			</if>
+			ORDER BY a.create_date DESC
+	</select>
+	<!--  根据任务查找任务操作记录-->
+	<select id="findAllInTask" resultType="Dynamic">
+		SELECT 
+			u.name AS "userName",
+			u.photo AS "photo",
+			<include refid="dynamicColumns"/>
+		FROM poj_dynamic a
+		LEFT JOIN sys_user u 
+		ON u.id = a.create_by 
+		WHERE a.task_id = #{taskId} AND a.resource_id is null AND a.del_flag = #{DEL_FLAG_NORMAL} ORDER BY a.create_date DESC
+	</select>
+	
+	<!-- 根据空间与当前登录人查询未读动态 -->
+	<select id="findByDynamicStatus" resultType="Dynamic">
+		SELECT 
+			a.type,
+			count(1) as "unreadCount"
+		FROM poj_dynamic a
+		LEFT JOIN sys_user u ON u.id = a.create_by
+		WHERE a.resource_id = #{resourceId} 
+			AND a.about_user_id = #{aboutUserId} 
+			AND a.`status`=#{status} 
+			AND a.del_flag = #{DEL_FLAG_NORMAL}
+			GROUP BY a.type
+	</select>
+	
+	<!-- 根据空间与当前登录人查询动态 -->
+	<select id="findDynamicByUserId" resultType="Dynamic">
+		SELECT
+		u.name AS "userName",
+		u.photo AS "photo",
+		<include refid="dynamicColumns"/> 
+ 		FROM poj_dynamic a 
+ 		LEFT JOIN sys_user u ON u.id = a.create_by
+		WHERE a.about_user_id = #{aboutUserId} AND a.del_flag = #{DEL_FLAG_NORMAL} ORDER BY a.create_date DESC; 
+	</select>
+	
+	<!-- 点击动态修改所有的未读消息改为已读 -->
+	<update id="updateDynamicStatus">
+		UPDATE poj_dynamic SET 	
+			status=#{status}
+		WHERE resource_id = #{resourceId} 
+			AND about_user_id = #{aboutUserId} 
+			AND del_flag=#{delFlag} 
+			<if test="type !=null and type != 0 ">
+				AND type=#{type}
+			</if>
+	</update>
+	
+	<!-- 删除任务评论成员点赞映射记录 -->
+	<update id="deleteMore">
+		UPDATE poj_dynamic SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE about_user_id IS NOT NULL AND task_id = #{taskId} 
+	</update>
+	
+	<!-- 从记录中查询任务的历史负责人 -->
+	<select id="findHistoryOwnerByTaskId" resultType="map">
+		SELECT 
+			u.id, 
+			u.name, 
+			u.email, 
+			u.photo, 
+			date_format(a.create_date, '%m-%d %H:%i') AS createDate
+		FROM poj_dynamic a 
+ 			LEFT JOIN sys_user u ON u.id = a.about_user_id
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+			AND u.del_flag = #{DEL_FLAG_NORMAL} 
+			AND task_id = #{taskId}
+			AND a.description LIKE CONCAT('%', '负责人', '%') 
+		ORDER BY a.create_date DESC 
+	</select>
+
+	<!-- 查询任务记录列表 -->
+	<select id="findTaskRecordList" resultType="Dynamic">
+		SELECT 
+			<include refid="dynamicColumns"/>,
+			IFNULL(CONCAT(u.name, a.description), '') AS dynamicDescription 
+		FROM poj_dynamic a
+			LEFT JOIN sys_user u ON u.id = a.create_by
+		WHERE  a.del_flag = #{DEL_FLAG_NORMAL} AND a.task_id = #{taskId}
+		ORDER BY a.create_date DESC
+	</select>
+	
+	<!-- 查询最新的任务记录 -->
+	<select id="findLastTaskRecord" resultType="Dynamic">
+		SELECT 
+			<include refid="dynamicColumns"/>, 
+			IFNULL(CONCAT(u.name, a.description), '') AS dynamicDescription
+		FROM poj_dynamic a
+			LEFT JOIN sys_user u ON u.id = a.create_by
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} AND a.task_id = #{taskId}
+		ORDER BY a.create_date DESC
+			LIMIT 1
+	</select>
+	
+</mapper>

@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bt.surfond.message.dao.MessageDao">
+    
+	<sql id="messageColumns">
+		a.id AS "id",
+		a.record_id AS "recordId",
+		a.content AS "content",
+		a.msg_type AS "msgType",
+		a.push_user_id AS "pushUserId",
+		a.read_status AS "readStatus",
+		a.space_id AS "spaceId",
+		a.subs_type AS "subsType",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<select id="get" resultType="Message">
+		SELECT 
+			<include refid="messageColumns"/>
+		FROM poj_message a
+		WHERE a.id = #{id}
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO poj_message(
+			id,
+			record_id,
+			content,
+			msg_type,
+			push_user_id,
+			read_status,
+			space_id,
+			subs_type,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag
+		) VALUES (
+			#{id},
+			#{recordId},
+			#{content},
+			#{msgType},
+			#{pushUserId},
+			#{readStatus},
+			#{spaceId},
+			#{subsType},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag}
+		)
+	</insert>
+	
+	<!-- 插入用户订阅记录 -->
+	<insert id="saveMessageSubscription">
+		INSERT INTO poj_message_subscription(
+			id,
+			user_id,
+			code
+		) VALUES (
+			#{id},
+			#{userId},
+			#{code}
+		)
+	</insert>
+	
+	<!-- 查询用户订阅记录 -->
+	<select id="findMessageSubscription" resultType="map">
+		SELECT 
+			a.id AS id,
+			a.user_id AS userId,
+			a.code AS code
+		FROM poj_message_subscription a
+		WHERE a.user_id = #{userId} AND a.code = #{code}
+	</select>
+	
+	<!-- 删除用户订阅记录 -->
+	<delete id="deleteMessageSubscription">
+		DELETE FROM poj_message_subscription
+		WHERE user_id = #{userId} AND code = #{code}
+	</delete>
+	
+	<!-- 查询用户订阅记录列表 -->
+	<select id="findMessageSubscriptionList" resultType="map">
+		SELECT 
+			a.id AS id,
+			a.user_id AS userId,
+			a.code AS code
+		FROM poj_message_subscription a
+		WHERE a.user_id = #{userId}
+	</select>
+	
+	<!-- 查询当前用户在指定空间的消息列表 -->
+	<select id="findMessageList" resultType="Message">
+		SELECT 
+			<include refid="messageColumns"/>
+		FROM poj_message a 
+			LEFT JOIN poj_message_subscription ms ON ms.code = a.subs_type
+		WHERE a.push_user_id = #{pushUserId} 
+			AND a.space_id = #{spaceId} 
+			AND a.del_flag = #{DEL_FLAG_NORMAL} 
+			AND (ms.user_id = #{pushUserId} OR a.subs_type = #{commonType})
+		ORDER BY a.create_date DESC
+	</select>
+	
+	<!-- 查询当前用户未读消息总数 -->
+	<select id="findUnReadMessageCount" resultType="int">
+		SELECT 
+			IFNULL(COUNT(a.id), 0)
+		FROM poj_message a 
+			LEFT JOIN poj_message_subscription ms ON ms.code = a.subs_type
+		WHERE a.push_user_id = #{pushUserId} 
+			AND a.space_id = #{spaceId} 
+			AND a.del_flag = #{DEL_FLAG_NORMAL} 
+			AND (ms.user_id = #{pushUserId} OR a.subs_type = #{commonType})
+			AND a.read_status = #{readStatus}
+	</select>
+	
+	<!-- 将当前用户在指定空间下的消息设置为已读 -->
+	<update id="updateReadStatusBySpaceId">
+		UPDATE poj_message SET read_status = #{readStatus}
+		WHERE push_user_id = #{pushUserId} AND space_id = #{spaceId}
+	</update>
+	
+	<!-- 根据编号将消息标记为已读 -->
+	<update id="updateReadStatusById">
+		UPDATE poj_message SET read_status = #{readStatus}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 查询当前用户在指定空间的消息列表(分模块)(app) -->
+	<select id="findMessageListByType" resultType="Message">
+		SELECT 
+			<include refid="messageColumns"/> 
+		FROM poj_message a
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} 
+			AND a.push_user_id = #{pushUserId} 
+			AND a.msg_type = #{msgType}
+			<if test="spaceId != null and spaceId != ''">
+				AND a.space_id = #{spaceId} 
+			</if>
+		ORDER BY a.create_date DESC
+	</select>
+	
+	<!-- 查询@人的消息列表(app) -->
+	<select id="findMessageListByAite" resultType="Message">
+		SELECT
+			<include refid="messageColumns"/> 
+		FROM poj_message a
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} 
+			AND a.push_user_id = #{pushUserId}
+			AND (a.msg_type = #{msgType} OR a.msg_type = #{otherMsgType}) 
+			AND a.subs_type = #{commonType}
+			<if test="spaceId != null and spaceId != ''">
+				AND a.space_id = #{spaceId} 
+			</if>
+		ORDER BY a.create_date DESC
+	</select>
+	
+	<!-- 查询当前用户在指定空间的消息(最新)(分模块)(app) -->
+	<select id="findMessageLastByType" resultType="Message">
+		SELECT 
+			<include refid="messageColumns"/> 
+		FROM poj_message a
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} 
+			AND a.push_user_id = #{pushUserId} 
+			AND a.msg_type = #{msgType}
+			<if test="spaceId != null and spaceId != ''">
+				AND a.space_id = #{spaceId} 
+			</if>
+		ORDER BY a.create_date DESC
+		LIMIT 1
+	</select>
+	
+	<!-- 查询@人的消息(最新)(app) -->
+	<select id="findMessageLastByAite" resultType="Message">
+		SELECT
+			<include refid="messageColumns"/> 
+		FROM poj_message a
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} 
+			AND a.push_user_id = #{pushUserId}
+			AND (a.msg_type = #{msgType} OR a.msg_type = #{otherMsgType}) 
+			AND a.subs_type = #{commonType}
+			<if test="spaceId != null and spaceId != ''">
+				AND a.space_id = #{spaceId} 
+			</if>
+		ORDER BY a.create_date DESC
+		LIMIT 1
+	</select>
+	
+	<!-- 查询当前用户在指定空间的消息总数(分模块)(app) -->
+	<select id="findMessageCountByType" resultType="int">
+		SELECT 
+			IFNULL(COUNT(a.id), 0)
+		FROM poj_message a
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} 
+			AND a.push_user_id = #{pushUserId} 
+			AND a.msg_type = #{msgType}
+			AND a.read_status = #{readStatus}
+			<if test="spaceId != null and spaceId != ''">
+				AND a.space_id = #{spaceId} 
+			</if>
+		ORDER BY a.create_date DESC
+	</select>
+	
+	<!-- 查询@人的消息总数(app) -->
+	<select id="findMessageCountByAite" resultType="int">
+		SELECT
+			IFNULL(COUNT(a.id), 0)
+		FROM poj_message a
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} 
+			AND a.push_user_id = #{pushUserId}
+			AND (a.msg_type = #{msgType} OR a.msg_type = #{otherMsgType}) 
+			AND a.subs_type = #{commonType}
+			AND a.read_status = #{readStatus}
+			<if test="spaceId != null and spaceId != ''">
+				AND a.space_id = #{spaceId} 
+			</if>
+		ORDER BY a.create_date DESC
+	</select>
+	
+	<!-- 标记当前用户消息列表已读(分模块)(app) -->
+	<update id="updateReadStatusByType">
+		UPDATE poj_message SET read_status = #{readStatus}
+		WHERE push_user_id = #{pushUserId} 
+			AND msg_type = #{msgType}
+			<if test="spaceId != null and spaceId != ''">
+				AND space_id = #{spaceId} 
+			</if>
+	</update>
+	
+	<!-- 标记@我的消息列表已读(app) -->
+	<update id="updateReadStatusByAite">
+		UPDATE poj_message SET read_status = #{readStatus}
+		WHERE push_user_id = #{pushUserId}
+			AND (msg_type = #{msgType} OR msg_type = #{otherMsgType}) 
+			AND subs_type = #{commonType}
+			<if test="spaceId != null and spaceId != ''">
+				AND a.space_id = #{spaceId} 
+			</if>
+	</update>
+	
+</mapper>

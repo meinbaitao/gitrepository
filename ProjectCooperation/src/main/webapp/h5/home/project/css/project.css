@@ -1,0 +1,245 @@
+@charset "utf-8";
+html{width: 100%;height: 100%;}
+body{min-width:320px;max-width:540px;width: 100%;}
+/**********header************/
+.header {
+    height: 44px;
+    width: 100%;
+    background: #fff;
+    text-align: center;
+    line-height: 42px;
+    font-size: 16px;
+    border-bottom: 1px solid #DFDFDF;
+    position: fixed;
+    z-index: 999;
+    top: 0;
+}
+.header>div {
+    position: absolute;
+    top: 0;
+}
+.header .s_space {
+    width: 76%;
+    height: 100%;
+    line-height: normal;
+    text-align: center;
+    line-height: 44px;
+    position: relative;
+    margin-left: 14px;
+}
+.mine{
+	right:15px;
+}
+.s_space>span {
+    display: inline-block;
+    height: 100%;
+    float: left;
+}
+span.s_name {
+    height: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: left;
+    max-width: 50%;
+    font-size:18px;
+}
+span.s_drop {
+    height: 0;
+    width: 0px;
+    height: 0px;
+    border-width: 0.45rem;
+    border-style: solid;
+    border-color: #999 transparent transparent transparent;
+    padding-bottom: 3px;
+    margin: 19px 0 0 10px;
+}
+.header img {
+    margin: 0;
+    max-width: 20px;
+    padding-top: 0.7rem;
+}
+.back {
+    left: 12px;
+    display: inline-block;
+    position: absolute;
+}
+.cloce {left: 53px;}
+.search {
+    right: 12px;
+    font-size: 2rem;
+    position: absolute;
+    top: 0;
+    color: #333;
+}
+.s_space .fr{
+	float:right;
+}
+/********container *********/
+.container {
+    background-color: #fff;
+    overflow: hidden;
+    margin-top: 44px;
+}
+.c_collection>div {
+    display: inline-block;
+    text-align: center;
+    width: 49%;
+    height: 100%;
+    border-style: solid;
+    border-width: 1px;
+    float: left;
+}
+.c_content{
+	padding: 12px 0;
+    border-bottom: 1px solid #DFDFDF;
+}
+.c_collection {
+    width: 90%;
+    margin: 0 auto;
+    height: 2.4rem;
+    line-height: 2.4rem;
+}
+.collection_p{
+    border-bottom-left-radius: 5px;
+    border-top-left-radius: 5px;
+}
+.collection_a{
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
+}
+.border_color{
+	border-color: #EC843D;
+	color: #EC843D;
+}
+.c_project {
+    width: 116%;
+    margin: 0 auto;
+    overflow: hidden;
+    display: block;
+}
+.c_project>div {
+    display: inline-block;
+    float: left;
+}
+.p_img {
+    width: 2.4rem;
+    padding: 8px 1px 6px 14px;
+}
+.p_content {
+    width: 80%;
+    border-bottom: 1px solid #DFDFDF;
+    height: 3.4rem;
+    line-height: 3.4rem;
+    margin-left: 0.8rem;
+}
+.p_content div {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 80%;
+    overflow: hidden;
+}
+.a_content {
+    display: none;
+    width: 90%;
+    margin: 0 auto;
+}
+.a_content>div {
+    border-bottom: 1px solid #DFDFDF;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 100%;
+    height: 4rem;
+    line-height: 4rem;
+    overflow: hidden;
+}
+.container .c_project:last-child {
+    padding: 0 0 10px 0;
+}
+/**********footer***********/
+.footer {
+    text-align: center;
+    font-size: 12px;
+    background: #fff;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    min-width: 320px;
+    max-width: 540px;
+    z-index: 999;
+    border-top: 1px solid #DFDFDF;
+    padding: 0.5rem 0 0.3rem 0;
+}
+.footer_ul li a {
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+    color: #666;
+}
+.footer_ul, .footer_ul li {
+    float: left;
+    width: 100%;
+    height: 100%;
+}
+.footer_ul li {
+    width: 24.5%;
+}
+.footer_ul li img {
+    max-width: 30%;
+    margin-bottom: 3px;
+}
+.s_mask {
+    position: fixed;
+    top: 43px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0.6;
+    background: #333;
+    z-index: 999;
+    font-size: 16px;
+}
+.mask_space {
+    width: 100%;
+    height: 40px;
+    z-index: 999;
+    background: #fff;
+    line-height: 40px;
+    border-bottom: 1px solid #E6E6E6;
+    color: #666;
+}
+.space_name {
+    margin-left: 14px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 80%;
+    display: inline-block;
+}
+.space_ed.fr{
+	margin-right: 14px;
+}
+.space_ed.fr img {
+    width: 19px;
+    margin-top: 15px;
+}
+.selected{color: #3cb3e0;}
+.s_masked {
+    z-index: 1000;
+    position: fixed;
+    top: 43px;
+    right: 0;
+    left: 0;
+    height: auto;
+    max-height: 100%;
+	overflow-y: auto;
+    height: 60%;
+}
+.s_droped {
+    border-color: transparent transparent #999 transparent !important;
+    margin: 9px 0 0 10px !important;
+}
+
+
+
+

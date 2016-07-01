@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    	<meta charset="utf-8">
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <meta name="apple-mobile-web-app-capable" content="yes" /><!-- 删除苹果默认的工具栏和菜单栏 -->
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" /><!-- 设置苹果工具栏颜色 -->
+        <meta name="format-detection" content="telphone=no, email=no" /><!-- 忽略页面中的数字识别为电话，忽略email识别 -->
+        <!-- 启用360浏览器的极速模式(webkit) -->
+        <meta name="renderer" content="webkit">
+        <!-- 避免IE使用兼容模式 -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
+        <meta name="HandheldFriendly" content="true">
+        <!-- 微软的老式浏览器 -->
+        <meta name="MobileOptimized" content="320">
+        <!-- uc强制竖屏 -->
+        <meta name="screen-orientation" content="portrait">
+        <!-- QQ强制竖屏 -->
+        <meta name="x5-fullscreen" content="true">
+        <!-- UC应用模式 -->
+        <meta name="browsermode" content="application">
+        <!-- QQ应用模式 -->
+        <meta name="x5-page-mode" content="app">
+        <!-- windows phone 点击无高光 -->
+        <meta name="msapplication-tap-highlight" content="no">
+        <!-- 适应移动端end -->
+        <title>测试页面</title>
+        <link rel="shortcut icon" href="images/favicon.ico">
+        
+        <!-- css -->
+		<link rel="stylesheet" href="common/css/common.css">
+		<style type="text/css">
+			.tabBox .hd{ height:40px; line-height:40px; padding:0 10px; font-size:20px; background:#f4f4f4; border-bottom:1px solid #F5AB38; position:relative;  }
+			.tabBox .hd ul{ position:absolute; height:41px; top:0; overflow:hidden;  }
+			.tabBox .hd ul li{ float:left; padding:0 10px; color:#666;  }
+			.tabBox .hd ul .on{ border:2px solid #F5AB38; border-bottom-color:#fff; background:#fff; color:#CF7F21;   }
+			.tabBox .bd ul{ padding:10px 0 10px 10px;  }
+			.tabBox .bd li{ height:33px; line-height:33px;   }
+			.tabBox .bd li a{ color:#666;  }
+		</style>
+    </head>
+<body>
+<div id="leftTabBox" class="tabBox">
+    <div class="hd">
+        <ul>
+            <li>国内</li>
+            <li>国际</li>
+            <li>时事</li>
+        </ul>
+    </div>
+    <div class="bd">
+            <ul>
+                <li id="asd"><a href="#">官方明确感染H7N9高危人群</a></li>
+                ...
+            </ul>
+            <ul>
+                <li><a href="#">日:沈阳军区部队开赴中朝边境</a></li>
+                ...
+            </ul>
+            <ul>
+                <li><a href="#">农业占GDP低政府支持力度大</a></li>
+                ...
+            </ul>
+    </div>
+</div>
+<div id="demo" class="demo"></div>
+<script type="text/javascript" src="common/js/jquery.min.js"></script>
+<script type="text/javascript" src="common/js/TouchSlide.1.1.source.js"></script>
+<script type="text/javascript" src="view/js/zyFile.js"></script>
+<script type="text/javascript" src="view/js/zyUpload.js"></script>
+<script type="text/javascript" src="view/js/jq22.js"></script>
+<script type="text/javascript">TouchSlide({ slideCell:"#leftTabBox" });
+
+$(function(){
+	$(document).on("click","#asd",function(){
+		$(this).hide();
+	})
+	/* $(document).on("change","#asd",function(){
+		$(this).hide();
+	}) */
+})
+</script>
+<!-- JSSDK -->
+
+<!-- JSSDK -->
+</body>
+</html>

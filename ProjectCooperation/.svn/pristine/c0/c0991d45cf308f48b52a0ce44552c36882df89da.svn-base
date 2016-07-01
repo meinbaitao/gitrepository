@@ -1,0 +1,370 @@
+.main-container-scroll {
+    padding: 0 10px 10px;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+.main-container {
+    position: relative;
+    width: 100%;
+    min-width: 1024px;
+    height: 100%; 
+    overflow: hidden;
+}
+.main-container>div {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 0 2px rgba(0,0,0,.132);
+    background: #fff;
+}
+#add-section .modal-dialog{
+	height: 172px;
+}
+.framework-left,
+.framework-right{
+	position:absolute;
+	left:0;
+}
+.framework-left{
+	top:0;
+	width:310px;
+	bottom:0px;
+}
+.framework-right{
+	top:0;
+	left:330px;
+	right:0px;
+	bottom:0px;
+}
+.organize {
+    padding: 0 0 0 6px;
+    width: 286px;
+    height: 47px;
+    line-height: 47px;
+    /* color: #30383b; */
+    border-bottom: 1px solid #ccc;
+    margin-left: 8px;
+}
+.unabsorbed{
+	width: 98%;
+	height: 47px;
+    line-height: 46px;
+    color: #30383b;
+    border-bottom: 1px solid #ccc;
+    margin-left: 8px;
+}
+.add-section {
+    float: right;
+    color: #FE6000;
+    cursor: pointer;
+}
+.framework-left ul li {
+    font-size: small;
+    float: none;
+    margin-bottom: 0;
+}
+.framework-left .nav.nav-tabs{
+	width: 100%;
+    height: 100%;
+}
+.framework-left ul {
+    border: none;
+}
+.framework-left ul li a {
+    color: #666;
+	margin-right: 0;
+	border: none;
+    border-radius: initial;
+}
+.dispenser-head, .dispenser-head>li {
+    float: left;
+    color: #98A5AD;
+}
+.priming>li:first-child>a {
+    background: #DCE4E7;
+    margin-top: 0;
+}
+.priming:hover>li:first-child>a{
+	background: initial;
+}
+.priming:hover>li>a:hover{
+	background:#DCE4E7;
+}
+.dispenser-head>li{
+    margin-top: 8px;
+}
+
+ul.dispenser-head {
+    background: #F2F2F2;
+    width: 100%;
+    height: 37px;
+    position: relative;
+    font-size: 14px;
+}
+ul.dispenser-head .department,
+ul.dispenser-head .department select,
+ul.dispenser-head .operate{
+	cursor: pointer;
+}
+ul.dispenser-head>li{
+	position:absolute;
+}
+li.head-portrait {
+    left: 11px;
+}
+li.compellation {
+    left: 70px;
+    width: 121px;
+    overflow: hidden;
+    height: 23px;
+}
+li.mailbox {
+   left: 200px;
+}
+li.department {
+   left: 390px;
+}
+li.creation-time {
+    left: 544px;
+}
+li.condition {
+    left:700px;
+}
+li.operate {
+    left: 850px;
+} 
+ul.dispenser-head.two {
+    background: initial;
+	 margin: 4px 0;
+}
+ul.dispenser-head.two>.head-portrait>span{
+	width: 30px;
+    height: 30px;
+    background: #ccc;
+    border-radius: 50%;
+    position: absolute;
+    text-align: center;
+    line-height: 30px;
+    color: #fff;
+    margin-top: -4px;
+}
+.dispenser-head.two>li{
+	color: initial;
+
+}
+.second-row>ul>.condition>span:first-child{
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #5BCD41;
+    position: absolute;
+    margin-top: 9px;
+}
+.first-row>ul>.condition>span:first-child{
+    background: red;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    position: absolute;
+    margin-top: 10px;
+}
+.dispenser-head.two>.condition>span:last-child{
+	margin-left: 12px;
+}
+.dispenser-head.two>.operate>span:first-child{
+	margin-right: 17px;
+}
+.member-content .second-row>ul>.condition>span:first-child{
+	background: red;
+}
+.modal-dialog .tab-content{
+	overflow: initial;
+}
+.tab-content {
+    margin: 0 0 20px;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+#Manage_Workspace .tab-content{
+	overflow: hidden;
+	padding-bottom: 0;
+    margin: 0;
+}
+.dropdown-div>span{
+	position: absolute;
+    top: 6px;
+    right: 21px;
+    font-size: 22px;
+    color: #FDB494;
+    border: 1px solid;
+    border-radius: 50%;
+    width: 23px;
+    height: 23px;
+    text-align: center;
+    line-height: 20px;
+    cursor: pointer;
+}
+.col-sm-9.dropdown-div>input{
+    cursor: pointer;
+    background: #fff;
+}
+.mymodal.add-teamMembers .form-horizontal {
+    width: 100%;
+    height: 100%;
+}
+.mymodal.add-teamMembers .modal-body .form-horizontal>div:first-child {
+    border-right: 1px solid #ccc;
+}
+.mymodal.add-teamMembers .form-horizontal>div {
+    float: left;
+    padding: 51px 0 0;
+    width: 50%;
+    height: 100%;
+}
+.mymodal.add-teamMembers .form-horizontal>div>.header {
+    margin-top: -51px;
+    height: 51px;
+    color: #666;
+    font-size: 16px;
+    text-indent: 20px;
+    line-height: 50px;
+    border-bottom: 1px solid #ccc;
+}
+.form-horizontal>div>.select-content {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+.member-list {
+    width: 100%;
+    height: 100%;
+    font-size: 14px;
+    overflow-y: auto;
+}
+#add-staff .botton.col-sm-7 {
+    margin-left: 25px;
+    margin-top: -13px;
+}
+.hidden-structure{
+	position: absolute;
+    top: 50%;
+    right: -18px;
+    margin-top: -64px;
+    padding-right: 6px;
+    font: 700 16px/122px "\5B8B\4F53";
+    text-align: center;
+    color: #b7b4a0;
+    cursor: pointer;
+    transition: text-align .2s;
+    display: inline-block;
+    width: 18px;
+    height: 125px;
+    background: url('../new-images/sprite/icon-hideMenuNew.png') no-repeat;
+}
+.space-department-each{
+	position: relative;
+}
+.space-department-each>div {
+    display: none;
+    position: absolute;
+    top: 5px;
+    right: 12px;
+    cursor: pointer;
+}
+.space-department-each>div>span{
+	font-size: 14px;
+    color: #999;
+    top: 4px;
+}
+#Add-Department .member-portrait{
+	background: url('../new-images/photo_30.png') no-repeat;
+}
+span.space_members_sign{
+    position: absolute;
+    top: 6px;
+    right: 22px;
+    font-size: 22px;
+    color: #FDB494;
+    border: 1px solid;
+    border-radius: 50%;
+    width: 23px;
+    height: 23px;
+    text-align: center;
+    line-height: 20px;
+    cursor: pointer;
+}
+.col-sm-10 .form-control{
+	border-radius: 5px;
+}
+#space-organize-modal .modal-header{
+	height: initial;
+}    
+#space-organize-modal .modal-header .nav-tabs{
+	border-bottom: initial;
+}
+#space-organize-modal .nav-tabs li a {
+    color: #666;
+    border: none;
+    border-bottom: 2px solid transparent;
+}
+#space-organize-modal .nav-tabs li a:focus,
+#space-organize-modal .nav-tabs li a:hover{
+	background-color: initial;
+    color: #ff6000;
+    border-bottom: 2px solid #ff6000;
+}
+.tab-content .member_list{
+	height: 150px;
+    overflow-y: auto;
+}
+.tab-content{
+	padding-bottom: 85px;
+}
+.framework-left ul li:last-child {
+    margin-bottom: 50px;
+}
+.dispenser-head.two li select{
+	margin-top: -7px;
+}
+#add-staff .modal-body{
+	margin-right: -26px;
+}
+#add-staff .add-members{
+	font-size: 19px;
+	line-height: 19px;
+}
+#space-organize-modal .tab-content{
+	padding-bottom: 0;
+}
+.unappropriated ul{
+	min-width: 32px;
+    height: auto;
+    margin: 0 0 0 -37px;
+}
+.organize,.unabsorbed{font-size: 16px;}
+.margin-top1{margin-top: -70px !important;}
+.margin-top2{margin-top: -45px !important;}
+#space-organize-member-list .unappropriated ul li{margin-bottom: 0;}
+#projectInfoMenu, #projectInfoMenu:hover {
+    border: transparent !important;
+    color: #666 !important;
+    margin-left: -7px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

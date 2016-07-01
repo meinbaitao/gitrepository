@@ -1,0 +1,80 @@
+@charset "utf-8";
+html{width: 100%;height: 100%;}
+body{background: #ebf0f2;min-width:320px;max-width:540px;width: 100%;height: 100%;}
+/**********header************/
+.header {
+    max-width: 64%;
+    margin: 0 auto;
+    height: 6%;
+}
+/**********container***********/
+.container{height: 88%;}
+.container div{width: 80%;}
+.logo-img {
+    max-width: 63%;
+    margin: 0 auto;
+    margin-bottom: 1.5rem;
+}
+.user-pword{
+    height: 42px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin: 0 auto;
+    margin-bottom: 8px;
+    background-color: #fff;
+    position: relative;
+}
+.user-pword.password {
+    margin-bottom: 1px;
+}
+.container .user_div,.container .lock_div {
+    width: 42px;
+    height: 42px;
+    float: left;
+    background-color: #dfdfdf;
+    
+}
+.user-pword form ,.user-pword form input{
+    height: 100%;
+    float: left;
+}
+.user-pword>div {
+    width: 92%;
+    margin: 0 auto;
+    height: 100%;
+}
+.user-pword input {
+    width: 100%;
+    margin-top: 12px;
+}
+.user-pword input:focus {
+    outline: none;
+}
+.the_login{
+	height: 46px;
+    border-radius: 6px;
+    margin: 0 auto;
+    margin-top: 1px;
+    text-align: center;
+    background: #0fb4ff;
+}
+
+.the_login input {
+	width: 100%;
+    height: 100%;
+    background: transparent;
+}
+.assist,.click-sign{
+    height: 40px;
+    margin: 0 auto;
+    text-align: center;
+    line-height: 40px;
+}
+.assist a,.click-sign a{color:#0fb4ff;}
+/**********footer***********/
+.footer {
+	height:6%;
+    text-align: center;
+    font-size: 12px;
+    width: 100%;
+}

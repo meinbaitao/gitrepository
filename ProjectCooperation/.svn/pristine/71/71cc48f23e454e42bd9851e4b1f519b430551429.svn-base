@@ -1,0 +1,474 @@
+$(function() {
+    //加载任务详情
+	var user_idd = 'user_id';
+	if ($.cookie(user_idd)) {
+		user_id= $.cookie(user_idd);
+		$(".container").attr("id",user_id);
+	}
+    var s = window.location.search;
+    var mytaskId = s.substring(9, s.indexOf("&"));
+    var data = '{"id":"' + mytaskId + '"}';
+    var url = "/a/mobile/task/querytaskdetail";
+    startUp.ajaxPost(url, data, false,
+    function(resultMap) {
+    	console.log( resultMap )
+    	$(".s_circle").attr("id",resultMap.result.user.id);
+    	if(resultMap.result.user.id==$(".container").attr("id") ){
+			if( resultMap.result.status == "6"){
+				$(".cs_img").attr("src","../common/images/yes.png");
+			}else{
+				$(".cs_img").attr("src","../common/images/yesed.png");
+			}
+		}else{
+			if( resultMap.result.status == "6"){
+				$(".cs_img").attr("src","../common/images/no.png");
+			}else{
+				$(".cs_img").attr("src","../common/images/noed.png");
+			}
+		}
+    	//描述
+    	resultMap.result.description ? $(".text_s").text(resultMap.result.description) : $(".strip.auto._p").hide();
+    	//所属项目
+    	if(resultMap.result.projectTitle){
+    		$(".text2").text(resultMap.result.projectTitle)
+    	}else{
+    		$(".text2").text("所属项目");
+    		$(".text2").css({'color':'#999'});
+    	}
+    	//负责人
+    	if(resultMap.result.dynamicDescription){
+    		$(".text3").text(resultMap.result.dynamicDescription.substring(0, 4));
+    	}else{
+    		$(".text3").text("负责人");
+    		$(".text3").css({'color':'#999'});
+    	}
+    	//截止日期
+    	if(resultMap.result.updateDate){
+    		$(".text4").text(resultMap.result.updateDate.substring(5, 10));
+    	}else{
+    		$(".text4").text("截止日期");
+    		$(".text4").css({'color':'#999'});
+    	}
+    	//$(".container").attr("id",resultMap.result.createById);
+        $(".text").text(resultMap.result.title);
+        if(!resultMap.result.tagsList==""){
+        	$.each(resultMap.result.tagsList,function(idx, item) {
+                $(".tags ").append("<span class='tags_s'>"+item.title+"</span>");
+            });
+        }else{
+        	$(".tags ").hide();
+        }
+    });
+    //评论
+    var data_comment = '{"resourceId":"' + mytaskId + '"}';
+    var url_comment = "/a/mobile/comment/findcommentlist";
+    startUp.ajaxPost(url_comment, data_comment, false,
+    function(resultMap) {
+    	console.log(resultMap.result)
+    	$("#2").children().remove();
+        if (resultMap && resultMap.result) {
+            var htmlStr = "",N_htmlStr = "";
+            if( resultMap.result.length == 0){
+            	N_htmlStr += "<div class='non_comment font14'>";
+            	N_htmlStr += " 	<img src='../common/images/non_comment.png'>";
+            	N_htmlStr += " 	<div class='non_comment'>快点来抢沙发吧！<div>";
+            	N_htmlStr += "</div>";
+            	$(".c_test").css({'border-bottom' : '0'});
+            	$("#1").append(N_htmlStr);
+            }else{
+            	for (var i = 0; i < resultMap.result.length; i++) {
+                    htmlStr += "<div class='comment_text' id='" + resultMap.result[i].createById + "'>";
+                    htmlStr += "	<div class='head'>";
+                    if (resultMap.result[i].createByPhoto) {
+                    	htmlStr += "<img src='" + startUp.getRootPath() + resultMap.result[i].createByPhoto + "'>";
+                    } else {
+                    	htmlStr += "<img alt='' src='../common/images/test/8.png'>";
+                    }
+
+                    htmlStr += "	</div>";
+                    htmlStr += "	<div class='covers'>";
+                    htmlStr += "		<div class='c_name'>" + resultMap.result[i].createByName + "</div>";
+                    htmlStr += "		<div class='c_comment'>";
+
+                    if (resultMap.result[i].attachment) {
+                    		htmlStr += "<div class='thumbnails c_comment' id='gallery'>";
+                            htmlStr += "	<img style='margin: 0; display: inline-block;' alt='' src='"+ startUp.getRootPath() + resultMap.result[i].attachment[0].accessPath +"'>";
+                           //console.log(item.attachment.accessPath)
+                            htmlStr += "</div>";
+                    } else {
+                    	var str=resultMap.result[i].description;
+                        function replace_em(str){
+                        	str = str.replace(/\[em_([0-9]*)\]/g,'<img src="'+startUp.getRootPath()+'/static/jquery-qqface/arclist/$1.gif"/>');
+                        	return str;
+                        }
+                        htmlStr += "	<div class='c_text'>" + replace_em(str) + "</div>";
+                        
+                    }
+                    htmlStr += "		</div>";
+                    htmlStr += "	</div>";
+                    htmlStr += "	<div class='c_date'>";
+                    htmlStr += "		<div>" + resultMap.result[i].updateDate.substring(11, 16) + "</div>";
+                    htmlStr += "	</div>";
+                    htmlStr += "</div>";
+                }
+                $("#1").append(htmlStr);
+            }
+        }
+    });
+    //附件1			
+    var data_file = '{"taskId":"' + mytaskId + '"}';
+    var url_file = "/a/mobile/files/appfileupload";
+    startUp.ajaxPost(url_file, data_file, false,
+    function(resultMap) {
+        if (resultMap && resultMap.result) {
+            var htmlStr2 = "",N_htmlStr2 = "";
+            if( resultMap.result.length == 0){
+            	N_htmlStr2 += "<div class='non_comment font14'>";
+            	N_htmlStr2 += " 	<img src='../common/images/non_file.png'>";
+            	N_htmlStr2 += " 	<div class='non_comment'>还没有附件哦~<div>";
+            	N_htmlStr2 += "</div>";
+            	$(".c_test").css({'border-bottom' : '0'});
+            	$("#2").append(N_htmlStr2);
+            }else{
+            	$.each(resultMap.result,
+                        function(idx, item) {
+                        	var q=item.name,w=q.substring(q.indexOf("."), 100),attType=w.substring(1, 100);
+                            htmlStr2 += "<div class='d_files'>";
+                        	if(attType=="gif" || attType=="jpeg" || attType=="bmp" || attType=="tiff" || attType=="png" || attType=="jpg" ){
+                        		htmlStr2 += "    <div class='thumbnails files_content gallery' id='gallery'>";
+                                htmlStr2 += "		<div class='files'>";
+                                htmlStr2 += "			<img alt='' src='" + startUp.getRootPath() + item.accessPath + "'>";
+                                htmlStr2 += "		</div>";
+                        	}else{
+                        		htmlStr2 += "    <div class='thumbnails files_content gallery'>";
+                                htmlStr2 += "		<div class='files'>";
+                                htmlStr2 += "			<img alt='' src='../common/images/files.png'>";
+                                htmlStr2 += "		</div>";
+                        	}
+                            htmlStr2 += "		<div class='files_details'>";
+                            htmlStr2 += "			<span>" + item.name + "</span><br>";
+                            var size = parseFloat(item.size / 1024).toFixed(2);
+                            htmlStr2 += "			<span class='files_details_t'>" + size + "&nbsp;KB</span>";
+                            htmlStr2 += "		</div>";
+                            htmlStr2 += "	 </div>";
+                            htmlStr2 += "</div>";
+                        });
+            	$("#2").append(htmlStr2);
+            }
+        }
+    });
+    //记录			
+    //$(document).on("touchstart","#li_3",function(){
+    var data_dynamic = '{"taskId":"' + mytaskId + '"}';
+    var url_dynamic = "/a/mobile/task/finddynamicbytask";
+    startUp.ajaxPost(url_dynamic, data_dynamic, false,
+    function(resultMap) {
+        if (resultMap && resultMap.result) {
+        	$("#3").children().remove();
+        	var htmlStr3 = "",N_htmlStr3 = "";
+            if( resultMap.result.length == 0){
+            	N_htmlStr3 += "<div class='non_comment font14'>";
+            	N_htmlStr3 += " 	<img src='../common/images/non_sub_task.png'>";
+            	N_htmlStr3 += " 	<div class='non_comment'>还没有纪录哦~<div>";
+            	N_htmlStr3 += "</div>";
+            	$(".c_test").css({'border-bottom' : '0'});
+            	$("#3").append(N_htmlStr3);
+            }else{
+            	$.each(resultMap.result,
+                        function(idx, item) {
+                            htmlStr3 += "<div class='record'>";
+                            htmlStr3 += "	<span>" + item.dynamicDescription + "&nbsp;&nbsp;</span>";
+                            /*htmlStr3 += "	<span>创建了任务并将复制人指定为&nbsp;</span>";
+            											htmlStr3 += "	<span>自己</span>";*/
+                            htmlStr3 += "	<span class='record_t'>" + item.createDate + " </span>";
+                            htmlStr3 += "</div>";
+                            //console.log(item);
+                });
+                $("#3").append(htmlStr3);
+            }
+            
+        }
+    });
+    //});
+    //赞			
+    //$(document).on("touchstart","#li_4",function(){
+    var data_praise = '{"id":"' + mytaskId + '"}';
+    var url_praise = "/a/mobile/conversation/findpraisemember";
+    startUp.ajaxPost(url_praise, data_praise, false,
+    function(resultMap) {
+        if (resultMap && resultMap.result) {
+        	$("#4").children().remove();
+        	var htmlStr4 = "",N_htmlStr4 = "";
+            if( resultMap.result.length == 0){
+            	N_htmlStr4 += "<div class='non_comment font14'>";
+            	N_htmlStr4 += " 	<img src='../common/images/non_praise.png'>";
+            	N_htmlStr4 += " 	<div class='non_comment'>一个赞也不给我！<div>";
+            	N_htmlStr4 += "</div>";
+            	$(".c_test").css({'border-bottom' : '0'});
+            	$("#4").append(N_htmlStr4);
+            }else{
+            	$.each(resultMap.result,
+                        function(idx, item) {
+                            htmlStr4 += "<div class='comment_text'>";
+                            htmlStr4 += "<div class='head'>";
+                            if(item.photo){
+                            	htmlStr4 += "	<img alt='' src='"+ startUp.getRootPath()+item.photo +"'>";
+                            }else{
+                            	htmlStr4 += "	<img alt='' src='../common/images/test/8.png'>";
+                            }
+                            htmlStr4 += "</div>";
+                            htmlStr4 += "<div class='covers'>" + item.name + "</div>";
+                            htmlStr4 += "</div>";
+                });
+            	$("#4").append(htmlStr4);
+            }
+        }
+    });
+    //	})
+    //日志
+    var data_query = '{"taskId":"' + mytaskId + '"}';
+    var url_query = "/a/mobile/diary/querylist";
+    startUp.ajaxPost(url_query, data_query, false,
+    function(resultMap) {
+        if (resultMap && resultMap.data) {
+        	$("#5").children().remove();
+        	var htmlStr6 = "",N_htmlStr6 = "";
+            if( resultMap.data.length == 0){
+            	N_htmlStr6 += "<div class='non_comment font14'>";
+            	N_htmlStr6 += " 	<img src='../common/images/non_log.png'>";
+            	N_htmlStr6 += " 	<div class='non_comment'>还没有日志哦~<div>";
+            	N_htmlStr6 += "</div>";
+            	$(".c_test").css({'border-bottom' : '0'});
+            	$("#5").append(N_htmlStr6);
+            }else{
+        	$.each(resultMap.data,
+            function(idx, item) {
+        		htmlStr6 += "<div id='"+ item.id +"' class='c_describe'>";
+        		htmlStr6 += "	<div class='d_name'>"+ item.title +"</div>";
+        		htmlStr6 += "	<div class='d_user font12' style='color:#999'>"+ item.activeCreateBy.name +"</div>";
+        		htmlStr6 += "	<div class='d_date font12' style='color:#999'>"+ item.createDate +"</div>";
+        		htmlStr6 += "</div>";
+           
+        	});
+        	$("#5").append(htmlStr6);
+        	}
+        }else{
+        	$("#5").children().remove();
+        }
+    });
+    //发表评论		
+    $(document).on("touchstart", ".add_send",
+    function() {
+        var str = $(".input_s").text();
+        if (!str == "") {
+            var url_save = "/a/mobile/comment/conversationcomment";
+            var data_save = {
+                'jsonObject': '{"description":"' + str + '","resourceId":"' + mytaskId + '","type":"1"}'
+            };
+            startUp.ajaxForm(url_save, data_save, false,
+            function(resultMap) {
+            	
+                startUp.ajaxPost(url_comment, data_comment, false,
+                function(resultMap) {
+                	if( resultMap.result.length == 0){
+                		$("#1").children().remove()
+                	}
+                	   $(".comment.c_test_div .non_comment").remove();
+                       var htmlStr5 = "",length=resultMap.result.length;
+                        htmlStr5 += "<div class='comment_text' id='" + resultMap.result[length-1].createById + "'>";
+                        htmlStr5 += "	<div class='head'>";
+                        if(resultMap.result[length-1].createByPhoto){
+                        	 htmlStr5 += "	<img src='"+ startUp.getRootPath()+resultMap.result[length-1].createByPhoto+"'>";
+                        }else{
+                        	 htmlStr5 += "	<img alt='' src='../common/images/test/8.png'>";
+                        }
+                        htmlStr5 += "	</div>";
+                        htmlStr5 += "	<div class='covers'>";
+                        htmlStr5 += "		<div class='c_name'>" + resultMap.result[length-1].createByName + "</div>";
+                        htmlStr5 += "		<div class='c_comment'>";
+                        htmlStr5 += "			<div class='c_text'>"+ resultMap.result[length-1].description +"</div>";
+                        htmlStr5 += "		</div>";
+                        htmlStr5 += "	</div>";
+                        htmlStr5 += "	<div class='c_date'>";
+                        htmlStr5 += "		<div>" + resultMap.result[length-1].updateDate.substring(11, 16) + "</div>";
+                        htmlStr5 += "	</div>";
+                        htmlStr5 += "</div>";
+                        $("#1").append(htmlStr5);
+                });
+            });
+            $(".input_s").html(""); 
+        } else {
+            alert("评论内容不能为空!")
+        }
+    });
+    $(document).on("change", ".xb_image_file",function() {
+    	var description = "";
+    	var path = this.value;
+    	var data_save = {
+                'jsonObject': '{"description":"' + description + '","resourceId":"' + mytaskId + '","type":"1"}'
+            };
+    	var url = '/a/mobile/comment/conversationcomment';
+    	if(!path){
+    		return ;
+    	}
+    	var formData = new FormData();
+    	$.each(this.files, function(idx, item){
+    		formData.append("files", item);
+    	});
+    	formData.append("jsonObject", '{"description":"' + description + '","resourceId":"' + mytaskId + '","type":"1"}');
+    	startUp.fileUpload(url, formData, function(resultMap){
+    		 var htmlStr7 = "";
+    		 htmlStr7 += "<div class='comment_text' id='"+ resultMap.result.id +"'>";
+    		 htmlStr7 += "	<div class='head'>";
+    		 htmlStr7 += "		<img src='"+ startUp.getRootPath() + resultMap.result.createByPhoto +"'>";
+    		 htmlStr7 += "	</div>	";
+    		 htmlStr7 += "		<div class='covers'>";
+    		 htmlStr7 += "			<div class='c_name'>"+ resultMap.result.createByName +"</div>";
+    		 htmlStr7 += "		<div class='c_comment' id='gallery'>";
+    		 htmlStr7 += "			<img alt='' src='"+  startUp.getRootPath() + resultMap.result.attachment[0].accessPath +"'>";
+    		 htmlStr7 += "		</div>	";
+    		 htmlStr7 += "	</div>";
+    		 htmlStr7 += "	<div class='c_date'>";
+    		 htmlStr7 += "		<div>" +resultMap.result.updateDate.substring(11, 16)+ "</div>";
+    		 htmlStr7 += "	</div>";
+    		 htmlStr7 += "</div>";
+    		 $("#1 .non_comment").remove();
+    		 $("#1").append(htmlStr7)
+    	});
+    });
+    //标记/取消标记任务完成		
+    $(document).on("touchstart", ".s_circle",
+    function() {
+    	if($(this).attr("id")==$(".container").attr("id")){
+    		var url_finish = "/a/mobile/task/marktaskfinish";
+            var data_finish = '{"id":"' + mytaskId + '"}';
+            startUp.ajaxPost(url_finish, data_finish, false,
+            function(resultMap) {
+                if(resultMap.result=="6"){
+                	$(".cs_img").attr("src","../common/images/yes.png");
+                }else if(resultMap.result=="7"){
+                	$(".cs_img").attr("src","../common/images/yesed.png");
+                	alert("标记已完成")
+                }
+            });
+    	}else{
+    		return false;
+    	}
+    });
+  //日志详情		
+    $(document).on("touchstart", ".c_describe",
+    function() {
+    	var diary_id=$(this).attr("id")
+	   	 if (mytaskId) {
+	   	      window.location.href = startUp.getRootPath() + "/h5/home/view/diary.html?diaryId=" + diary_id + "&"
+	   	 }
+    });
+  //判断附件是否可以预览		
+    $(document).on("touchstart touchmove touchend", ".d_files",
+    function() {
+    	var touch = event.targetTouches[0];
+		if(event.type == "touchstart"){
+			moved = false ; // moved用于判断是否滑动
+            x = touch.pageX ;
+            y = touch.pageY ;
+		}else if(event.type == "touchmove"){
+			if(moved) return
+            X = touch.pageX ;
+            Y = touch.pageY ;
+            if(X-x != 0 || Y-y !=0){moved = true}
+		}else if(event.type == "touchend"){
+			if(!moved){     // 如果没有滑动就执行
+				var this_=$(this)
+		    	var w=this_.find(".files_details span:first-child").text();
+		    	var rr=w.substring(w.indexOf("."), 100),attType=rr.substring(1, 100);
+		    	if(attType=="gif" || attType=="jpeg" || attType=="bmp" || attType=="tiff" || attType=="png" || attType=="jpg" ){
+		    		$(this).one("click",function(){
+		    			this_.find("img").trigger("click");
+		    		});
+		    	}else{
+		    		alert("暂不支持预览")
+		    	}
+            }
+		}
+    });
+    $(document).on("focus", ".input_s",function(e) {
+    	e.preventDefault()
+    	var height=$(window).height();
+    	var windowInnerHeight;
+    	$(this).parents(".footer").css({'position':'absolute'})
+    	setTimeout(function () {
+    		windowInnerHeight = window.innerHeight;
+    		$(this).parents(".footer").css({'botttom':height-windowInnerHeight});
+        }, 100);
+    })
+    $(document).on("touchstart", ".container,.header",function() { 
+	     $(".input_s").blur();
+    });
+    //图片预览
+    $(document).on("touchstart touchmove touchend", "#gallery img",function() {
+    	var touch = event.targetTouches[0];
+		if(event.type == "touchstart"){
+			moved = false ; // moved用于判断是否滑动
+            x = touch.pageX ;
+            y = touch.pageY ;
+		}else if(event.type == "touchmove"){
+			if(moved) return
+            X = touch.pageX ;
+            Y = touch.pageY ;
+            if(X-x != 0 || Y-y !=0){moved = true}
+		}else if(event.type == "touchend"){
+			if(!moved){     // 如果没有滑动就执行
+				 var url=$(this).attr("src");
+				 var img = new Image; 
+				 var height=$(window).width();
+				 img.src = url; 
+				 if(img.width-height < 0){
+					 $("#f_gallery,#f_gallery2").fadeIn("slow");
+				     $("#f_gallery").css('background','url('+url+') no-repeat center center');
+				     $(".footer").css('z-index','0');
+				     $("#f_gallery").attr("class","")
+				 }else{
+					 $("#f_gallery,#f_gallery2").fadeIn("slow");
+				     $("#f_gallery").css('background','url('+url+') no-repeat center center');
+				     $(".footer").css('z-index','0');
+				     $("#f_gallery").attr("class","f_size")
+				 }
+            }
+		}
+   });
+    $(document).on("touchstart", "#f_gallery,#f_gallery2",function() { 
+	     $("#f_gallery,#f_gallery2").fadeOut('slow');
+   });
+    $(document).on("touchstart touchmove touchend","#gallery",function(){
+    	var touch = event.targetTouches[0];
+		if(event.type == "touchstart"){
+			moved = false ; // moved用于判断是否滑动
+            x = touch.pageX ;
+            y = touch.pageY ;
+		}else if(event.type == "touchmove"){
+			if(moved) return
+            X = touch.pageX ;
+            Y = touch.pageY ;
+            if(X-x != 0 || Y-y !=0){moved = true}
+		}else if(event.type == "touchend"){
+			if(!moved){     // 如果没有滑动就执行
+				 var url=$(this).find("img").attr("src");
+				 var img = new Image; 
+				 var height=$(window).width();
+				 img.src = url; 
+				 if(img.width-height < 0){
+					 $("#f_gallery,#f_gallery2").fadeIn("slow");
+				     $("#f_gallery").css('background','url('+url+') no-repeat center center');
+				     $(".footer").css('z-index','0');
+				     $("#f_gallery").attr("class","")
+				 }else{
+					 $("#f_gallery,#f_gallery2").fadeIn("slow");
+				     $("#f_gallery").css('background','url('+url+') no-repeat center center');
+				     $(".footer").css('z-index','0');
+				     $("#f_gallery").css({'background-size':'100% auto !important'});
+				     $("#f_gallery").attr("class","f_size")
+				 }
+            }
+		}
+	})
+})

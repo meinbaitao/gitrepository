@@ -1,0 +1,77 @@
+<div class="modal-body">
+	<form class="form-horizontal" target="_top" method="post">
+		<div class='select-area'>
+			<div class='header'>空间成员</div>
+			<div class='select-content'>
+				<ul class='member-list'  id="show-sapce-member-to-team">
+					<!-- <li user-id='member1' title="林嘉欣">
+						<label  class='sicon-checkbox' for='input1'>
+							<input id='input1' id='input1' type='checkbox' autocomplete="false">
+						</label>
+						<span class='member-portrait'>欣</span>
+						<span class='member-name'>林嘉欣</span>
+					</li>
+					<li user-id='member2' title="许建鹏">
+						<label class='sicon-checkbox' for='input2'>
+							<input id='input2' type='checkbox'>
+						</label>
+						<span class='member-portrait'>鹏</span>
+						<span class='member-name'>许建鹏</span>
+					</li>
+					<li user-id='member3' title="舒佳锦">
+						<label class='sicon-checkbox' for='input3'>
+							<input id='input3' type='checkbox'>
+						</label>
+						<span class='member-portrait'>锦</span>
+						<span class='member-name'>舒佳锦</span>
+					</li>
+					
+					<li user-id='member4' class="member-group">
+						<span class='group-info'>
+							<label class='sicon-checkbox' for='input4'>
+								<input id='input4' type='checkbox'>
+							</label>
+							<span class='triangle-left'></span>
+							<span class='group-title'>设计组</span>
+							<span class='member-number'>4</span>
+						</span>
+						<ul class="group-members">
+							<li user-id='member5' title="吴健文">
+								<label class='sicon-checkbox' for='input5'>
+									<input id='input5' type='checkbox'>
+								</label>
+								<span class='member-portrait'>
+									<img src="${ctxSurfond}/common/new-images/test-img/default-portrait.png">
+								</span>
+								<span class='member-name'>吴建文</span>
+							</li>
+							<li user-id='member6' title="吴元静" for='input6'>
+								<label id='input6' class='sicon-checkbox'>
+									<input type='checkbox'>
+								</label>
+								<span class='member-portrait'>静 </span>
+								<span class='member-name'>吴元静</span>
+							</li>
+						</ul>
+					</li> -->
+				</ul>
+				</div>
+			</div>
+			<div  class='selected-area'>
+				<div class='header'>已选成员</div>
+				<div class='select-content'>
+				<ul class='member-list' id='show-select-team-members'></ul>
+			</div>
+		</div>
+	</form>
+</div>
+
+<div class="modal-footer">
+	<div class="form-group">
+		<label for="message-text" class="col-sm-4 control-label">&nbsp;</label>
+		<div class="botton col-sm-8">
+			<button  class="btn-orange"  data-dismiss="modal" aria-label="Close" id="save-team-members" data-toggle="modal" data-target="#new_team">保存</button>
+			<button class="btn-gray " data-dismiss="modal" aria-label="Close" data-toggle="modal" data-target="#new_team">取消</button>
+		</div>
+	</div>
+</div>
